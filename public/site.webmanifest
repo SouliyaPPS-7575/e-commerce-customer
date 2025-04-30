@@ -1,7 +1,7 @@
 {
-  "name": "E-Commerce",
-  "short_name": "E-Commerce",
-  "description": "E-Commerce",
+  "name": "E-Commerce Customer",
+  "short_name": "E-Commerce Customer",
+  "description": "E-Commerce Customer",
   "icons": [
     {
       "src": "/images/android-chrome-192x192.png",
@@ -14,8 +14,8 @@
       "type": "image/png"
     }
   ],
-  "theme_color": "#FFECEC",
-  "background_color": "#FFECEC",
+  "theme_color": "#BFE6FA",
+  "background_color": "#BFE6FA",
   "display": "standalone",
   "start_url": "/"
 }

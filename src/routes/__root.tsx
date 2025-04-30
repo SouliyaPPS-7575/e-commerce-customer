@@ -1,17 +1,29 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import {
   HeadContent,
   Outlet,
   Scripts,
-  createRootRoute,
+  createRootRouteWithContext,
 } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
+import i18next from 'i18next';
 import * as React from 'react';
+import { I18nextProvider } from 'react-i18next';
+import { Toaster } from 'sonner';
 import { DefaultCatchBoundary } from '~/components/DefaultCatchBoundary';
 import { NotFound } from '~/components/NotFound';
+import PWAInstall from '~/components/PWAInstall';
+import Navbar from '~/layout/navbar';
+import { queryClient } from '~/services/queryClient';
 import appCss from '~/styles/app.css?url';
+import MuiProvider from '~/styles/ThemeProvider';
 import { seo } from '~/utils/seo';
+import { isDevelopment } from '~/utils/url';
 
-export const Route = createRootRoute({
+export const Route = createRootRouteWithContext<{
+  queryClient: QueryClient;
+}>()({
   head: () => ({
     meta: [
       {
@@ -22,9 +34,8 @@ export const Route = createRootRoute({
         content: 'width=device-width, initial-scale=1',
       },
       ...seo({
-        title:
-          'TanStack Start | Type-Safe, Client-First, Full-Stack React Framework',
-        description: `TanStack Start is a type-safe, client-first, full-stack React framework. `,
+        title: 'E-Commerce Customer',
+        description: `E-Commerce Customer`,
       }),
     ],
     links: [
@@ -32,7 +43,7 @@ export const Route = createRootRoute({
       {
         rel: 'apple-touch-icon',
         sizes: '180x180',
-        href: '/apple-touch-icon.png',
+        href: '/images/apple-touch-icon.png',
       },
       {
         rel: 'icon',
@@ -46,7 +57,7 @@ export const Route = createRootRoute({
         sizes: '16x16',
         href: '/favicon-16x16.png',
       },
-      { rel: 'manifest', href: '/site.webmanifest', color: '#fffff' },
+      { rel: 'manifest', href: '/site.webmanifest', color: '#BFE6FA' },
       { rel: 'icon', href: '/favicon.ico' },
     ],
   }),
@@ -64,6 +75,7 @@ export const Route = createRootRoute({
 function RootComponent() {
   return (
     <RootDocument>
+      <Navbar />
       <Outlet />
     </RootDocument>
   );
@@ -73,11 +85,47 @@ function RootDocument({ children }: { children: React.ReactNode }) {
   return (
     <html>
       <head>
+        <PWAInstall />
         <HeadContent />
+        <meta name="viewport" content="initial-scale=1, width=device-width" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@400;700&family=Phetsarath+OT:wght@400;700&family=Poppins:wght@300;400;500;700&display=swap"
+          rel="stylesheet"
+        />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/icon?family=Material+Icons"
+        />
       </head>
-      <body>
-        {children}
-        <TanStackRouterDevtools position='bottom-right' />
+      <body suppressHydrationWarning>
+        <I18nextProvider i18n={i18next}>
+          <QueryClientProvider client={queryClient}>
+            <MuiProvider>
+              {children}
+              <Toaster
+                visibleToasts={9}
+                position="top-right"
+                closeButton
+                duration={3000}
+                richColors
+                toastOptions={{
+                  duration: 3000,
+                  className: 'custom-toast',
+                }}
+              />
+              {isDevelopment && (
+                <TanStackRouterDevtools position="bottom-right" />
+              )}
+              <ReactQueryDevtools buttonPosition="bottom-left" />
+            </MuiProvider>
+          </QueryClientProvider>
+        </I18nextProvider>
         <Scripts />
       </body>
     </html>

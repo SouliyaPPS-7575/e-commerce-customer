@@ -33,11 +33,11 @@ export default defineConfig({
         registerType: 'autoUpdate',
         injectRegister: 'auto', // ✅ Automatically updates PWA
         manifest: {
-          name: 'E-Commerce',
-          short_name: 'E-Commerce',
-          description: 'E-Commerce',
+          name: 'E-Commerce Customer',
+          short_name: 'E-Commerce Customer',
+          description: 'E-Commerce Customer',
           theme_color: '#0F5791',
-          background_color: '#FFECEC',
+          background_color: '#BFE6FA',
           display: 'standalone',
           start_url: '/',
           icons: [
