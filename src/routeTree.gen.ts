@@ -13,7 +13,9 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as IndexImport } from './routes/index'
 import { Route as ShopIndexImport } from './routes/shop/index'
-import { Route as BestSellingProductsIndexImport } from './routes/best-selling-products/index'
+import { Route as ContactIndexImport } from './routes/contact/index'
+import { Route as BlogIndexImport } from './routes/blog/index'
+import { Route as AboutIndexImport } from './routes/about/index'
 
 // Create/Update Routes
 
@@ -29,9 +31,21 @@ const ShopIndexRoute = ShopIndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const BestSellingProductsIndexRoute = BestSellingProductsIndexImport.update({
-  id: '/best-selling-products/',
-  path: '/best-selling-products/',
+const ContactIndexRoute = ContactIndexImport.update({
+  id: '/contact/',
+  path: '/contact/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const BlogIndexRoute = BlogIndexImport.update({
+  id: '/blog/',
+  path: '/blog/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AboutIndexRoute = AboutIndexImport.update({
+  id: '/about/',
+  path: '/about/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -46,11 +60,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
-    '/best-selling-products/': {
-      id: '/best-selling-products/'
-      path: '/best-selling-products'
-      fullPath: '/best-selling-products'
-      preLoaderRoute: typeof BestSellingProductsIndexImport
+    '/about/': {
+      id: '/about/'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/blog/': {
+      id: '/blog/'
+      path: '/blog'
+      fullPath: '/blog'
+      preLoaderRoute: typeof BlogIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/contact/': {
+      id: '/contact/'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactIndexImport
       parentRoute: typeof rootRoute
     }
     '/shop/': {
@@ -67,41 +95,51 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/best-selling-products': typeof BestSellingProductsIndexRoute
+  '/about': typeof AboutIndexRoute
+  '/blog': typeof BlogIndexRoute
+  '/contact': typeof ContactIndexRoute
   '/shop': typeof ShopIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/best-selling-products': typeof BestSellingProductsIndexRoute
+  '/about': typeof AboutIndexRoute
+  '/blog': typeof BlogIndexRoute
+  '/contact': typeof ContactIndexRoute
   '/shop': typeof ShopIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
-  '/best-selling-products/': typeof BestSellingProductsIndexRoute
+  '/about/': typeof AboutIndexRoute
+  '/blog/': typeof BlogIndexRoute
+  '/contact/': typeof ContactIndexRoute
   '/shop/': typeof ShopIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/best-selling-products' | '/shop'
+  fullPaths: '/' | '/about' | '/blog' | '/contact' | '/shop'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/best-selling-products' | '/shop'
-  id: '__root__' | '/' | '/best-selling-products/' | '/shop/'
+  to: '/' | '/about' | '/blog' | '/contact' | '/shop'
+  id: '__root__' | '/' | '/about/' | '/blog/' | '/contact/' | '/shop/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  BestSellingProductsIndexRoute: typeof BestSellingProductsIndexRoute
+  AboutIndexRoute: typeof AboutIndexRoute
+  BlogIndexRoute: typeof BlogIndexRoute
+  ContactIndexRoute: typeof ContactIndexRoute
   ShopIndexRoute: typeof ShopIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  BestSellingProductsIndexRoute: BestSellingProductsIndexRoute,
+  AboutIndexRoute: AboutIndexRoute,
+  BlogIndexRoute: BlogIndexRoute,
+  ContactIndexRoute: ContactIndexRoute,
   ShopIndexRoute: ShopIndexRoute,
 }
 
@@ -116,15 +154,23 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/best-selling-products/",
+        "/about/",
+        "/blog/",
+        "/contact/",
         "/shop/"
       ]
     },
     "/": {
       "filePath": "index.tsx"
     },
-    "/best-selling-products/": {
-      "filePath": "best-selling-products/index.tsx"
+    "/about/": {
+      "filePath": "about/index.tsx"
+    },
+    "/blog/": {
+      "filePath": "blog/index.tsx"
+    },
+    "/contact/": {
+      "filePath": "contact/index.tsx"
     },
     "/shop/": {
       "filePath": "shop/index.tsx"

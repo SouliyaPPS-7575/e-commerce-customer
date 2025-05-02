@@ -14,7 +14,6 @@ import { Toaster } from 'sonner';
 import { DefaultCatchBoundary } from '~/components/DefaultCatchBoundary';
 import { NotFound } from '~/components/NotFound';
 import PWAInstall from '~/components/PWAInstall';
-import Navbar from '~/layout/navbar';
 import { queryClient } from '~/services/queryClient';
 import appCss from '~/styles/app.css?url';
 import MuiProvider from '~/styles/ThemeProvider';
@@ -75,7 +74,6 @@ export const Route = createRootRouteWithContext<{
 function RootComponent() {
   return (
     <RootDocument>
-      <Navbar />
       <Outlet />
     </RootDocument>
   );

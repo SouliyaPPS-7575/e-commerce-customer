@@ -27,10 +27,9 @@ import {
   useMediaQuery,
 } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
-import { Link } from '@tanstack/react-router';
 import { useState } from 'react';
+import { NavItem, navItems } from '~/layout/navItems';
 import theme from '~/styles/theme';
-import { navItems } from './navItems';
 
 // Styled search component
 const Search = styled('div')(({ theme }) => ({
@@ -86,7 +85,12 @@ const useCartItems = () => {
   });
 };
 
-const Navbar = () => {
+interface NavbarProps {
+  currentPage: number;
+  goToPage: (page: number) => void;
+}
+
+const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
   const isMobile = useMediaQuery(theme.breakpoints.down('md'), { noSsr: true });
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -102,15 +106,21 @@ const Navbar = () => {
     setSearchOpen(!searchOpen);
   };
 
+  const isTransparent = currentPage === 0;
+
   return (
     <>
       <AppBar
-        position="static"
-        color="default"
-        elevation={0}
+        position="fixed"
+        color="transparent"
         sx={{
-          borderBottom: '1px solid #e0e0e0',
-          backgroundColor: 'white',
+          boxShadow: 'none',
+          bgcolor: isTransparent ? 'transparent' : 'rgba(255, 255, 255, 0.95)',
+          transition: 'background-color 0.3s ease',
+          borderBottom: isTransparent
+            ? 'none'
+            : '1px solid rgba(0, 0, 0, 0.05)',
+          zIndex: 1000,
         }}
       >
         <Container maxWidth="xl">
@@ -118,47 +128,51 @@ const Navbar = () => {
             {/* Logo */}
             <Typography
               variant="h6"
-              noWrap
-              component="a"
-              href="/"
+              component="div"
               sx={{
-                mr: 2,
-                display: 'flex',
-                fontFamily: 'monospace',
+                fontFamily: "'Playfair Display', serif",
                 fontWeight: 700,
-                letterSpacing: '.1rem',
-                color: 'black',
-                textDecoration: 'none',
+                fontSize: '1.5rem',
+                color: isTransparent ? 'back' : 'text.primary',
+                cursor: 'pointer',
               }}
+              onClick={() => goToPage(0)}
             >
-              UNICITY
+              Laos Fabric
             </Typography>
 
-            {/* Desktop navigation */}
+            {/* Desktop Navigation */}
             {!isMobile && (
-              <Box
-                sx={{
-                  display: { xs: 'none', md: 'flex' },
-                  flexGrow: 1,
-                  justifyContent: 'center',
-                }}
-              >
-                {navItems.map((item) => (
-                  <Box
-                    component={Link}
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                {navItems.map((item: NavItem) => (
+                  <Typography
                     key={item.name}
+                    onClick={() => goToPage(item.page)}
                     sx={{
-                      my: 2,
-                      color: '#1976d2',
-                      display: 'block',
-                      mx: 2,
-                      fontWeight: 500,
-                      fontSize: '1rem',
+                      cursor: 'pointer',
+                      mx: 1,
+                      color: isTransparent ? 'back' : 'text.primary',
+                      fontWeight: currentPage === item.page ? 700 : 400,
+                      position: 'relative',
+                      '&::after': {
+                        content: '""',
+                        position: 'absolute',
+                        width: currentPage === item.page ? '100%' : '0%',
+                        height: '2px',
+                        bottom: 0,
+                        left: 0,
+                        backgroundColor: isTransparent
+                          ? 'back'
+                          : 'primary.main',
+                        transition: 'width 0.3s ease',
+                      },
+                      '&:hover::after': {
+                        width: '100%',
+                      },
                     }}
-                    href={item.href}
                   >
                     {item.name}
-                  </Box>
+                  </Typography>
                 ))}
               </Box>
             )}
@@ -214,7 +228,7 @@ const Navbar = () => {
             <Divider />
             <List>
               {navItems.map((item) => (
-                <ListItem key={item.name} component="a" href={item.href}>
+                <ListItem key={item.name} component="a">
                   <ListItemText primary={item.name} />
                 </ListItem>
               ))}
