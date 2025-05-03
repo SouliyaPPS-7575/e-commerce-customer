@@ -1,3 +1,4 @@
+import { Box } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import {
@@ -5,6 +6,7 @@ import {
   Outlet,
   Scripts,
   createRootRouteWithContext,
+  useRouterState,
 } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
 import i18next from 'i18next';
@@ -14,6 +16,7 @@ import { Toaster } from 'sonner';
 import { DefaultCatchBoundary } from '~/components/DefaultCatchBoundary';
 import { NotFound } from '~/components/NotFound';
 import PWAInstall from '~/components/PWAInstall';
+import Navbar from '~/layout/navbar';
 import { queryClient } from '~/services/queryClient';
 import appCss from '~/styles/app.css?url';
 import MuiProvider from '~/styles/ThemeProvider';
@@ -56,7 +59,7 @@ export const Route = createRootRouteWithContext<{
         sizes: '16x16',
         href: '/favicon-16x16.png',
       },
-      { rel: 'manifest', href: '/site.webmanifest', color: '#BFE6FA' },
+      { rel: 'manifest', href: '/site.webmanifest', color: '#F5F0E6' },
       { rel: 'icon', href: '/favicon.ico' },
     ],
   }),
@@ -72,9 +75,28 @@ export const Route = createRootRouteWithContext<{
 });
 
 function RootComponent() {
+  // Current Path URL
+  const location = useRouterState({ select: (state) => state.location });
+  const currentPath = location.pathname;
+
   return (
     <RootDocument>
-      <Outlet />
+      {currentPath !== '/' ? (
+        <>
+          <Navbar />
+          <Box
+            sx={{
+              paddingTop: '64px',
+            }}
+          >
+            <Outlet />
+          </Box>
+        </>
+      ) : (
+        <Box>
+          <Outlet />
+        </Box>
+      )}
     </RootDocument>
   );
 }

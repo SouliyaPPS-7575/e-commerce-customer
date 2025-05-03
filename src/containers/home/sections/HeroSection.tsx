@@ -1,9 +1,18 @@
-import { Box, Button, Container, Typography } from '@mui/material';
 import { KeyboardArrowDown } from '@mui/icons-material';
+import { Box, Container, Typography } from '@mui/material';
+import { motion } from 'framer-motion';
 
-export default function HeroSection() {
+export default function HeroSection({
+  goToPage,
+}: {
+  goToPage: (page: number) => void;
+}) {
   return (
     <Box
+      component={motion.div}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 1 }}
       sx={{
         height: '100vh',
         width: '100%',
@@ -12,7 +21,8 @@ export default function HeroSection() {
         justifyContent: 'center',
         alignItems: 'center',
         position: 'relative',
-        backgroundImage: "url('/placeholder.svg?height=1080&width=1920')",
+        backgroundImage:
+          "url('https://i.ibb.co/C3VnhQRk/bcdd2a43df06c7fe6772a7c4136279e79b02c945.png')",
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         '&::before': {
@@ -24,55 +34,79 @@ export default function HeroSection() {
           bottom: 0,
           backgroundColor: 'rgba(0, 0, 0, 0.5)',
         },
+        px: 2,
       }}
     >
       <Container
         maxWidth="md"
         sx={{ position: 'relative', zIndex: 1, textAlign: 'center' }}
       >
-        <Typography
-          variant="h1"
-          component="h1"
-          sx={{
-            color: 'white',
-            mb: 3,
-            fontSize: { xs: '2.5rem', sm: '3.5rem', md: '4.5rem' },
-            textShadow: '0 2px 4px rgba(0,0,0,0.3)',
-          }}
+        <Box
+          component={motion.div}
+          initial={{ opacity: 0, y: -30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.6 }}
         >
-          Laos Fabric
-        </Typography>
-        <Typography
-          variant="h5"
-          component="p"
-          sx={{
-            color: 'white',
-            mb: 6,
-            maxWidth: '800px',
-            mx: 'auto',
-            textShadow: '0 1px 2px rgba(0,0,0,0.3)',
-          }}
+          <Typography
+            variant="h1"
+            component="h1"
+            sx={{
+              color: 'white',
+              mb: 3,
+              fontSize: { xs: '2.5rem', sm: '3.5rem', md: '4.5rem' },
+              textShadow: '0 2px 4px rgba(0,0,0,0.3)',
+            }}
+          >
+            Laos Fabric
+          </Typography>
+        </Box>
+        <Box
+          component={motion.div}
+          initial={{ opacity: 0, y: -30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4, duration: 0.6 }}
         >
-          Lorem Ipsum is simply dummy text of the printing and typesetting
-          industry. Lorem Ipsum has been the industry&apos;s standard dummy text
-          ever since the 1500s
-        </Typography>
-        <Button
-          variant="outlined"
-          size="large"
-          sx={{
-            color: 'white',
-            borderColor: 'white',
-            '&:hover': {
-              backgroundColor: 'rgba(255, 255, 255, 0.1)',
-              borderColor: 'white',
-            },
-            px: 4,
-            py: 1.5,
-          }}
+          <Typography
+            variant="h5"
+            component="p"
+            sx={{
+              color: 'white',
+              mb: 6,
+              maxWidth: '800px',
+              mx: 'auto',
+              fontSize: { xs: '1rem', sm: '1.25rem' },
+              textShadow: '0 1px 2px rgba(0,0,0,0.3)',
+            }}
+          >
+            Lorem Ipsum is simply dummy text of the printing and typesetting
+            industry. Lorem Ipsum has been the industry's standard dummy text
+            ever since the 1500s
+          </Typography>
+        </Box>
+        <Box
+          component={motion.div}
+          initial={{ opacity: 0, y: -30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6, duration: 0.6 }}
         >
-          Explore more
-        </Button>
+          <Typography
+            sx={{
+              color: 'white',
+              backgroundColor: 'transparent',
+              '&:hover': {
+                backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                borderColor: 'white',
+              },
+              px: 4,
+              py: 1.5,
+              cursor: 'pointer',
+              fontSize: { xs: '0.875rem', sm: '1.1rem' },
+            }}
+            onClick={() => goToPage(1)}
+          >
+            Explore more
+          </Typography>
+        </Box>
       </Container>
 
       <Box
@@ -95,7 +129,10 @@ export default function HeroSection() {
           },
         }}
       >
-        <KeyboardArrowDown sx={{ color: 'white', fontSize: '2.5rem' }} />
+        <KeyboardArrowDown
+          sx={{ color: 'white', fontSize: '2.5rem', cursor: 'pointer' }}
+          onClick={() => goToPage(1)}
+        />
       </Box>
     </Box>
   );

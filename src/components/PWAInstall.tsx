@@ -33,7 +33,7 @@ const useInstallPrompt = () => {
           installAlert.style.bottom = '20px';
           installAlert.style.left = '50%';
           installAlert.style.transform = 'translateX(-50%)';
-          installAlert.style.backgroundColor = '#ffffff';
+          installAlert.style.backgroundColor = '#F5F5F5F5F5F5';
           installAlert.style.boxShadow = '0 4px 10px rgba(0, 0, 0, 0.15)';
           installAlert.style.borderRadius = '12px';
           installAlert.style.padding = '15px 20px';
@@ -56,8 +56,8 @@ const useInstallPrompt = () => {
             </div>
             <div style="display: flex; align-items: center; gap: 10px; z-index: 999;">
               <button id="install-pwa-button" style="
-                background-color: #0F5791;
-                color: #fff;
+                background-color: #F5F0E6;
+                color: #F5F5F5;
                 font-size: 14px;
                 font-weight: bold;
                 border: none;
@@ -68,7 +68,7 @@ const useInstallPrompt = () => {
               ">Install</button>
               <button id="close-alert-button" style="
                 background-color: #bdbdbd;
-                color: #fff;
+                color: #F5F5F5;
                 font-size: 14px;
                 font-weight: bold;
                 border: none;

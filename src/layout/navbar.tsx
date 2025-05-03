@@ -1,9 +1,9 @@
 import {
+  AccountCircle,
   Close as CloseIcon,
   MenuRounded,
-  PersonRounded,
   SearchRounded,
-  ShoppingCartRounded,
+  ShoppingCartOutlined,
 } from '@mui/icons-material';
 import {
   AppBar,
@@ -18,8 +18,7 @@ import {
   IconButton,
   InputBase,
   List,
-  ListItem,
-  ListItemText,
+  MenuItem,
   Toolbar,
   Typography,
   alpha,
@@ -27,6 +26,7 @@ import {
   useMediaQuery,
 } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
+import { useNavigate, useRouterState } from '@tanstack/react-router';
 import { useState } from 'react';
 import { NavItem, navItems } from '~/layout/navItems';
 import theme from '~/styles/theme';
@@ -86,14 +86,20 @@ const useCartItems = () => {
 };
 
 interface NavbarProps {
-  currentPage: number;
-  goToPage: (page: number) => void;
+  currentPage?: number;
+  goToPage?: (page: number) => void;
 }
 
 const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
   const isMobile = useMediaQuery(theme.breakpoints.down('md'), { noSsr: true });
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+
+  // Current Path URL
+  const location = useRouterState({ select: (state) => state.location });
+  const currentPath = location.pathname;
+
+  const navigate = useNavigate();
 
   // Get cart items count using TanStack Query
   const { data: cartItemsCount } = useCartItems();
@@ -133,10 +139,13 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
                 fontFamily: "'Playfair Display', serif",
                 fontWeight: 700,
                 fontSize: '1.5rem',
-                color: isTransparent ? 'back' : 'text.primary',
+                color: isTransparent ? '#F5F0E6' : 'back',
                 cursor: 'pointer',
               }}
-              onClick={() => goToPage(0)}
+              onClick={() => {
+                goToPage?.(0);
+                navigate({ to: '/' });
+              }}
             >
               Laos Fabric
             </Typography>
@@ -147,11 +156,19 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
                 {navItems.map((item: NavItem) => (
                   <Typography
                     key={item.name}
-                    onClick={() => goToPage(item.page)}
+                    onClick={() => {
+                      if (currentPath === '/') {
+                        goToPage?.(item.page);
+                      } else {
+                        navigate({
+                          to: item.href,
+                        });
+                      }
+                    }}
                     sx={{
                       cursor: 'pointer',
                       mx: 1,
-                      color: isTransparent ? 'back' : 'text.primary',
+                      color: isTransparent ? '#F5F0E6' : 'back',
                       fontWeight: currentPage === item.page ? 700 : 400,
                       position: 'relative',
                       '&::after': {
@@ -161,9 +178,7 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
                         height: '2px',
                         bottom: 0,
                         left: 0,
-                        backgroundColor: isTransparent
-                          ? 'back'
-                          : 'primary.main',
+                        backgroundColor: 'primary.main',
                         transition: 'width 0.3s ease',
                       },
                       '&:hover::after': {
@@ -181,21 +196,34 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               {/* Search */}
               <IconButton color="inherit" onClick={toggleSearch}>
-                <SearchRounded sx={{ color: '#0F5791' }} />
+                <SearchRounded
+                  sx={{ color: isTransparent ? '#F5F0E6' : 'back' }}
+                />
               </IconButton>
 
               {/* User account */}
               <IconButton color="inherit">
-                <PersonRounded sx={{ color: '#0F5791' }} />
+                <AccountCircle
+                  sx={{ color: isTransparent ? '#F5F0E6' : 'back' }}
+                />
               </IconButton>
-
               {/* Shopping cart */}
               <IconButton color="inherit">
-                <Badge badgeContent={cartItemsCount} color="primary">
-                  <ShoppingCartRounded sx={{ color: '#0F5791' }} />
+                <Badge
+                  badgeContent={cartItemsCount}
+                  color="primary"
+                  sx={{
+                    '& .MuiBadge-badge': {
+                      color: '#ffffff',
+                      fontSize: '1rem',
+                    },
+                  }}
+                >
+                  <ShoppingCartOutlined
+                    sx={{ color: isTransparent ? '#F5F0E6' : 'back' }}
+                  />
                 </Badge>
               </IconButton>
-
               {/* Mobile menu button */}
               <IconButton
                 color="inherit"
@@ -208,7 +236,9 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
                   mr: '-7px',
                 }}
               >
-                <MenuRounded sx={{ color: '#0F5791' }} />
+                <MenuRounded
+                  sx={{ color: isTransparent ? '#F5F0E6' : 'back' }}
+                />
               </IconButton>
             </Box>
           </Toolbar>
@@ -227,11 +257,28 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
             </Box>
             <Divider />
             <List>
-              {navItems.map((item) => (
-                <ListItem key={item.name} component="a">
-                  <ListItemText primary={item.name} />
-                </ListItem>
-              ))}
+              {navItems.map((item) => {
+                const isSelected =
+                  currentPath === '/' && currentPage === item.page;
+                return (
+                  <MenuItem
+                    key={item.name}
+                    selected={isSelected}
+                    onClick={() => {
+                      if (currentPath === '/') {
+                        goToPage?.(item.page);
+                      } else {
+                        navigate({
+                          to: item.href,
+                        });
+                      }
+                      toggleMobileMenu();
+                    }}
+                  >
+                    {item.name}
+                  </MenuItem>
+                );
+              })}
             </List>
           </Box>
         </Drawer>
@@ -246,7 +293,7 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
         <DialogContent>
           <Search sx={{ width: '100%' }}>
             <SearchIconWrapper>
-              <SearchRounded sx={{ color: '#90caf9' }} />
+              <SearchRounded sx={{ color: 'text.primary' }} />
             </SearchIconWrapper>
             <StyledInputBase
               placeholder="Search…"

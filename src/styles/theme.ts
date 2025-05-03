@@ -2,19 +2,19 @@ import { createTheme } from '@mui/material/styles';
 
 const theme = createTheme({
   palette: {
-    primary: { main: '#0F5791' },
-    secondary: { main: '#5BC0EA' },
+    primary: { main: '#C98B6B' },
+    secondary: { main: '#C98B6B' },
     error: { main: '#B71C1C' },
     warning: { main: '#FF5722' },
     success: { main: '#8BC34A' },
     background: {
-      default: 'linear-gradient(to bottom right, #D9EAF7, #BFE6FA)',
-      paper: '#fff',
+      default: 'linear-gradient(to bottom right, #F5F5F5, #F5F0E6)',
+      paper: '#F5F5F5',
     },
     text: { primary: '#000', secondary: '#000' },
   },
   typography: {
-    fontFamily: `"Noto Sans Lao", "Lao Sans", "Phetsarath OT", "Poppins", "Roboto", "Helvetica", "Arial", sans-serif`,
+    fontFamily: `Playfair Display sans-serif`,
     button: { textTransform: 'none' },
   },
   components: {
@@ -23,36 +23,29 @@ const theme = createTheme({
         '@global': {
           '@font-face': [
             {
-              fontFamily: 'Noto Sans Lao',
+              fontFamily: 'Playfair Display',
               fontStyle: 'normal',
               fontWeight: 400,
               fontDisplay: 'swap',
-              src: `url('https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@400;700&display=swap') format('woff2')`,
-            },
-            {
-              fontFamily: 'Phetsarath OT',
-              fontStyle: 'normal',
-              fontWeight: 400,
-              fontDisplay: 'swap',
-              src: `url('https://fonts.googleapis.com/css2?family=Phetsarath+OT:wght@400;700&display=swap') format('woff2')`,
+              src: `url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap') format('woff2')`,
             },
           ],
         },
         body: {
-          background: 'linear-gradient(to bottom right, #D9EAF7, #BFE6FA)',
+          background: 'linear-gradient(to bottom right, #F5F5F5, #F5F0E6)',
         },
       },
     },
     MuiButton: {
       styleOverrides: {
         root: {
-          background: 'linear-gradient(45deg, #0F5791 30%, #5BC0EA 90%)',
-          borderRadius: '8px',
-          color: '#fff',
+          background: 'linear-gradient(45deg,#de9c69 10%, #C98B6B 90%)',
+          borderRadius: '20px',
+          color: '#F5F5F5',
           fontWeight: 'bold',
           padding: '8px 14px',
           '&:hover': {
-            background: 'linear-gradient(45deg, #0F5791 30%, #5BC0EA 90%)',
+            background: 'linear-gradient(45deg, #ab6936 30%, #C98B6B 90%)',
           },
         },
       },

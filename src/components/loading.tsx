@@ -37,7 +37,7 @@ const GradientSpinner = styled('div')(({ theme }) => ({
   height: 40,
   borderRadius: '50%',
   position: 'relative',
-  background: 'linear-gradient(to bottom right, #BFE6FA, #D9EAF7)',
+  background: 'linear-gradient(to bottom right, #F5F0E6, #F5F5F5)',
   '&::before': {
     content: '""',
     position: 'absolute',
@@ -104,9 +104,9 @@ const Loading = () => {
                 borderRadius: '50%',
                 padding: 2,
                 background:
-                  'linear-gradient(to bottom right, #BFE6FA, #D9EAF7)',
+                  'linear-gradient(to bottom right, #F5F0E6, #F5F5F5)',
                 WebkitMask:
-                  'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+                  'linear-gradient(#F5F5F5 0 0) content-box, linear-gradient(#F5F5F5 0 0)',
                 WebkitMaskComposite: 'xor',
                 maskComposite: 'exclude',
                 animation: `${rotate} 2s linear infinite`,
@@ -119,7 +119,7 @@ const Loading = () => {
             sx={{
               animation: `${giftBob} 2s ease-in-out infinite`,
               zIndex: 1,
-              filter: 'drop-shadow(0px 0px 5px #0F5791)',
+              filter: 'drop-shadow(0px 0px 5px #F5F0E6)',
             }}
           />
 

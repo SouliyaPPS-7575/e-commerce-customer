@@ -27,7 +27,7 @@ export default function Pagination({
       {Array.from({ length: pageCount }).map((_, index) => (
         <Box
           key={index}
-          onClick={() => onPageChange(index + 1)}
+          onClick={() => onPageChange(index)}
           sx={{
             width: '10px',
             height: '10px',

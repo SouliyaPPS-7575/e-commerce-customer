@@ -36,8 +36,8 @@ export default defineConfig({
           name: 'E-Commerce Customer',
           short_name: 'E-Commerce Customer',
           description: 'E-Commerce Customer',
-          theme_color: '#0F5791',
-          background_color: '#BFE6FA',
+          theme_color: '#F5F0E6',
+          background_color: '#F5F0E6',
           display: 'standalone',
           start_url: '/',
           icons: [
@@ -98,6 +98,7 @@ export default defineConfig({
     define: {
       'process.env.BASE_URL': JSON.stringify(env.BASE_URL),
     },
+
     build: {
       chunkSizeWarningLimit: 5000,
       rollupOptions: {
@@ -109,6 +110,7 @@ export default defineConfig({
         },
       },
     },
+
     logLevel: 'error',
   },
 });
