@@ -91,13 +91,21 @@ interface NavbarProps {
 }
 
 const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'), { noSsr: true });
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
-
   // Current Path URL
   const location = useRouterState({ select: (state) => state.location });
   const currentPath = location.pathname;
+  // Do not render on login
+  if (
+    currentPath === '/login' ||
+    currentPath === '/signup' ||
+    currentPath === '/forgot-password'
+  )
+    return null;
+
+  // ✅ Only render null AFTER hooks
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'), { noSsr: true });
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
 
   const navigate = useNavigate();
 

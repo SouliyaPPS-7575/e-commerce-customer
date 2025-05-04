@@ -37,9 +37,10 @@ function Home() {
 
   // Handle page change
   const goToPage = (pageNumber: number) => {
-    navigate({
-      search: (prev: any) => ({ ...prev, currentPageNumber: pageNumber }),
-    } as any);
+    if (pageNumber)
+      navigate({
+        search: (prev: any) => ({ ...prev, currentPageNumber: pageNumber }),
+      } as any);
     containerRef.current?.children[pageNumber]?.scrollIntoView({
       behavior: 'smooth',
     });
@@ -105,7 +106,8 @@ function Home() {
               height: '100vh',
               scrollSnapAlign: 'start',
               opacity: currentPage === index ? 1 : 0,
-              transform: currentPage === index ? 'translateY(0)' : 'translateY(50px)',
+              transform:
+                currentPage === index ? 'translateY(0)' : 'translateY(50px)',
               transition: 'opacity 0.6s ease-out, transform 0.6s ease-out',
             }}
           >

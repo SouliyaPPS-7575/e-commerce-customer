@@ -81,7 +81,10 @@ function RootComponent() {
 
   return (
     <RootDocument>
-      {currentPath !== '/' ? (
+      {currentPath !== '/' &&
+      currentPath !== '/login' &&
+      currentPath !== '/signup' &&
+      currentPath !== '/forgot-password' ? (
         <>
           <Navbar />
           <Box
