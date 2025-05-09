@@ -85,30 +85,32 @@ function RouteComponent() {
           }}
         >
           {/* Shop All Title */}
-          <Typography
-            variant="h2"
-            component="h2"
-            sx={{
-              fontWeight: 600,
-              mt: isMobile ? 1 : 2,
-              position: 'relative',
-              textAlign: 'left',
-              fontFamily: "'Playfair Display', Georgia, serif",
-              letterSpacing: '0.5px',
-              textTransform: 'uppercase',
-              fontSize: { xs: '1.1rem', sm: '1.2rem', md: '1.4rem' },
-              flexShrink: 1, // Allow text to shrink if needed
-            }}
-          >
-            Shop All
-          </Typography>
+          {isMobile && <div></div>}
+          {!isMobile && (
+            <Typography
+              variant="h2"
+              component="h2"
+              sx={{
+                fontWeight: 600,
+                mt: isMobile ? 1 : 2,
+                position: 'relative',
+                textAlign: 'left',
+                fontFamily: "'Playfair Display', Georgia, serif",
+                letterSpacing: '0.5px',
+                textTransform: 'uppercase',
+                fontSize: { xs: '1.1rem', sm: '1.2rem', md: '1.4rem' },
+                flexShrink: 1, // Allow text to shrink if needed
+              }}
+            >
+              Shop All
+            </Typography>
+          )}
 
           {/* Sort Controls */}
           <Box
             sx={{
               position: 'sticky',
               top: 0,
-              zIndex: theme.zIndex.appBar + 1,
               backgroundColor: theme.palette.background.paper,
               py: 1,
               px: 2,
@@ -222,7 +224,9 @@ function RouteComponent() {
                     <CardMedia
                       component="img"
                       image={
-                        product.image_url?.[0] === null ? '' : product.image_url?.[0]
+                        product.image_url?.[0] === null
+                          ? ''
+                          : product.image_url?.[0]
                       }
                       alt={product.name}
                       sx={{

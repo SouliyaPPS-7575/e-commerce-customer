@@ -198,7 +198,7 @@ const ProductImageGallery = ({ product }: { product: ProductItem }) => {
           {images.length > 1 && (
             <Grid
               size={{
-                xs: 2,
+                xs: 8,
                 sm: 1.5,
                 md: 1.5,
               }}

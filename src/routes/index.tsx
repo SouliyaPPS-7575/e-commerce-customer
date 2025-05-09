@@ -43,13 +43,21 @@ function Home() {
 
   // Handle page change
   const goToPage = (pageNumber: number) => {
-    if (pageNumber)
+    if (containerRef.current?.children[pageNumber]) {
       navigate({
         search: (prev: any) => ({ ...prev, currentPageNumber: pageNumber }),
       } as any);
-    containerRef.current?.children[pageNumber]?.scrollIntoView({
-      behavior: 'smooth',
-    });
+
+      // Delay scroll for mobile rendering quirks
+      setTimeout(() => {
+        requestAnimationFrame(() => {
+          containerRef.current?.children[pageNumber]?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+          });
+        });
+      }, 50);
+    }
   };
 
   //  Handle scroll
@@ -102,6 +110,7 @@ function Home() {
           height: '100vh',
           overflowY: 'scroll',
           scrollSnapType: 'y mandatory',
+          scrollBehavior: 'smooth', // extra fallback
         }}
       >
         {sections.map((section, index) => (
