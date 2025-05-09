@@ -1,20 +1,22 @@
-import { createFileRoute, Link } from '@tanstack/react-router';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import {
   Box,
   Button,
   Card,
   CardContent,
-  Checkbox,
   Container,
   Divider,
-  FormControlLabel,
   IconButton,
   InputAdornment,
   TextField,
   Typography,
 } from '@mui/material';
+import { createFileRoute, Link } from '@tanstack/react-router';
+import { Lock, Phone } from 'lucide-react';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import LanguageSelection from '~/components/LanguageSelection';
+import { useLogin } from '~/hooks/auth/useLogin';
 import theme from '~/styles/theme';
 
 export const Route = createFileRoute('/login')({
@@ -22,12 +24,15 @@ export const Route = createFileRoute('/login')({
 });
 
 function RouteComponent() {
+  const { t } = useTranslation();
+
+  const { form } = useLogin();
+
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleClickShowPassword = () => {
-    setShowPassword(!showPassword);
+  const handleTogglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
   };
-
   return (
     <Box
       sx={{
@@ -53,90 +58,155 @@ function RouteComponent() {
           backdropFilter: 'blur(4px)',
         }}
       />
-
+      <Box sx={{ position: 'absolute', top: 16, right: 16, zIndex: 2 }}>
+        <LanguageSelection />
+      </Box>
       <Container maxWidth="sm" sx={{ position: 'relative', zIndex: 1 }}>
-        <Card sx={{ backgroundColor: 'rgba(255, 255, 255, 0.95)' }}>
+        <Card sx={{ borderRadius: 3 }}>
           <CardContent sx={{ p: 4 }}>
             <Typography
-              variant="h4"
+              variant="h5"
               component="h1"
               align="center"
               fontWeight="bold"
               mb={4}
             >
-              ເຂົ້າສູ່ລະບົບ
+              {t('login_to_your_account')}
             </Typography>
 
-            <Box component="form" sx={{ mt: 2 }}>
-              <TextField
-                fullWidth
-                id="phone"
-                label="Phone number"
-                placeholder="Phone number"
-                variant="outlined"
-                margin="normal"
-                sx={{ mb: 2 }}
-              />
-
-              <TextField
-                fullWidth
-                id="password"
-                label="Password"
-                type={showPassword ? 'text' : 'password'}
-                placeholder="Password"
-                variant="outlined"
-                margin="normal"
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        aria-label="toggle password visibility"
-                        onClick={handleClickShowPassword}
-                        edge="end"
-                      >
-                        {showPassword ? <VisibilityOff /> : <Visibility />}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
+            <form
+              id="login-form"
+              onSubmit={(e) => {
+                e.preventDefault();
+                form.handleSubmit();
+              }}
+            >
+              {/* Email Field */}
+              <form.Field
+                name="phone"
+                validators={{
+                  onChange: ({ value }) =>
+                    !value || value.length < 6
+                      ? 'Phone number must be at least 6 characters'
+                      : undefined,
                 }}
-                sx={{ mb: 2 }}
-              />
+              >
+                {(field) => (
+                  <TextField
+                    required
+                    id={field.name}
+                    name={field.name}
+                    label={t('phone_number')}
+                    fullWidth
+                    type="tel"
+                    margin="normal"
+                    variant="outlined"
+                    value={field.state.value ?? ''}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    onBlur={field.handleBlur}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Phone size={20} /> &nbsp; 856
+                        </InputAdornment>
+                      ),
+                    }}
+                    helperText={
+                      field.state.meta.isTouched
+                        ? field.state.meta.errors
+                        : undefined
+                    }
+                  />
+                )}
+              </form.Field>
 
-              <FormControlLabel
-                control={<Checkbox id="remember" color="primary" />}
-                label="Keep me logged in"
-                sx={{ mb: 2 }}
-              />
+              {/* Password Field */}
+              <form.Field
+                name="password"
+                validators={{
+                  onChange: ({ value }) =>
+                    !value || value.length < 6
+                      ? 'Password must be at least 6 characters'
+                      : undefined,
+                }}
+              >
+                {(field) => (
+                  <TextField
+                    required
+                    autoComplete="new-password"
+                    id={field.name}
+                    name={field.name}
+                    label={t('password')}
+                    fullWidth
+                    margin="normal"
+                    variant="outlined"
+                    type={showPassword ? 'text' : 'password'}
+                    value={field.state.value ?? ''}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    onBlur={field.handleBlur}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Lock size={20} />
+                        </InputAdornment>
+                      ),
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            onClick={handleTogglePasswordVisibility}
+                            edge="end"
+                            sx={{
+                              color: showPassword ? 'primary.main' : 'grey.500',
+                            }}
+                          >
+                            {showPassword ? <Visibility /> : <VisibilityOff />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                    helperText={
+                      field.state.meta.isTouched
+                        ? field.state.meta.errors
+                        : undefined
+                    }
+                  />
+                )}
+              </form.Field>
 
               <Button
                 type="submit"
-                fullWidth
                 variant="contained"
                 color="primary"
-                size="large"
-                sx={{ mb: 2, height: 48 }}
+                fullWidth
+                sx={{
+                  py: 1.5,
+                  borderRadius: 2,
+                  textTransform: 'none',
+                  fontSize: '1rem',
+                  mt: 2,
+                }}
               >
-                Log in
+                {t('login')}
               </Button>
+            </form>
 
-              <Box sx={{ textAlign: 'center', mb: 2 }}>
-                <Link
-                  to={'/forgot-password'}
-                  style={{
-                    color: theme.palette.primary.main,
-                    textDecoration: 'none',
-                  }}
-                >
-                  Forgot password
-                </Link>
-              </Box>
+            <Box sx={{ textAlign: 'center', mb: 2, mt: 1 }}>
+              <Link
+                to={'/forgot-password'}
+                style={{
+                  color: theme.palette.primary.main,
+                  textDecoration: 'none',
+                }}
+              >
+                {t('forgot_password')}
+              </Link>
             </Box>
 
             <Divider sx={{ my: 4 }} />
 
             <Box sx={{ textAlign: 'center' }}>
               <Typography variant="body1" color="textSecondary" mb={1}>
-                Don&apos;t have an account?
+                {t('do_not_have_account')}
               </Typography>
               <Link
                 to={'/signup'}
@@ -147,7 +217,7 @@ function RouteComponent() {
                   fontSize: '1.1rem',
                 }}
               >
-                Sign up
+                {t('sign_up')}
               </Link>
             </Box>
           </CardContent>

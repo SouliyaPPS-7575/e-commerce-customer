@@ -1,14 +1,20 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Pagination from '~/containers/home/Pagination';
-import AboutSection from '~/containers/home/sections/AboutSection';
 import BlogSection from '~/containers/home/sections/BlogSection';
 import FooterSection from '~/containers/home/sections/FooterSection';
 import HeroSection from '~/containers/home/sections/HeroSection';
 import ProductsSection from '~/containers/home/sections/ProductsSection';
+import { bannersQueryOption } from '~/hooks/banner/useBanners';
+import { productsQueryOption } from '~/hooks/shop/useProducts';
 import Navbar from '~/layout/navbar';
 
 export const Route = createFileRoute('/')({
+  loader: async ({ context }) => {
+    const products = context.queryClient.ensureQueryData(productsQueryOption());
+    const banners = context.queryClient.ensureQueryData(bannersQueryOption());
+    return { products, banners };
+  },
   component: Home,
 });
 
@@ -69,7 +75,6 @@ function Home() {
   const sections = useMemo(
     () => [
       <HeroSection key="hero" goToPage={goToPage} />,
-      <AboutSection key="about" />,
       <ProductsSection key="products" />,
       <BlogSection key="blog" />,
       <FooterSection key="footer" />,

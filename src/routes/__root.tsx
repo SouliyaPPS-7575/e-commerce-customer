@@ -16,7 +16,7 @@ import { Toaster } from 'sonner';
 import { DefaultCatchBoundary } from '~/components/DefaultCatchBoundary';
 import { NotFound } from '~/components/NotFound';
 import PWAInstall from '~/components/PWAInstall';
-import Navbar from '~/layout/navbar';
+import { AnimatedNavbar } from '~/layout/AnimatedNavbar';
 import { queryClient } from '~/services/queryClient';
 import appCss from '~/styles/app.css?url';
 import MuiProvider from '~/styles/ThemeProvider';
@@ -79,17 +79,19 @@ function RootComponent() {
   const location = useRouterState({ select: (state) => state.location });
   const currentPath = location.pathname;
 
+  // Check if we should show the navbar on this route
+  const isPublicRoute = ['/', '/login', '/signup', '/forgot-password'].includes(
+    currentPath,
+  );
+
   return (
     <RootDocument>
-      {currentPath !== '/' &&
-      currentPath !== '/login' &&
-      currentPath !== '/signup' &&
-      currentPath !== '/forgot-password' ? (
+      {!isPublicRoute ? (
         <>
-          <Navbar />
+          <AnimatedNavbar />
           <Box
             sx={{
-              paddingTop: '64px',
+              paddingTop: '64px', // Height of navbar
             }}
           >
             <Outlet />

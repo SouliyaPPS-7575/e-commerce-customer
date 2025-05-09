@@ -1,12 +1,15 @@
 import { KeyboardArrowDown } from '@mui/icons-material';
 import { Box, Container, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
+import { useBanners } from '~/hooks/banner/useBanners';
 
 export default function HeroSection({
   goToPage,
 }: {
   goToPage: (page: number) => void;
 }) {
+  const { bannersData } = useBanners();
+
   return (
     <Box
       component={motion.div}
@@ -21,8 +24,7 @@ export default function HeroSection({
         justifyContent: 'center',
         alignItems: 'center',
         position: 'relative',
-        backgroundImage:
-          "url('https://i.ibb.co/C3VnhQRk/bcdd2a43df06c7fe6772a7c4136279e79b02c945.png')",
+        backgroundImage: `url(${bannersData[0]?.img_url})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         '&::before': {

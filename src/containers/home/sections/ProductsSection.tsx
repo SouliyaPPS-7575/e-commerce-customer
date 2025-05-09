@@ -1,3 +1,4 @@
+import { ArrowForward } from '@mui/icons-material';
 import {
   Box,
   Button,
@@ -12,73 +13,35 @@ import {
 } from '@mui/material';
 import { Link } from '@tanstack/react-router';
 import { motion } from 'framer-motion';
-
-// Mock product data
-const products = [
-  {
-    id: 1,
-    name: 'Product name',
-    price: '$299',
-    image:
-      'https://i.ibb.co/FqmBwx9t/2ed9560e5c7a28abcb18e258aebca21b36b5cde5.png',
-  },
-  {
-    id: 2,
-    name: 'Product name',
-    price: '$299',
-    image:
-      'https://i.ibb.co/27JnPL5t/67844ba1469f8cc84cce815ace14e4804fb94b7c.png',
-  },
-  {
-    id: 3,
-    name: 'Product name',
-    price: '$299',
-    image:
-      'https://i.ibb.co/DP9MrBH9/c5b8b40839de702f61d56f59461d7446a9d0f381.png',
-  },
-  {
-    id: 4,
-    name: 'Product name',
-    price: '$299',
-    image:
-      'https://i.ibb.co/BKZfkBx5/e13a2af44b3fd92e9a7c350eb2a8634f34d25dab.png',
-  },
-  {
-    id: 5,
-    name: 'Product name',
-    price: '$299',
-    image:
-      'https://i.ibb.co/LhRtPgsq/bca5476fe24e81e0928194f5321cdf1d456b857f.png',
-  },
-  {
-    id: 6,
-    name: 'Product name',
-    price: '$299',
-    image:
-      'https://i.ibb.co/yc2DsWpN/504d33301cb8c8d22ee9613ccba278753be876bc.png',
-  },
-  {
-    id: 7,
-    name: 'Product name',
-    price: '$299',
-    image:
-      'https://i.ibb.co/C3VnhQRk/bcdd2a43df06c7fe6772a7c4136279e79b02c945.png',
-  },
-  {
-    id: 8,
-    name: 'Product name',
-    price: '$299',
-    image:
-      'https://i.ibb.co/d4RbgVSd/a78d3af5ac3de6c540f3bf9f40069915b3bb174c.png',
-  },
-];
+import { useProducts } from '~/hooks/shop/useProducts';
+import { useRanking } from '~/hooks/shop/useRanking';
+import { formatCurrency } from '~/utils/format';
 
 export default function ProductsSection() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const { productsData } = useProducts();
+
+  const { productsRankingData } = useRanking();
+
   const visibleProducts = isMobile
-    ? products.slice(0, 4)
-    : products.slice(0, 8);
+    ? productsRankingData.slice(0, 4)
+    : productsRankingData.slice(0, 8);
+
+  // create function filter products by ranking refer from ranking.rank
+  const filteredProductsRanking = visibleProducts
+    .filter((ranking) => ranking?.rank <= 4)
+    .sort((a, b) => a?.rank - b?.rank) // Sort by rank ascending
+    .map((ranking) => {
+      const product = productsData.find(
+        (product) => product?.id === ranking?.product_id,
+      );
+      return {
+        ...product,
+        rank: ranking?.rank,
+      };
+    });
 
   return (
     <Box
@@ -88,6 +51,7 @@ export default function ProductsSection() {
         display: 'flex',
         alignItems: 'center',
         backgroundColor: '#F5F0E6',
+        border: '1px solid #E0DCD5',
         py: 8,
       }}
     >
@@ -97,17 +61,31 @@ export default function ProductsSection() {
           component="h2"
           align="center"
           sx={{
-            mb: 2,
-            mt: isMobile ? 2 : 3,
+            mb: 2.5,
+            fontWeight: 600,
+            mt: isMobile ? 1 : 2,
             position: 'relative',
-            fontSize: { xs: '1.2rem', sm: '1.2rem', md: '1.5rem' },
+            fontFamily: "'Playfair Display', Georgia, serif",
+            letterSpacing: '0.5px',
+            textTransform: 'uppercase',
+            fontSize: { xs: '1.1rem', sm: '1.2rem', md: '1.4rem' },
           }}
         >
           Shop our best products
+          <Box
+            sx={{
+              width: 60,
+              height: 4,
+              backgroundColor: theme.palette.primary.main,
+              borderRadius: 2,
+              mx: 'auto',
+              mt: 1,
+            }}
+          />
         </Typography>
 
         <Grid container spacing={2}>
-          {visibleProducts.map((product) => (
+          {filteredProductsRanking.map((product) => (
             <Grid
               key={product.id}
               size={{
@@ -118,48 +96,84 @@ export default function ProductsSection() {
               }}
             >
               <motion.div
-                whileHover={{
-                  y: -5,
-                  boxShadow: '0 12px 24px rgba(0, 0, 0, 0.1)',
-                }}
+                whileHover={{ y: -5, scale: 1.03 }}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3 }}
-                style={{ height: '100%', display: 'flex' }}
+                style={{ height: '100%' }}
               >
-                <Card
-                  sx={{
-                    height: '100%',
-                    width: '100%',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    flex: 1,
-                    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                <Link
+                  to="/shop/view/$productID/$categoryID"
+                  params={{
+                    productID: product.id ?? '',
+                    categoryID: product.category_id ?? '',
                   }}
                 >
-                  <CardMedia
-                    component="img"
-                    image={product.image}
-                    alt={product.name}
+                  <Card
                     sx={{
-                      height: isMobile ? '150px' : '210px',
-                      objectFit: 'cover',
+                      height: '100%',
+                      borderRadius: 0,
+                      overflow: 'hidden',
+                      boxShadow: 0,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      backgroundColor: 'transparent',
+                      transition: 'all 0.3s ease',
+                      p: 0,
                     }}
-                  />
-                  <CardContent sx={{ flexGrow: 1, p: 2, mb: -1.5 }}>
-                    <Typography
-                      variant="subtitle1"
-                      component="h3"
-                      gutterBottom
-                      noWrap
+                  >
+                    <CardMedia
+                      component="img"
+                      image={
+                        product.image_url?.[0] === null ? '' : product.image_url?.[0]
+                      }
+                      alt={product.name}
+                      sx={{
+                        aspectRatio: '4 / 5',
+                        width: '100%',
+                        objectFit: 'cover',
+                        boxShadow: 3,
+                        transition: 'transform 0.4s ease',
+                        '&:hover': { transform: 'scale(1.05)' },
+                      }}
+                    />
+                    <CardContent
+                      sx={{
+                        p: 1,
+                        textAlign: 'left',
+                        backgroundColor: 'transparent',
+                      }}
                     >
-                      {product.name}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {product.price}
-                    </Typography>
-                  </CardContent>
-                </Card>
+                      <Typography
+                        variant="subtitle1"
+                        component="h3"
+                        gutterBottom
+                        noWrap
+                        sx={{
+                          mt: -0.1,
+                          fontSize: {
+                            xs: '1.2rem',
+                            sm: '1.3rem',
+                            md: '1.3rem',
+                          },
+                          color: '#333333',
+                        }}
+                      >
+                        {product.name}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          mt: -1,
+                          fontSize: { xs: '1rem', sm: '1.1rem', md: '1.1rem' },
+                          color: '#7A6A55',
+                        }}
+                      >
+                        {formatCurrency(product.price || 0)}
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Link>
               </motion.div>
             </Grid>
           ))}
@@ -169,13 +183,23 @@ export default function ProductsSection() {
           <Link to={'/shop'}>
             <Button
               variant="contained"
-              color="primary"
-              size="large"
+              size="medium"
+              endIcon={<ArrowForward />}
               sx={{
-                px: 2,
+                background: 'linear-gradient(135deg, #D4AF37, #B8860B)',
+                color: '#fff',
+                px: 3,
+                borderRadius: 8,
+                textTransform: 'uppercase',
+                fontWeight: 500,
+                letterSpacing: '1px',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+                '&:hover': {
+                  background: 'linear-gradient(135deg, #B8860B, #D4AF37)',
+                },
               }}
             >
-              View all products
+              View All Products
             </Button>
           </Link>
         </Box>

@@ -1,7 +1,9 @@
 import {
   AccountCircle,
   Close as CloseIcon,
+  ExitToApp as LogoutIcon,
   MenuRounded,
+  Person as ProfileIcon,
   SearchRounded,
   ShoppingCartOutlined,
 } from '@mui/icons-material';
@@ -18,6 +20,7 @@ import {
   IconButton,
   InputBase,
   List,
+  Menu,
   MenuItem,
   Toolbar,
   Typography,
@@ -28,7 +31,9 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate, useRouterState } from '@tanstack/react-router';
 import { useState } from 'react';
-import { NavItem, navItems } from '~/layout/navItems';
+import LanguageSelection from '~/components/LanguageSelection';
+import { type NavItem, navItems } from '~/layout/navItems';
+import { getToken } from '~/server/auth';
 import theme from '~/styles/theme';
 
 // Styled search component
@@ -95,17 +100,20 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
   const location = useRouterState({ select: (state) => state.location });
   const currentPath = location.pathname;
   // Do not render on login
-  if (
+  const shouldRender = !(
     currentPath === '/login' ||
     currentPath === '/signup' ||
     currentPath === '/forgot-password'
-  )
-    return null;
+  );
 
   // ✅ Only render null AFTER hooks
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'), { noSsr: true });
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'), {
+    noSsr: true,
+  });
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
 
   const navigate = useNavigate();
 
@@ -120,7 +128,30 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
     setSearchOpen(!searchOpen);
   };
 
+  const handleAccountClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    try {
+      // Store the current target before async operation
+      const currentTarget = e.currentTarget;
+
+      // Check authentication
+      const { token } = await getToken();
+
+      if (!token || token === '') {
+        navigate({ to: '/login' });
+      } else {
+        // Important: use the stored reference, not e.currentTarget which might be null after async
+        setAnchorEl(currentTarget);
+      }
+    } catch (error) {
+      navigate({ to: '/login' });
+    }
+  };
+
   const isTransparent = currentPage === 0;
+
+  if (!shouldRender) {
+    return null;
+  }
 
   return (
     <>
@@ -129,7 +160,8 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
         color="transparent"
         sx={{
           boxShadow: 'none',
-          bgcolor: isTransparent ? 'transparent' : 'rgba(255, 255, 255, 0.95)',
+          bgcolor: isTransparent ? 'transparent' : 'rgba(255, 255, 255, 0.455)',
+          backdropFilter: isTransparent ? 'none' : 'blur(10px)',
           transition: 'background-color 0.3s ease',
           borderBottom: isTransparent
             ? 'none'
@@ -155,12 +187,23 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
                 navigate({ to: '/' });
               }}
             >
-              Laos Fabric
+              Laos
             </Typography>
 
             {/* Desktop Navigation */}
             {!isMobile && (
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexGrow: 1,
+                  flexDirection: 'row',
+                  flexWrap: 'wrap',
+                  gap: 2,
+                  mr: -10,
+                }}
+              >
                 {navItems.map((item: NavItem) => (
                   <Typography
                     key={item.name}
@@ -177,12 +220,24 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
                       cursor: 'pointer',
                       mx: 1,
                       color: isTransparent ? '#F5F0E6' : 'back',
-                      fontWeight: currentPage === item.page ? 700 : 400,
+                      fontWeight:
+                        currentPage === item.page ||
+                        (currentPath !== '/' &&
+                          currentPath.split('/')[1] ===
+                            item.href?.split('/')[1])
+                          ? 700
+                          : 400,
                       position: 'relative',
                       '&::after': {
                         content: '""',
                         position: 'absolute',
-                        width: currentPage === item.page ? '100%' : '0%',
+                        width:
+                          currentPage === item.page ||
+                          (currentPath !== '/' &&
+                            currentPath.split('/')[1] ===
+                              item.href?.split('/')[1])
+                            ? '100%'
+                            : '0%',
                         height: '2px',
                         bottom: 0,
                         left: 0,
@@ -209,12 +264,83 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
                 />
               </IconButton>
 
-              {/* User account */}
-              <IconButton color="inherit">
-                <AccountCircle
-                  sx={{ color: isTransparent ? '#F5F0E6' : 'back' }}
-                />
-              </IconButton>
+              {/* User account dropdown */}
+              <Box sx={{ position: 'relative' }}>
+                <IconButton
+                  color="inherit"
+                  onClick={handleAccountClick}
+                  aria-controls={open ? 'account-menu' : undefined}
+                  aria-haspopup="true"
+                  aria-expanded={open ? 'true' : undefined}
+                >
+                  <AccountCircle
+                    sx={{ color: isTransparent ? '#F5F0E6' : 'back' }}
+                  />
+                </IconButton>
+                <Menu
+                  id="account-menu"
+                  anchorEl={anchorEl}
+                  open={open}
+                  onClose={() => setAnchorEl(null)}
+                  MenuListProps={{
+                    'aria-labelledby': 'account-button',
+                  }}
+                  PaperProps={{
+                    elevation: 0,
+                    sx: {
+                      overflow: 'visible',
+                      filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.1))',
+                      mt: 1.5,
+                      borderRadius: 2,
+                      minWidth: 180,
+                      '& .MuiAvatar-root': {
+                        width: 32,
+                        height: 32,
+                        ml: -0.5,
+                        mr: 1,
+                      },
+                      '& .MuiMenuItem-root': {
+                        py: 1.5,
+                      },
+                    },
+                  }}
+                  transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                  anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                >
+                  <MenuItem
+                    onClick={() => {
+                      navigate({ to: '/profile' });
+                      setAnchorEl(null);
+                    }}
+                    sx={{
+                      color: '#4A5568',
+                      '&:hover': {
+                        backgroundColor: '#F7FAFC',
+                      },
+                    }}
+                  >
+                    <ProfileIcon sx={{ mr: 1, color: '#C98B6B' }} />
+                    <Typography>View Profile</Typography>
+                  </MenuItem>
+                  <Divider />
+                  <MenuItem
+                    onClick={() => {
+                      navigate({ to: '/logout' });
+                      setAnchorEl(null);
+                    }}
+                    sx={{
+                      color: '#4A5568',
+                      '&:hover': {
+                        backgroundColor: '#FEF2F2',
+                      },
+                    }}
+                  >
+                    <LogoutIcon sx={{ mr: 1, color: '#E53E3E' }} />
+                    <Typography>Logout</Typography>
+                  </MenuItem>
+                </Menu>
+              </Box>
+
               {/* Shopping cart */}
               <IconButton color="inherit">
                 <Badge
@@ -232,6 +358,10 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
                   />
                 </Badge>
               </IconButton>
+
+              {/* Language change */}
+              <LanguageSelection />
+
               {/* Mobile menu button */}
               <IconButton
                 color="inherit"
@@ -271,7 +401,11 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
                 return (
                   <MenuItem
                     key={item.name}
-                    selected={isSelected}
+                    selected={
+                      isSelected ||
+                      (currentPath !== '/' &&
+                        currentPath.split('/')[1] === item.href?.split('/')[1])
+                    }
                     onClick={() => {
                       if (currentPath === '/') {
                         goToPage?.(item.page);
@@ -291,6 +425,8 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
           </Box>
         </Drawer>
       </AppBar>
+
+      {/* Search dialog */}
       <Dialog
         open={searchOpen}
         onClose={() => setSearchOpen(false)}

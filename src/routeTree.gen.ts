@@ -12,6 +12,8 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as SignupImport } from './routes/signup'
+import { Route as ProfileImport } from './routes/profile'
+import { Route as LogoutImport } from './routes/logout'
 import { Route as LoginImport } from './routes/login'
 import { Route as ForgotPasswordImport } from './routes/forgot-password'
 import { Route as IndexImport } from './routes/index'
@@ -19,12 +21,25 @@ import { Route as ShopIndexImport } from './routes/shop/index'
 import { Route as ContactIndexImport } from './routes/contact/index'
 import { Route as BlogIndexImport } from './routes/blog/index'
 import { Route as AboutIndexImport } from './routes/about/index'
+import { Route as ShopViewProductIDCategoryIDImport } from './routes/shop/view.$productID.$categoryID'
 
 // Create/Update Routes
 
 const SignupRoute = SignupImport.update({
   id: '/signup',
   path: '/signup',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ProfileRoute = ProfileImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const LogoutRoute = LogoutImport.update({
+  id: '/logout',
+  path: '/logout',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -70,6 +85,13 @@ const AboutIndexRoute = AboutIndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const ShopViewProductIDCategoryIDRoute =
+  ShopViewProductIDCategoryIDImport.update({
+    id: '/shop/view/$productID/$categoryID',
+    path: '/shop/view/$productID/$categoryID',
+    getParentRoute: () => rootRoute,
+  } as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -93,6 +115,20 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginImport
+      parentRoute: typeof rootRoute
+    }
+    '/logout': {
+      id: '/logout'
+      path: '/logout'
+      fullPath: '/logout'
+      preLoaderRoute: typeof LogoutImport
+      parentRoute: typeof rootRoute
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileImport
       parentRoute: typeof rootRoute
     }
     '/signup': {
@@ -130,6 +166,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ShopIndexImport
       parentRoute: typeof rootRoute
     }
+    '/shop/view/$productID/$categoryID': {
+      id: '/shop/view/$productID/$categoryID'
+      path: '/shop/view/$productID/$categoryID'
+      fullPath: '/shop/view/$productID/$categoryID'
+      preLoaderRoute: typeof ShopViewProductIDCategoryIDImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -139,22 +182,28 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/logout': typeof LogoutRoute
+  '/profile': typeof ProfileRoute
   '/signup': typeof SignupRoute
   '/about': typeof AboutIndexRoute
   '/blog': typeof BlogIndexRoute
   '/contact': typeof ContactIndexRoute
   '/shop': typeof ShopIndexRoute
+  '/shop/view/$productID/$categoryID': typeof ShopViewProductIDCategoryIDRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/logout': typeof LogoutRoute
+  '/profile': typeof ProfileRoute
   '/signup': typeof SignupRoute
   '/about': typeof AboutIndexRoute
   '/blog': typeof BlogIndexRoute
   '/contact': typeof ContactIndexRoute
   '/shop': typeof ShopIndexRoute
+  '/shop/view/$productID/$categoryID': typeof ShopViewProductIDCategoryIDRoute
 }
 
 export interface FileRoutesById {
@@ -162,11 +211,14 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/logout': typeof LogoutRoute
+  '/profile': typeof ProfileRoute
   '/signup': typeof SignupRoute
   '/about/': typeof AboutIndexRoute
   '/blog/': typeof BlogIndexRoute
   '/contact/': typeof ContactIndexRoute
   '/shop/': typeof ShopIndexRoute
+  '/shop/view/$productID/$categoryID': typeof ShopViewProductIDCategoryIDRoute
 }
 
 export interface FileRouteTypes {
@@ -175,31 +227,40 @@ export interface FileRouteTypes {
     | '/'
     | '/forgot-password'
     | '/login'
+    | '/logout'
+    | '/profile'
     | '/signup'
     | '/about'
     | '/blog'
     | '/contact'
     | '/shop'
+    | '/shop/view/$productID/$categoryID'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/forgot-password'
     | '/login'
+    | '/logout'
+    | '/profile'
     | '/signup'
     | '/about'
     | '/blog'
     | '/contact'
     | '/shop'
+    | '/shop/view/$productID/$categoryID'
   id:
     | '__root__'
     | '/'
     | '/forgot-password'
     | '/login'
+    | '/logout'
+    | '/profile'
     | '/signup'
     | '/about/'
     | '/blog/'
     | '/contact/'
     | '/shop/'
+    | '/shop/view/$productID/$categoryID'
   fileRoutesById: FileRoutesById
 }
 
@@ -207,22 +268,28 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   LoginRoute: typeof LoginRoute
+  LogoutRoute: typeof LogoutRoute
+  ProfileRoute: typeof ProfileRoute
   SignupRoute: typeof SignupRoute
   AboutIndexRoute: typeof AboutIndexRoute
   BlogIndexRoute: typeof BlogIndexRoute
   ContactIndexRoute: typeof ContactIndexRoute
   ShopIndexRoute: typeof ShopIndexRoute
+  ShopViewProductIDCategoryIDRoute: typeof ShopViewProductIDCategoryIDRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
   LoginRoute: LoginRoute,
+  LogoutRoute: LogoutRoute,
+  ProfileRoute: ProfileRoute,
   SignupRoute: SignupRoute,
   AboutIndexRoute: AboutIndexRoute,
   BlogIndexRoute: BlogIndexRoute,
   ContactIndexRoute: ContactIndexRoute,
   ShopIndexRoute: ShopIndexRoute,
+  ShopViewProductIDCategoryIDRoute: ShopViewProductIDCategoryIDRoute,
 }
 
 export const routeTree = rootRoute
@@ -238,11 +305,14 @@ export const routeTree = rootRoute
         "/",
         "/forgot-password",
         "/login",
+        "/logout",
+        "/profile",
         "/signup",
         "/about/",
         "/blog/",
         "/contact/",
-        "/shop/"
+        "/shop/",
+        "/shop/view/$productID/$categoryID"
       ]
     },
     "/": {
@@ -253,6 +323,12 @@ export const routeTree = rootRoute
     },
     "/login": {
       "filePath": "login.tsx"
+    },
+    "/logout": {
+      "filePath": "logout.tsx"
+    },
+    "/profile": {
+      "filePath": "profile.tsx"
     },
     "/signup": {
       "filePath": "signup.tsx"
@@ -268,6 +344,9 @@ export const routeTree = rootRoute
     },
     "/shop/": {
       "filePath": "shop/index.tsx"
+    },
+    "/shop/view/$productID/$categoryID": {
+      "filePath": "shop/view.$productID.$categoryID.tsx"
     }
   }
 }

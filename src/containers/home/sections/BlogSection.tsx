@@ -1,3 +1,4 @@
+import { ArrowForward } from '@mui/icons-material';
 import {
   Box,
   Button,
@@ -100,7 +101,7 @@ export default function BlogSection() {
 
         {isMobile ? (
           // Mobile: Horizontal scroll list
-          <Box
+          (<Box
             sx={{
               display: 'flex',
               overflowX: 'auto',
@@ -168,10 +169,10 @@ export default function BlogSection() {
                 </Card>
               </motion.div>
             ))}
-          </Box>
+          </Box>)
         ) : (
           // Desktop: Horizontal scroll list
-          <Box
+          (<Box
             sx={{
               display: 'flex',
               overflowX: 'auto',
@@ -238,7 +239,7 @@ export default function BlogSection() {
                 </Card>
               </motion.div>
             ))}
-          </Box>
+          </Box>)
         )}
 
         <Box
@@ -251,6 +252,7 @@ export default function BlogSection() {
           <Link to="/blog" style={{ textDecoration: 'none' }}>
             <Button
               variant="contained"
+              endIcon={<ArrowForward />}
               sx={{
                 backgroundColor: '#c29b7d',
                 borderRadius: '30px',
