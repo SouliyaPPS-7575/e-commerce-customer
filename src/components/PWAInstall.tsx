@@ -33,7 +33,7 @@ const useInstallPrompt = () => {
           installAlert.style.bottom = '20px';
           installAlert.style.left = '50%';
           installAlert.style.transform = 'translateX(-50%)';
-          installAlert.style.backgroundColor = '#C98B6B';
+          installAlert.style.backgroundColor = '#F5F5F5';
           installAlert.style.boxShadow = '0 4px 10px rgba(0, 0, 0, 0.15)';
           installAlert.style.borderRadius = '12px';
           installAlert.style.padding = '15px 20px';
