@@ -1,15 +1,35 @@
 import { KeyboardArrowDown } from '@mui/icons-material';
 import { Box, Container, Typography } from '@mui/material';
+import { useNavigate } from '@tanstack/react-router';
 import { motion } from 'framer-motion';
 import { useBanners } from '~/hooks/banner/useBanners';
 
-export default function HeroSection({
-  goToPage,
-}: {
-  goToPage: (page: number) => void;
-}) {
-  const { bannersData } = useBanners();
+interface HeroSectionProps {
+  containerRef: React.RefObject<HTMLDivElement | null> ;
+}
 
+export default function HeroSection({ containerRef }: HeroSectionProps) {
+  const { bannersData } = useBanners();
+  const navigate = useNavigate();
+
+  // Handle page change
+  const goToPage = (pageNumber: number) => {
+    if (containerRef.current?.children[pageNumber]) {
+      navigate({
+        search: (prev: any) => ({ ...prev, currentPageNumber: pageNumber }),
+      } as any);
+
+      // Delay scroll for mobile rendering quirks
+      setTimeout(() => {
+        requestAnimationFrame(() => {
+          containerRef.current?.children[pageNumber]?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+          });
+        });
+      }, 50);
+    }
+  };
   return (
     <Box
       component={motion.div}

@@ -82,7 +82,7 @@ function Home() {
   // Get sections: render all at once to avoid remounting and improve UI rendering
   const sections = useMemo(
     () => [
-      <HeroSection key="hero" goToPage={goToPage} />,
+      <HeroSection key="hero" containerRef={containerRef} />,
       <ProductsSection key="products" />,
       <BlogSection key="blog" />,
       <FooterSection key="footer" />,
