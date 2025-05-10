@@ -17,19 +17,22 @@ export const Route = createFileRoute('/')({
   },
   component: Home,
 });
-
 function Home() {
   const navigate = useNavigate();
 
   // States
   const containerRef = useRef<HTMLDivElement | null>(null);
 
+  // Get URL params
+  const currentPageNumber = Route.useSearch();
+  const params = new URLSearchParams(currentPageNumber);
+  const pageNumber = params.get('currentPageNumber');
+  const page = Number(pageNumber);
+
   // Get current page
-  const [currentPage, setCurrentPage] = useState(0);
+  const [currentPage, setCurrentPage] = useState(page);
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const page = Number(params.get('currentPageNumber'));
     if (!isNaN(page)) {
       setCurrentPage(page);
       // Scroll to the correct section on initial load
@@ -43,21 +46,18 @@ function Home() {
 
   // Handle page change
   const goToPage = (pageNumber: number) => {
-    if (containerRef.current?.children[pageNumber]) {
-      navigate({
-        search: (prev: any) => ({ ...prev, currentPageNumber: pageNumber }),
-      } as any);
+    navigate({
+      search: (prev: any) => ({ ...prev, currentPageNumber: pageNumber }),
+    } as any);
 
-      // Delay scroll for mobile rendering quirks
-      setTimeout(() => {
-        requestAnimationFrame(() => {
-          containerRef.current?.children[pageNumber]?.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start',
-          });
-        });
-      }, 50);
-    }
+    // Allow navigation state to update before scrolling
+    setTimeout(() => {
+      if (containerRef.current?.children[pageNumber]) {
+        const element = containerRef.current.children[pageNumber] as HTMLElement;
+        element.getBoundingClientRect(); // force reflow
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 50);
   };
 
   //  Handle scroll
@@ -118,6 +118,8 @@ function Home() {
             key={index}
             style={{
               height: '100vh',
+              minHeight: '100vh',
+              width: '100vw',
               scrollSnapAlign: 'start',
               opacity: currentPage === index ? 1 : 0,
               transform:

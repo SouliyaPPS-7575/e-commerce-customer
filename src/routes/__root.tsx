@@ -89,11 +89,7 @@ function RootComponent() {
       {!isPublicRoute ? (
         <>
           <AnimatedNavbar />
-          <Box
-            sx={{
-              paddingTop: '64px', // Height of navbar
-            }}
-          >
+          <Box>
             <Outlet />
           </Box>
         </>

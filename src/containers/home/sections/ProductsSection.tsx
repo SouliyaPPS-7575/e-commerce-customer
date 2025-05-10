@@ -25,13 +25,9 @@ export default function ProductsSection() {
 
   const { productsRankingData } = useRanking();
 
-  const visibleProducts = isMobile
-    ? productsRankingData.slice(0, 4)
-    : productsRankingData.slice(0, 8);
-
   // create function filter products by ranking refer from ranking.rank
-  const filteredProductsRanking = visibleProducts
-    .filter((ranking) => ranking?.rank <= 4)
+  const filteredProductsRanking = productsRankingData
+    .filter((ranking) => ranking?.rank <= 10)
     .sort((a, b) => a?.rank - b?.rank) // Sort by rank ascending
     .map((ranking) => {
       const product = productsData.find(
@@ -46,13 +42,13 @@ export default function ProductsSection() {
   return (
     <Box
       sx={{
-        minHeight: '100vh',
+        mt: isMobile ? -5 : 5,
+        minHeight: '110vh',
         width: '100%',
         display: 'flex',
         alignItems: 'center',
         backgroundColor: '#F5F0E6',
         border: '1px solid #E0DCD5',
-        py: 8,
       }}
     >
       <Container maxWidth="lg">
@@ -85,98 +81,121 @@ export default function ProductsSection() {
         </Typography>
 
         <Grid container spacing={2}>
-          {filteredProductsRanking.map((product) => (
-            <Grid
-              key={product.id}
-              size={{
-                xs: 6,
-                sm: 6,
-                md: 4,
-                lg: 3,
-              }}
-            >
-              <motion.div
-                whileHover={{ y: -5, scale: 1.03 }}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
-                style={{ height: '100%' }}
+          <Box
+            sx={{
+              display: 'flex',
+              gap: 2,
+              overflowX: 'auto',
+              scrollSnapType: 'x mandatory',
+              scrollBehavior: 'smooth',
+              pb: 1,
+              px: 1,
+              mt: 4,
+              '&::-webkit-scrollbar': { display: 'none' }, // Hide scrollbar
+            }}
+          >
+            {filteredProductsRanking.map((product) => (
+              <Box
+                key={product.id}
+                sx={{
+                  flex: '0 0 auto',
+                  width: {
+                    xs: '80%', // 1–2 visible items on mobile
+                    sm: '45%', // ~2 items on small tablets
+                    md: '30%', // ~3 items on tablets
+                    lg: '23%', // 4–5 items on desktop
+                  },
+                  scrollSnapAlign: 'start',
+                }}
               >
-                <Link
-                  to="/shop/view/$productID/$categoryID"
-                  params={{
-                    productID: product.id ?? '',
-                    categoryID: product.category_id ?? '',
-                  }}
+                <motion.div
+                  whileHover={{ y: -5, scale: 1.03 }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3 }}
+                  style={{ height: '100%' }}
                 >
-                  <Card
-                    sx={{
-                      height: '100%',
-                      borderRadius: 0,
-                      overflow: 'hidden',
-                      boxShadow: 0,
-                      display: 'flex',
-                      flexDirection: 'column',
-                      backgroundColor: 'transparent',
-                      transition: 'all 0.3s ease',
-                      p: 0,
+                  <Link
+                    to="/shop/view/$productID/$categoryID"
+                    params={{
+                      productID: product.id ?? '',
+                      categoryID: product.category_id ?? '',
                     }}
                   >
-                    <CardMedia
-                      component="img"
-                      image={
-                        product.image_url?.[0] === null ? '' : product.image_url?.[0]
-                      }
-                      alt={product.name}
+                    <Card
                       sx={{
-                        aspectRatio: '4 / 5',
-                        width: '100%',
-                        objectFit: 'cover',
-                        boxShadow: 3,
-                        transition: 'transform 0.4s ease',
-                        '&:hover': { transform: 'scale(1.05)' },
-                      }}
-                    />
-                    <CardContent
-                      sx={{
-                        p: 1,
-                        textAlign: 'left',
+                        height: '100%',
+                        borderRadius: 0,
+                        overflow: 'hidden',
+                        boxShadow: 0,
+                        display: 'flex',
+                        flexDirection: 'column',
                         backgroundColor: 'transparent',
+                        p: 0,
                       }}
                     >
-                      <Typography
-                        variant="subtitle1"
-                        component="h3"
-                        gutterBottom
-                        noWrap
+                      <CardMedia
+                        component="img"
+                        image={
+                          product.image_url?.[0] === null
+                            ? ''
+                            : product.image_url?.[0]
+                        }
+                        alt={product.name}
                         sx={{
-                          mt: -0.1,
-                          fontSize: {
-                            xs: '1.2rem',
-                            sm: '1.3rem',
-                            md: '1.3rem',
-                          },
-                          color: '#333333',
+                          aspectRatio: '3 / 5',
+                          width: '100%',
+                          objectFit: 'cover',
+                          boxShadow: 3,
+                          transition: 'transform 0.4s ease',
+                          '&:hover': { transform: 'scale(1.05)' },
+                        }}
+                      />
+                      <CardContent
+                        sx={{
+                          p: 1,
+                          textAlign: 'left',
+                          backgroundColor: 'transparent',
                         }}
                       >
-                        {product.name}
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          mt: -1,
-                          fontSize: { xs: '1rem', sm: '1.1rem', md: '1.1rem' },
-                          color: '#7A6A55',
-                        }}
-                      >
-                        {formatCurrency(product.price || 0)}
-                      </Typography>
-                    </CardContent>
-                  </Card>
-                </Link>
-              </motion.div>
-            </Grid>
-          ))}
+                        <Typography
+                          variant="subtitle1"
+                          component="h3"
+                          gutterBottom
+                          noWrap
+                          sx={{
+                            mt: -0.1,
+                            fontSize: {
+                              xs: '1.2rem',
+                              sm: '1.3rem',
+                              md: '1.3rem',
+                            },
+                            color: '#333333',
+                          }}
+                        >
+                          {product.name}
+                        </Typography>
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            mt: -1,
+                            fontSize: {
+                              xs: '1rem',
+                              sm: '1.1rem',
+                              md: '1.1rem',
+                            },
+                            color: '#7A6A55',
+                          }}
+                        >
+                          {formatCurrency(product.price || 0)}
+                        </Typography>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                </motion.div>
+              </Box>
+            ))}
+          </Box>
         </Grid>
 
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>

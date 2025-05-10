@@ -69,7 +69,7 @@ function RouteComponent() {
         minHeight: '100vh',
         backgroundColor: theme.palette.background.paper,
         py: 4,
-        mt: -3,
+        mt: isMobile ? 5 : 4,
       }}
     >
       <Container maxWidth="lg">
@@ -85,7 +85,23 @@ function RouteComponent() {
           }}
         >
           {/* Shop All Title */}
-          {isMobile && <div></div>}
+          {isMobile && (
+            <Typography
+              sx={{
+                fontWeight: 600,
+                mt: isMobile ? 1 : 2,
+                position: 'relative',
+                textAlign: 'left',
+                fontFamily: "'Playfair Display', Georgia, serif",
+                letterSpacing: '0.5px',
+                textTransform: 'uppercase',
+                fontSize: { xs: '1rem', sm: '1.2rem', md: '1.4rem' },
+                flexShrink: 1, // Allow text to shrink if needed
+              }}
+            >
+              Shops
+            </Typography>
+          )}
           {!isMobile && (
             <Typography
               variant="h2"

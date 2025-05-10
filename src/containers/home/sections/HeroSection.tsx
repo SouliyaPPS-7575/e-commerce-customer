@@ -37,7 +37,7 @@ export default function HeroSection({ containerRef }: HeroSectionProps) {
       animate={{ opacity: 1 }}
       transition={{ duration: 1 }}
       sx={{
-        height: '100vh',
+        height: '110vh',
         width: '100%',
         display: 'flex',
         flexDirection: 'column',
@@ -129,33 +129,32 @@ export default function HeroSection({ containerRef }: HeroSectionProps) {
             Explore more
           </Typography>
         </Box>
+        <Box
+          sx={{
+            position: 'absolute',
+            bottom: '-250px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            animation: 'bounce 2s infinite',
+            '@keyframes bounce': {
+              '0%, 20%, 50%, 80%, 100%': {
+                transform: 'translateX(-50%) translateY(0)',
+              },
+              '40%': {
+                transform: 'translateX(-50%) translateY(-20px)',
+              },
+              '60%': {
+                transform: 'translateX(-50%) translateY(-10px)',
+              },
+            },
+          }}
+        >
+          <KeyboardArrowDown
+            sx={{ color: 'white', fontSize: '2.5rem', cursor: 'pointer' }}
+            onClick={() => goToPage(1)}
+          />
+        </Box>
       </Container>
-
-      <Box
-        sx={{
-          position: 'absolute',
-          bottom: '30px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          animation: 'bounce 2s infinite',
-          '@keyframes bounce': {
-            '0%, 20%, 50%, 80%, 100%': {
-              transform: 'translateX(-50%) translateY(0)',
-            },
-            '40%': {
-              transform: 'translateX(-50%) translateY(-20px)',
-            },
-            '60%': {
-              transform: 'translateX(-50%) translateY(-10px)',
-            },
-          },
-        }}
-      >
-        <KeyboardArrowDown
-          sx={{ color: 'white', fontSize: '2.5rem', cursor: 'pointer' }}
-          onClick={() => goToPage(1)}
-        />
-      </Box>
     </Box>
   );
 }

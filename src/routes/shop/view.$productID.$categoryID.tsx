@@ -1,7 +1,6 @@
 import { ShoppingBag } from '@mui/icons-material';
 import {
   AccordionDetails,
-  AccordionSummary,
   Box,
   Button,
   CircularProgress,
@@ -9,6 +8,7 @@ import {
   Divider,
   Grid,
   Typography,
+  useMediaQuery,
   useTheme,
 } from '@mui/material';
 import { createFileRoute } from '@tanstack/react-router';
@@ -40,10 +40,18 @@ export const Route = createFileRoute('/shop/view/$productID/$categoryID')({
 });
 
 function ProductDetailComponent() {
-  const { t } = useTranslation();
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const { t } = useTranslation();
   const { product, isLoading } = useViewDetails();
   const { productsByCategoryData } = useProductsByCategory();
+
+  const cleanedDescription = product.description
+    .replace(/\r\n/g, '<div style="height: 7px"></div>')
+    .replace(/<h1>/g, '<h1 style="font-weight: bold;">')
+    .replace(/<\/h1>/g, '</h1>')
+    .replace(/<h2>/g, '<h1 style="font-weight: bold;">');
 
   return (
     <Box
@@ -52,7 +60,7 @@ function ProductDetailComponent() {
         minHeight: '120vh',
         backgroundColor: theme.palette.background.paper,
         py: 4,
-        mt: -10,
+        mt: isMobile ? -3 : 0,
       }}
     >
       <br />
@@ -101,6 +109,8 @@ function ProductDetailComponent() {
                   sx={{
                     mt: -1.5,
                     mb: 1.5,
+                    fontSize: { xs: '1.2rem', sm: '1.5rem', md: '1.6rem' },
+                    color: '#7A6A55',
                   }}
                 >
                   {productsByCategoryData.name}
@@ -109,9 +119,14 @@ function ProductDetailComponent() {
 
               {/* Price */}
               <Typography
-                variant="h5"
+                variant="body2"
                 fontWeight="bold"
-                sx={{ my: 2, mt: -0.5 }}
+                sx={{
+                  my: 2,
+                  mt: -0.5,
+                  fontSize: { xs: '1.5rem', sm: '1.7rem', md: '1.8rem' },
+                  color: '#7A6A55',
+                }}
               >
                 {formatCurrency(product.price || 0)}
               </Typography>
@@ -153,24 +168,38 @@ function ProductDetailComponent() {
 
               {/* Accordion Sections */}
               <Divider sx={{ my: 1 }} />
-              <AccordionSummary
-                aria-controls="description-content"
-                id="description-header"
-              >
-                <Typography variant="h6">{t('description')}</Typography>
-              </AccordionSummary>
               <AccordionDetails>
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  sx={{ mt: -2 }}
-                  dangerouslySetInnerHTML={{ __html: product.description }}
+                <Box
+                  sx={{
+                    mt: -1,
+                    fontSize: '0.95rem',
+                    color: theme.palette.text.secondary,
+                    lineHeight: 1.7,
+                  }}
+                  dangerouslySetInnerHTML={{ __html: cleanedDescription }}
                 />
               </AccordionDetails>
               <Divider />
             </Box>
           </Grid>
         </Grid>
+
+        <Typography
+          variant="h2"
+          component="h2"
+          sx={{
+            fontWeight: 600,
+            mt: 2,
+            position: 'relative',
+            textAlign: 'left',
+            fontFamily: "'Playfair Display', Georgia, serif",
+            letterSpacing: '0.5px',
+            fontSize: { xs: '1.1rem', sm: '1.2rem', md: '1.4rem' },
+            flexShrink: 1, // Allow text to shrink if needed
+          }}
+        >
+          Similar Products
+        </Typography>
       </Container>
     </Box>
   );

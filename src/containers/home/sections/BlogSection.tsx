@@ -63,7 +63,7 @@ export default function BlogSection() {
   return (
     <Box
       sx={{
-        minHeight: '100vh',
+        minHeight: '110vh',
         width: '100%',
         display: 'flex',
         alignItems: 'center',

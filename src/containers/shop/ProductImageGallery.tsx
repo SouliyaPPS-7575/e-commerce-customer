@@ -146,7 +146,6 @@ const ProductImageGallery = ({ product }: { product: ProductItem }) => {
             <Paper
               elevation={0}
               sx={{
-                height: '400px',
                 overflow: 'hidden',
                 borderRadius: 2,
                 position: 'relative',
@@ -308,7 +307,6 @@ const ProductImageGallery = ({ product }: { product: ProductItem }) => {
             <Paper
               elevation={0}
               sx={{
-                height: { sm: '500px', md: '600px' },
                 overflow: 'hidden',
                 borderRadius: 2,
                 position: 'relative',
