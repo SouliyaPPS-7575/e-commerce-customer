@@ -1,5 +1,5 @@
-import ViewAgendaIcon from '@mui/icons-material/ViewAgenda';
-import ViewModuleIcon from '@mui/icons-material/ViewModule';
+import GridViewIcon from '@mui/icons-material/GridView';
+import SplitscreenIcon from '@mui/icons-material/Splitscreen';
 import {
   Box,
   Card,
@@ -17,18 +17,31 @@ import {
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { motion } from 'framer-motion';
 import { SetStateAction, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import {
+  categoriesQueryOption,
+  useCategories,
+} from '~/hooks/shop/useCategories';
 import { productsQueryOption, useProducts } from '~/hooks/shop/useProducts';
 import { formatCurrency } from '~/utils/format';
 
 export const Route = createFileRoute('/shop/')({
   loader: async ({ context }) => {
-    const data = context.queryClient.ensureQueryData(productsQueryOption());
-    return { data };
+    const productsData = context.queryClient.ensureQueryData(
+      productsQueryOption(),
+    );
+
+    const categories = context.queryClient.ensureQueryData(
+      categoriesQueryOption(),
+    );
+
+    return { productsData, categories };
   },
   component: RouteComponent,
 });
 
 function RouteComponent() {
+  const { t } = useTranslation();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -37,30 +50,38 @@ function RouteComponent() {
   const [sortBy, setSortBy] = useState<string>('nameAsc');
   const [gridCols, setGridCols] = useState(2); // default to 2 columns
 
-  const sortedProducts = useMemo(() => {
-    if (!productsData) return [];
-
-    const products = [...productsData];
-
-    switch (sortBy) {
-      case 'nameAsc':
-        return products.sort((a, b) => a.name.localeCompare(b.name));
-      case 'nameDesc':
-        return products.sort((a, b) => b.name.localeCompare(a.name));
-      case 'priceLow':
-        return products.sort((a, b) => (a.price || 0) - (b.price || 0));
-      case 'priceHigh':
-        return products.sort((a, b) => (b.price || 0) - (a.price || 0));
-      default:
-        return products;
-    }
-  }, [productsData, sortBy]);
-
   const handleSortChange = (event: {
     target: { value: SetStateAction<string> };
   }) => {
     setSortBy(event.target.value);
   };
+
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
+  const { categoriesData } = useCategories();
+
+  // Filtered and Sorted Products
+  const filteredProducts = useMemo(() => {
+    if (!productsData) return [];
+
+    const filtered = selectedCategory
+      ? productsData.filter((p) => p.category_id === selectedCategory)
+      : productsData;
+
+    const sorted = [...filtered];
+    switch (sortBy) {
+      case 'nameAsc':
+        return sorted.sort((a, b) => a.name.localeCompare(b.name));
+      case 'nameDesc':
+        return sorted.sort((a, b) => b.name.localeCompare(a.name));
+      case 'priceLow':
+        return sorted.sort((a, b) => (a.price || 0) - (b.price || 0));
+      case 'priceHigh':
+        return sorted.sort((a, b) => (b.price || 0) - (a.price || 0));
+      default:
+        return sorted;
+    }
+  }, [productsData, selectedCategory, sortBy]);
 
   return (
     <Box
@@ -73,6 +94,97 @@ function RouteComponent() {
       }}
     >
       <Container maxWidth="lg">
+        {/* Wrapper for horizontal centering */}
+        <Box
+          sx={{
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            mb: isMobile ? 1.5 : 5.5,
+            mt: isMobile ? -1 : 2,
+          }}
+        >
+          {/* Scrollable Category Filter Tabs */}
+          <Box
+            sx={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              overflowX: 'auto',
+              gap: 1,
+              py: 0.5,
+              px: 1,
+              scrollbarWidth: 'none',
+              '&::-webkit-scrollbar': { display: 'none' },
+            }}
+          >
+            {/* All Category */}
+            <Box
+              component={motion.div}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.97 }}
+              onClick={() => setSelectedCategory(null)}
+              sx={{
+                px: 2,
+                py: 0.7,
+                borderRadius: '999px',
+                whiteSpace: 'nowrap',
+                backgroundColor:
+                  selectedCategory === null
+                    ? 'primary.main'
+                    : theme.palette.grey[200],
+                color:
+                  selectedCategory === null
+                    ? '#fff'
+                    : theme.palette.text.primary,
+                fontWeight: 500,
+                fontSize: '0.85rem',
+                cursor: 'pointer',
+                flexShrink: 0,
+                boxShadow:
+                  selectedCategory === null ? theme.shadows[1] : 'none',
+                transition: 'all 0.2s ease',
+              }}
+            >
+              All
+            </Box>
+
+            {categoriesData?.map((category) => (
+              <Box
+                key={category.id}
+                component={motion.div}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={() => setSelectedCategory(category.id)}
+                sx={{
+                  px: 2,
+                  py: 0.7,
+                  borderRadius: '999px',
+                  whiteSpace: 'nowrap',
+                  backgroundColor:
+                    selectedCategory === category.id
+                      ? 'primary.main'
+                      : theme.palette.grey[200],
+                  color:
+                    selectedCategory === category.id
+                      ? '#fff'
+                      : theme.palette.text.primary,
+                  fontWeight: 500,
+                  fontSize: '0.85rem',
+                  cursor: 'pointer',
+                  flexShrink: 0,
+                  boxShadow:
+                    selectedCategory === category.id
+                      ? theme.shadows[1]
+                      : 'none',
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                {category.name}
+              </Box>
+            ))}
+          </Box>
+        </Box>
+
         {/* Header with Title and Sort */}
         <Box
           sx={{
@@ -80,7 +192,8 @@ function RouteComponent() {
             justifyContent: 'space-between',
             alignItems: 'center',
             width: '100%',
-            mb: 2,
+            mb: 3,
+            mt: isMobile ? -1 : -5,
             flexWrap: 'nowrap', // Prevent wrapping on small screens
           }}
         >
@@ -99,7 +212,7 @@ function RouteComponent() {
                 flexShrink: 1, // Allow text to shrink if needed
               }}
             >
-              Shops
+              {t('shops')}
             </Typography>
           )}
           {!isMobile && (
@@ -118,7 +231,7 @@ function RouteComponent() {
                 flexShrink: 1, // Allow text to shrink if needed
               }}
             >
-              Shop All
+              {t('shop_all')}
             </Typography>
           )}
 
@@ -150,7 +263,7 @@ function RouteComponent() {
                   whiteSpace: 'nowrap', // Prevent "Sort by:" from wrapping
                 }}
               >
-                Sort by:
+                {t('sort_by')}
               </Typography>
               <FormControl
                 variant="standard"
@@ -178,15 +291,15 @@ function RouteComponent() {
 
               {/* Grid View Controls */}
               {isMobile && (
-                <Box sx={{ ml: 1, display: 'flex', gap: 1 }}>
-                  <ViewModuleIcon
+                <Box sx={{ ml: 1, display: 'flex', gap: 1, mr: -2 }}>
+                  <GridViewIcon
                     onClick={() => setGridCols(2)}
                     sx={{
                       cursor: 'pointer',
                       color: gridCols === 2 ? 'primary.main' : 'text.secondary',
                     }}
                   />
-                  <ViewAgendaIcon
+                  <SplitscreenIcon
                     onClick={() => setGridCols(1)}
                     sx={{
                       cursor: 'pointer',
@@ -200,7 +313,7 @@ function RouteComponent() {
         </Box>
 
         <Grid container spacing={2}>
-          {sortedProducts.map((product) => (
+          {filteredProducts.map((product) => (
             <Grid
               key={product.id}
               size={{

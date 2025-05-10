@@ -1,6 +1,7 @@
 import { queryOptions, useSuspenseQuery } from '@tanstack/react-query';
 import { Route } from '~/routes/shop/view.$productID.$categoryID';
 import { getProductsByCategory } from '~/server/shop';
+import { useProducts } from './useProducts';
 
 export const productsByCategoryQueryOption = (categoryId: string) =>
   queryOptions({
@@ -17,8 +18,18 @@ export const useProductsByCategory = () => {
   const { data: productsByCategoryData, isLoading } = useSuspenseQuery(
     productsByCategoryQueryOption(categoryID),
   );
+
+  const { productsData } = useProducts();
+
+  // Filter products by category
+  const filteredProductsByCategory = productsData.filter(
+    (product) => product.category_id === categoryID,
+  );
+
   return {
     productsByCategoryData,
     isLoading,
+
+    filteredProductsByCategory,
   };
 };

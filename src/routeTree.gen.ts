@@ -21,6 +21,7 @@ import { Route as ShopIndexImport } from './routes/shop/index'
 import { Route as ContactIndexImport } from './routes/contact/index'
 import { Route as BlogIndexImport } from './routes/blog/index'
 import { Route as AboutIndexImport } from './routes/about/index'
+import { Route as BlogViewIdImport } from './routes/blog/view.$id'
 import { Route as ShopViewProductIDCategoryIDImport } from './routes/shop/view.$productID.$categoryID'
 
 // Create/Update Routes
@@ -82,6 +83,12 @@ const BlogIndexRoute = BlogIndexImport.update({
 const AboutIndexRoute = AboutIndexImport.update({
   id: '/about/',
   path: '/about/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const BlogViewIdRoute = BlogViewIdImport.update({
+  id: '/blog/view/$id',
+  path: '/blog/view/$id',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -166,6 +173,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ShopIndexImport
       parentRoute: typeof rootRoute
     }
+    '/blog/view/$id': {
+      id: '/blog/view/$id'
+      path: '/blog/view/$id'
+      fullPath: '/blog/view/$id'
+      preLoaderRoute: typeof BlogViewIdImport
+      parentRoute: typeof rootRoute
+    }
     '/shop/view/$productID/$categoryID': {
       id: '/shop/view/$productID/$categoryID'
       path: '/shop/view/$productID/$categoryID'
@@ -189,6 +203,7 @@ export interface FileRoutesByFullPath {
   '/blog': typeof BlogIndexRoute
   '/contact': typeof ContactIndexRoute
   '/shop': typeof ShopIndexRoute
+  '/blog/view/$id': typeof BlogViewIdRoute
   '/shop/view/$productID/$categoryID': typeof ShopViewProductIDCategoryIDRoute
 }
 
@@ -203,6 +218,7 @@ export interface FileRoutesByTo {
   '/blog': typeof BlogIndexRoute
   '/contact': typeof ContactIndexRoute
   '/shop': typeof ShopIndexRoute
+  '/blog/view/$id': typeof BlogViewIdRoute
   '/shop/view/$productID/$categoryID': typeof ShopViewProductIDCategoryIDRoute
 }
 
@@ -218,6 +234,7 @@ export interface FileRoutesById {
   '/blog/': typeof BlogIndexRoute
   '/contact/': typeof ContactIndexRoute
   '/shop/': typeof ShopIndexRoute
+  '/blog/view/$id': typeof BlogViewIdRoute
   '/shop/view/$productID/$categoryID': typeof ShopViewProductIDCategoryIDRoute
 }
 
@@ -234,6 +251,7 @@ export interface FileRouteTypes {
     | '/blog'
     | '/contact'
     | '/shop'
+    | '/blog/view/$id'
     | '/shop/view/$productID/$categoryID'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -247,6 +265,7 @@ export interface FileRouteTypes {
     | '/blog'
     | '/contact'
     | '/shop'
+    | '/blog/view/$id'
     | '/shop/view/$productID/$categoryID'
   id:
     | '__root__'
@@ -260,6 +279,7 @@ export interface FileRouteTypes {
     | '/blog/'
     | '/contact/'
     | '/shop/'
+    | '/blog/view/$id'
     | '/shop/view/$productID/$categoryID'
   fileRoutesById: FileRoutesById
 }
@@ -275,6 +295,7 @@ export interface RootRouteChildren {
   BlogIndexRoute: typeof BlogIndexRoute
   ContactIndexRoute: typeof ContactIndexRoute
   ShopIndexRoute: typeof ShopIndexRoute
+  BlogViewIdRoute: typeof BlogViewIdRoute
   ShopViewProductIDCategoryIDRoute: typeof ShopViewProductIDCategoryIDRoute
 }
 
@@ -289,6 +310,7 @@ const rootRouteChildren: RootRouteChildren = {
   BlogIndexRoute: BlogIndexRoute,
   ContactIndexRoute: ContactIndexRoute,
   ShopIndexRoute: ShopIndexRoute,
+  BlogViewIdRoute: BlogViewIdRoute,
   ShopViewProductIDCategoryIDRoute: ShopViewProductIDCategoryIDRoute,
 }
 
@@ -312,6 +334,7 @@ export const routeTree = rootRoute
         "/blog/",
         "/contact/",
         "/shop/",
+        "/blog/view/$id",
         "/shop/view/$productID/$categoryID"
       ]
     },
@@ -344,6 +367,9 @@ export const routeTree = rootRoute
     },
     "/shop/": {
       "filePath": "shop/index.tsx"
+    },
+    "/blog/view/$id": {
+      "filePath": "blog/view.$id.tsx"
     },
     "/shop/view/$productID/$categoryID": {
       "filePath": "shop/view.$productID.$categoryID.tsx"

@@ -13,31 +13,13 @@ import {
 } from '@mui/material';
 import { Link } from '@tanstack/react-router';
 import { motion } from 'framer-motion';
-import { useProducts } from '~/hooks/shop/useProducts';
-import { useRanking } from '~/hooks/shop/useRanking';
-import { formatCurrency } from '~/utils/format';
+import { useProductsSection } from '~/hooks/shop/useProductsSection';
 
 export default function ProductsSection() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const { productsData } = useProducts();
-
-  const { productsRankingData } = useRanking();
-
-  // create function filter products by ranking refer from ranking.rank
-  const filteredProductsRanking = productsRankingData
-    .filter((ranking) => ranking?.rank <= 10)
-    .sort((a, b) => a?.rank - b?.rank) // Sort by rank ascending
-    .map((ranking) => {
-      const product = productsData.find(
-        (product) => product?.id === ranking?.product_id,
-      );
-      return {
-        ...product,
-        rank: ranking?.rank,
-      };
-    });
+  const { filteredProductsRanking } = useProductsSection();
 
   return (
     <Box
@@ -57,9 +39,9 @@ export default function ProductsSection() {
           component="h2"
           align="center"
           sx={{
-            mb: 2.5,
+            mb: 6,
             fontWeight: 600,
-            mt: isMobile ? 1 : 2,
+            mt: isMobile ? -1 : -4,
             position: 'relative',
             fontFamily: "'Playfair Display', Georgia, serif",
             letterSpacing: '0.5px',
@@ -90,7 +72,7 @@ export default function ProductsSection() {
               scrollBehavior: 'smooth',
               pb: 1,
               px: 1,
-              mt: 4,
+              mt: -4,
               '&::-webkit-scrollbar': { display: 'none' }, // Hide scrollbar
             }}
           >
@@ -175,7 +157,7 @@ export default function ProductsSection() {
                         >
                           {product.name}
                         </Typography>
-                        <Typography
+                        {/* <Typography
                           variant="body2"
                           sx={{
                             mt: -1,
@@ -188,7 +170,7 @@ export default function ProductsSection() {
                           }}
                         >
                           {formatCurrency(product.price || 0)}
-                        </Typography>
+                        </Typography> */}
                       </CardContent>
                     </Card>
                   </Link>
@@ -198,19 +180,26 @@ export default function ProductsSection() {
           </Box>
         </Grid>
 
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            mt: isMobile ? -3.5 : 1,
+          }}
+        >
           <Link to={'/shop'}>
             <Button
               variant="contained"
-              size="medium"
+              size="small"
               endIcon={<ArrowForward />}
               sx={{
+                zIndex: 10,
                 background: 'linear-gradient(135deg, #D4AF37, #B8860B)',
                 color: '#fff',
                 px: 3,
                 borderRadius: 8,
                 textTransform: 'uppercase',
-                fontWeight: 500,
+                fontWeight: 400,
                 letterSpacing: '1px',
                 boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
                 '&:hover': {

@@ -1,35 +1,22 @@
 import { KeyboardArrowDown } from '@mui/icons-material';
-import { Box, Container, Typography } from '@mui/material';
-import { useNavigate } from '@tanstack/react-router';
+import { Box, Container, Typography, useMediaQuery } from '@mui/material';
 import { motion } from 'framer-motion';
 import { useBanners } from '~/hooks/banner/useBanners';
+import theme from '~/styles/theme';
 
 interface HeroSectionProps {
-  containerRef: React.RefObject<HTMLDivElement | null> ;
+  goToPage: (pageNumber: number) => void;
+  handleScroll: () => void;
 }
 
-export default function HeroSection({ containerRef }: HeroSectionProps) {
+export default function HeroSection({
+  goToPage,
+  handleScroll,
+}: HeroSectionProps) {
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   const { bannersData } = useBanners();
-  const navigate = useNavigate();
 
-  // Handle page change
-  const goToPage = (pageNumber: number) => {
-    if (containerRef.current?.children[pageNumber]) {
-      navigate({
-        search: (prev: any) => ({ ...prev, currentPageNumber: pageNumber }),
-      } as any);
-
-      // Delay scroll for mobile rendering quirks
-      setTimeout(() => {
-        requestAnimationFrame(() => {
-          containerRef.current?.children[pageNumber]?.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start',
-          });
-        });
-      }, 50);
-    }
-  };
   return (
     <Box
       component={motion.div}
@@ -61,7 +48,7 @@ export default function HeroSection({ containerRef }: HeroSectionProps) {
     >
       <Container
         maxWidth="md"
-        sx={{ position: 'relative', zIndex: 1, textAlign: 'center' }}
+        sx={{ position: 'relative', zIndex: 1, textAlign: 'center', mt: -20 }}
       >
         <Box
           component={motion.div}
@@ -124,7 +111,10 @@ export default function HeroSection({ containerRef }: HeroSectionProps) {
               cursor: 'pointer',
               fontSize: { xs: '0.875rem', sm: '1.1rem' },
             }}
-            onClick={() => goToPage(1)}
+            onClick={() => {
+              goToPage(1);
+              handleScroll();
+            }}
           >
             Explore more
           </Typography>
@@ -132,7 +122,7 @@ export default function HeroSection({ containerRef }: HeroSectionProps) {
         <Box
           sx={{
             position: 'absolute',
-            bottom: '-250px',
+            bottom: isMobile ? '-80%' : '-95%',
             left: '50%',
             transform: 'translateX(-50%)',
             animation: 'bounce 2s infinite',
@@ -151,7 +141,10 @@ export default function HeroSection({ containerRef }: HeroSectionProps) {
         >
           <KeyboardArrowDown
             sx={{ color: 'white', fontSize: '2.5rem', cursor: 'pointer' }}
-            onClick={() => goToPage(1)}
+            onClick={() => {
+              goToPage(1);
+              handleScroll();
+            }}
           />
         </Box>
       </Container>

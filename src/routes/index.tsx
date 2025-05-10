@@ -37,10 +37,14 @@ function Home() {
       setCurrentPage(page);
       // Scroll to the correct section on initial load
       setTimeout(() => {
-        containerRef.current?.children[page]?.scrollIntoView({
-          behavior: 'auto',
-        });
-      }, 0);
+        if (containerRef.current?.children[currentPage]) {
+          const element = containerRef.current.children[
+            currentPage
+          ] as HTMLElement;
+          element.getBoundingClientRect(); // force reflow
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 50);
     }
   }, []);
 
@@ -53,7 +57,9 @@ function Home() {
     // Allow navigation state to update before scrolling
     setTimeout(() => {
       if (containerRef.current?.children[pageNumber]) {
-        const element = containerRef.current.children[pageNumber] as HTMLElement;
+        const element = containerRef.current.children[
+          pageNumber
+        ] as HTMLElement;
         element.getBoundingClientRect(); // force reflow
         element.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
@@ -82,7 +88,11 @@ function Home() {
   // Get sections: render all at once to avoid remounting and improve UI rendering
   const sections = useMemo(
     () => [
-      <HeroSection key="hero" containerRef={containerRef} />,
+      <HeroSection
+        key="hero"
+        goToPage={goToPage}
+        handleScroll={handleScroll}
+      />,
       <ProductsSection key="products" />,
       <BlogSection key="blog" />,
       <FooterSection key="footer" />,
@@ -119,11 +129,9 @@ function Home() {
             style={{
               height: '100vh',
               minHeight: '100vh',
-              width: '100vw',
               scrollSnapAlign: 'start',
               opacity: currentPage === index ? 1 : 0,
-              transform:
-                currentPage === index ? 'translateY(0)' : 'translateY(50px)',
+             
               transition: 'opacity 0.6s ease-out, transform 0.6s ease-out',
             }}
           >

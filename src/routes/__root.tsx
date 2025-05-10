@@ -16,7 +16,7 @@ import { Toaster } from 'sonner';
 import { DefaultCatchBoundary } from '~/components/DefaultCatchBoundary';
 import { NotFound } from '~/components/NotFound';
 import PWAInstall from '~/components/PWAInstall';
-import { AnimatedNavbar } from '~/layout/AnimatedNavbar';
+import Navbar from '~/layout/navbar';
 import { queryClient } from '~/services/queryClient';
 import appCss from '~/styles/app.css?url';
 import MuiProvider from '~/styles/ThemeProvider';
@@ -88,7 +88,7 @@ function RootComponent() {
     <RootDocument>
       {!isPublicRoute ? (
         <>
-          <AnimatedNavbar />
+          <Navbar />
           <Box>
             <Outlet />
           </Box>

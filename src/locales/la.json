@@ -33,5 +33,10 @@
   "are_you_sure_want_logout": "ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງອອກຈາກລະບົບ?",
   "____________comment_Shop_page____________": "Shop Page",
   "description": "ລາຍລະອຽດ",
-  "add_to_cart": "ເພີ່ມໃສ່ກະຕ່າ"
+  "add_to_cart": "ເພີ່ມໃສ່ກະຕ່າ",
+  "similar_products": "ຜະລິດຕະພັນທີ່ຄ້າຍຄືກັນ",
+  "featured_products": "ສິນຄ້າເເນະນຳ",
+  "shops": "ຮ້ານຄ້l",
+  "shop_all": "ຮ້ານຄ້າທັງໝົດ",
+  "sort_by": "ຈັດລຽງໂດຍ:"
 }

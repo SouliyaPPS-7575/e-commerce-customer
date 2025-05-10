@@ -129,7 +129,7 @@ function RouteComponent() {
                 align="center"
                 fontWeight="bold"
                 color="primary"
-                sx={{ mb: 4 }}
+                sx={{ mb: 1 }}
               >
                 {t('sign_up_to_your_account')}
               </Typography>

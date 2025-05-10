@@ -63,6 +63,7 @@ export default function BlogSection() {
   return (
     <Box
       sx={{
+        mt: -9,
         minHeight: '110vh',
         width: '100%',
         display: 'flex',
@@ -80,7 +81,7 @@ export default function BlogSection() {
             fontSize: '1.8rem',
             fontWeight: 600,
             mb: 1,
-            mt: 1,
+            mt: -3,
             fontFamily: 'Georgia, serif', // adjust if you're using a custom theme
           }}
         >
@@ -101,7 +102,7 @@ export default function BlogSection() {
 
         {isMobile ? (
           // Mobile: Horizontal scroll list
-          (<Box
+          <Box
             sx={{
               display: 'flex',
               overflowX: 'auto',
@@ -120,59 +121,66 @@ export default function BlogSection() {
                 transition={{ duration: 0.4 }}
                 style={{ scrollSnapAlign: 'start', minWidth: '80%' }}
               >
-                <Card
-                  sx={{
-                    borderRadius: 2,
-                    overflow: 'hidden',
-                    boxShadow: 'none',
-                    border: '1px solid #eee',
-                    transition: 'all 0.3s ease',
-                    backgroundColor: 'transparent',
-                    '&:hover': {
-                      transform: 'translateY(-5px)',
-                      boxShadow: '0 12px 24px rgba(0, 0, 0, 0.1)',
-                    },
-                  }}
+                <Link
+                  to="/blog/view/$id"
+                  params={{ id: String(story.id) }}
+                  style={{ textDecoration: 'none' }}
                 >
-                  <CardMedia
-                    component="img"
-                    image={story.image}
-                    alt={story.title}
-                    sx={{ height: 200, width: '100%', objectFit: 'cover' }}
-                  />
-                  <CardContent>
-                    <Typography variant="h6" gutterBottom>
-                      {story.title}
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      sx={{ mb: 2 }}
-                    >
-                      {story.excerpt}
-                    </Typography>
-                    <Link to="/blog" style={{ textDecoration: 'none' }}>
+                  <Card
+                    sx={{
+                      borderRadius: 2,
+                      overflow: 'hidden',
+                      boxShadow: 'none',
+                      border: '1px solid #eee',
+                      transition: 'all 0.3s ease',
+                      backgroundColor: 'transparent',
+                      '&:hover': {
+                        transform: 'translateY(-5px)',
+                        boxShadow: '0 12px 24px rgba(0, 0, 0, 0.1)',
+                      },
+                      cursor: 'pointer',
+                    }}
+                  >
+                    <CardMedia
+                      component="img"
+                      image={story.image}
+                      alt={story.title}
+                      sx={{ height: 200, width: '100%', objectFit: 'cover' }}
+                    />
+                    <CardContent>
+                      <Typography variant="h6" gutterBottom>
+                        {story.title}
+                      </Typography>
                       <Typography
                         variant="body2"
-                        sx={{
-                          color: '#b06b40',
-                          fontWeight: 500,
-                          '&:hover': {
-                            textDecoration: 'underline',
-                          },
-                        }}
+                        color="text.secondary"
+                        sx={{ mb: 2 }}
                       >
-                        Read more
+                        {story.excerpt}
                       </Typography>
-                    </Link>
-                  </CardContent>
-                </Card>
+                      <Link to="/blog" style={{ textDecoration: 'none' }}>
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            color: '#b06b40',
+                            fontWeight: 500,
+                            '&:hover': {
+                              textDecoration: 'underline',
+                            },
+                          }}
+                        >
+                          Read more
+                        </Typography>
+                      </Link>
+                    </CardContent>
+                  </Card>
+                </Link>
               </motion.div>
             ))}
-          </Box>)
+          </Box>
         ) : (
           // Desktop: Horizontal scroll list
-          (<Box
+          <Box
             sx={{
               display: 'flex',
               overflowX: 'auto',
@@ -191,55 +199,62 @@ export default function BlogSection() {
                 transition={{ duration: 0.4 }}
                 style={{ scrollSnapAlign: 'start', minWidth: '30%' }}
               >
-                <Card
-                  sx={{
-                    borderRadius: 2,
-                    overflow: 'hidden',
-                    boxShadow: 'none',
-                    border: '1px solid #eee',
-                    transition: 'all 0.3s ease',
-                    '&:hover': {
-                      transform: 'translateY(-5px)',
-                      boxShadow: '0 12px 24px rgba(0, 0, 0, 0.1)',
-                    },
-                  }}
+                <Link
+                  to="/blog/view/$id"
+                  params={{ id: String(story.id) }}
+                  style={{ textDecoration: 'none' }}
                 >
-                  <CardMedia
-                    component="img"
-                    image={story.image}
-                    alt={story.title}
-                    sx={{ height: 200, width: '100%', objectFit: 'cover' }}
-                  />
-                  <CardContent>
-                    <Typography variant="h6" gutterBottom>
-                      {story.title}
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      sx={{ mb: 2 }}
-                    >
-                      {story.excerpt}
-                    </Typography>
-                    <Link to="/blog" style={{ textDecoration: 'none' }}>
+                  <Card
+                    sx={{
+                      borderRadius: 2,
+                      overflow: 'hidden',
+                      boxShadow: 'none',
+                      border: '1px solid #eee',
+                      transition: 'all 0.3s ease',
+                      '&:hover': {
+                        transform: 'translateY(-5px)',
+                        boxShadow: '0 12px 24px rgba(0, 0, 0, 0.1)',
+                      },
+                      cursor: 'pointer',
+                    }}
+                  >
+                    <CardMedia
+                      component="img"
+                      image={story.image}
+                      alt={story.title}
+                      sx={{ height: 200, width: '100%', objectFit: 'cover' }}
+                    />
+                    <CardContent>
+                      <Typography variant="h6" gutterBottom>
+                        {story.title}
+                      </Typography>
                       <Typography
                         variant="body2"
-                        sx={{
-                          color: '#b06b40',
-                          fontWeight: 500,
-                          '&:hover': {
-                            textDecoration: 'underline',
-                          },
-                        }}
+                        color="text.secondary"
+                        sx={{ mb: 2 }}
                       >
-                        Read more
+                        {story.excerpt}
                       </Typography>
-                    </Link>
-                  </CardContent>
-                </Card>
+                      <Link to="/blog" style={{ textDecoration: 'none' }}>
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            color: '#b06b40',
+                            fontWeight: 500,
+                            '&:hover': {
+                              textDecoration: 'underline',
+                            },
+                          }}
+                        >
+                          Read more
+                        </Typography>
+                      </Link>
+                    </CardContent>
+                  </Card>
+                </Link>
               </motion.div>
             ))}
-          </Box>)
+          </Box>
         )}
 
         <Box

@@ -28,3 +28,13 @@ export interface ProductRankingItem {
   rank: number;
   updated: string;
 }
+
+export interface CategoriesItem {
+  collectionId: string;
+  collectionName: string;
+  created: string;
+  id: string;
+  name: string;
+  name_la: string;
+  updated: string;
+}

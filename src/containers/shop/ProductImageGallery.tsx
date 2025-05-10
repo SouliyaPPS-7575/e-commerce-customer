@@ -163,30 +163,41 @@ const ProductImageGallery = ({ product }: { product: ProductItem }) => {
                 }}
               >
                 <AnimatePresence initial={false} mode="wait">
-                  <Box
-                    component={motion.img}
+                  <motion.div
                     key={selectedImageIndex}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.3 }}
-                    src={images[selectedImageIndex]}
-                    alt={product.name}
-                    sx={{
+                    style={{
                       width: '100%',
                       height: '100%',
-                      objectFit: 'cover',
+                      overflow: 'hidden',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
                     }}
-                    onClick={() => setSelectedImage(images[selectedImageIndex])}
-                    whileHover={{ cursor: 'pointer' }}
-                    whileTap={{ cursor: 'grabbing' }}
-                    drag
-                    dragConstraints={{ left: 0, right: 0 }}
-                    dragElastic={0.2}
-                    dragMomentum={false}
-                    onDragEnd={handleDragEnd}
-                    onDragStart={(e) => e.preventDefault()}
-                  />
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <motion.img
+                      src={images[selectedImageIndex]}
+                      alt={product.name}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        cursor: 'pointer',
+                      }}
+                      drag
+                      dragConstraints={{ left: 0, right: 0 }}
+                      dragElastic={0.2}
+                      dragMomentum={false}
+                      whileHover={{ scale: 1.02 }}
+                      onClick={() => setSelectedImage(images[selectedImageIndex])}
+                      onDragEnd={handleDragEnd}
+                      onDragStart={(e) => e.preventDefault()}
+                    />
+                  </motion.div>
                 </AnimatePresence>
               </Box>
             </Paper>
@@ -249,7 +260,7 @@ const ProductImageGallery = ({ product }: { product: ProductItem }) => {
         </>
       ) : (
         /* Desktop View */
-        <Grid container spacing={2}>
+        (<Grid container spacing={2}>
           {/* Thumbnail Column */}
           {images.length > 1 && (
             <Grid
@@ -295,7 +306,6 @@ const ProductImageGallery = ({ product }: { product: ProductItem }) => {
               </Stack>
             </Grid>
           )}
-
           {/* Main Image */}
           <Grid
             size={{
@@ -325,38 +335,47 @@ const ProductImageGallery = ({ product }: { product: ProductItem }) => {
                 }}
               >
                 <AnimatePresence initial={false} mode="wait">
-                  <Box
-                    component={motion.img}
+                  <motion.div
                     key={selectedImageIndex}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.3 }}
-                    src={images[selectedImageIndex]}
-                    alt={product.name}
-                    sx={{
+                    style={{
                       width: '100%',
                       height: '100%',
-                      objectFit: 'cover',
-                      cursor: 'grab',
+                      overflow: 'hidden',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
                     }}
-                    onClick={() => setSelectedImage(images[selectedImageIndex])}
-                    whileHover={{ cursor: 'pointer' }}
-                    whileTap={{ cursor: 'grabbing' }}
-                    drag
-                    dragConstraints={{ left: 0, right: 0 }}
-                    dragElastic={0.2}
-                    dragMomentum={false}
-                    onDragEnd={handleDragEnd}
-                    onDragStart={(e) => e.preventDefault()}
-                  />
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <motion.img
+                      src={images[selectedImageIndex]}
+                      alt={product.name}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        cursor: 'pointer',
+                      }}
+                      drag
+                      dragConstraints={{ left: 0, right: 0 }}
+                      dragElastic={0.2}
+                      dragMomentum={false}
+                      whileHover={{ scale: 1.02 }}
+                      onClick={() => setSelectedImage(images[selectedImageIndex])}
+                      onDragEnd={handleDragEnd}
+                      onDragStart={(e) => e.preventDefault()}
+                    />
+                  </motion.div>
                 </AnimatePresence>
               </Box>
             </Paper>
           </Grid>
-        </Grid>
+        </Grid>)
       )}
-
       {/* Image Preview Component */}
       <ImagePreview
         selectedImage={selectedImage}
