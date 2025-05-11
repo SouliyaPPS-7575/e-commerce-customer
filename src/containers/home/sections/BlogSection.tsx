@@ -63,7 +63,6 @@ export default function BlogSection() {
   return (
     <Box
       sx={{
-        mt: -9,
         minHeight: '110vh',
         width: '100%',
         display: 'flex',
@@ -81,7 +80,7 @@ export default function BlogSection() {
             fontSize: '1.8rem',
             fontWeight: 600,
             mb: 1,
-            mt: -3,
+            mt: isMobile ? -1 : -20,
             fontFamily: 'Georgia, serif', // adjust if you're using a custom theme
           }}
         >

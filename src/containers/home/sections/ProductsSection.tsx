@@ -24,7 +24,6 @@ export default function ProductsSection() {
   return (
     <Box
       sx={{
-        mt: isMobile ? -5 : 5,
         minHeight: '110vh',
         width: '100%',
         display: 'flex',
@@ -41,12 +40,12 @@ export default function ProductsSection() {
           sx={{
             mb: 6,
             fontWeight: 600,
-            mt: isMobile ? -1 : -4,
+            mt: isMobile ? -10 : -4,
             position: 'relative',
             fontFamily: "'Playfair Display', Georgia, serif",
             letterSpacing: '0.5px',
             textTransform: 'uppercase',
-            fontSize: { xs: '1.1rem', sm: '1.2rem', md: '1.4rem' },
+            fontSize: { xs: '1rem', sm: '1.25rem', md: '1.5rem' },
           }}
         >
           Shop our best products
@@ -81,11 +80,17 @@ export default function ProductsSection() {
                 key={product.id}
                 sx={{
                   flex: '0 0 auto',
-                  width: {
-                    xs: '80%', // 1–2 visible items on mobile
-                    sm: '45%', // ~2 items on small tablets
-                    md: '30%', // ~3 items on tablets
-                    lg: '23%', // 4–5 items on desktop
+                  minWidth: {
+                    xs: '75%',
+                    sm: '40%',
+                    md: '28%',
+                    lg: '22%',
+                  },
+                  maxWidth: {
+                    xs: '90%',
+                    sm: '45%',
+                    md: '30%',
+                    lg: '24%',
                   },
                   scrollSnapAlign: 'start',
                 }}
@@ -148,9 +153,9 @@ export default function ProductsSection() {
                           sx={{
                             mt: -0.1,
                             fontSize: {
-                              xs: '1.2rem',
-                              sm: '1.3rem',
-                              md: '1.3rem',
+                              xs: '1rem',
+                              sm: '1.15rem',
+                              md: '1.25rem',
                             },
                             color: '#333333',
                           }}
