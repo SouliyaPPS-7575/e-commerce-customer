@@ -124,7 +124,13 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           href="https://fonts.googleapis.com/icon?family=Material+Icons"
         />
       </head>
-      <body suppressHydrationWarning>
+      <body
+        suppressHydrationWarning
+        style={{
+          fontFamily:
+            '"Playfair Display", "Noto Sans Lao", sans-serif',
+        }}
+      >
         <I18nextProvider i18n={i18next}>
           <QueryClientProvider client={queryClient}>
             <MuiProvider>

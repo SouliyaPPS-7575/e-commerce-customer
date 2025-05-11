@@ -31,6 +31,7 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate, useRouterState } from '@tanstack/react-router';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import LanguageSelection from '~/components/LanguageSelection';
 import { type NavItem, navItems } from '~/layout/navItems';
 import { getToken } from '~/server/auth';
@@ -96,6 +97,7 @@ interface NavbarProps {
 }
 
 const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
+  const { t } = useTranslation();
   // Current Path URL
   const location = useRouterState({ select: (state) => state.location });
   const currentPath = location.pathname;
@@ -249,7 +251,7 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
                       },
                     }}
                   >
-                    {item.name}
+                    {t(item.name)}
                   </Typography>
                 ))}
               </Box>

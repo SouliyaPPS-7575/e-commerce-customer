@@ -14,7 +14,7 @@ const theme = createTheme({
     text: { primary: '#000', secondary: '#000' },
   },
   typography: {
-    fontFamily: 'Playfair Display',
+    fontFamily: 'Playfair Display Noto Sans Lao',
     button: { textTransform: 'none' },
   },
   components: {
@@ -46,6 +46,9 @@ const theme = createTheme({
           // Use Noto Sans Lao when content is in Lao
           ':lang(lo)': {
             fontFamily: `'Noto Sans Lao', sans-serif`,
+          },
+          ':lang(en)': {
+            fontFamily: `'Playfair Display', serif`,
           },
         },
       },

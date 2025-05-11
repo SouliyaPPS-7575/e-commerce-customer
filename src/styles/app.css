@@ -19,4 +19,12 @@
   .using-mouse * {
     outline: none !important;
   }
+
+  :lang(lo) {
+    font-family: 'Noto Sans Lao', sans-serif;
+  }
+
+  :lang(en) {
+    font-family: 'Playfair Display', serif;
+  }
 }

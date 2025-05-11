@@ -107,6 +107,7 @@ function RouteComponent() {
           {/* Scrollable Category Filter Tabs */}
           <Box
             sx={{
+              fontFamily: 'Playfair Display Noto Sans Lao',
               display: 'inline-flex',
               alignItems: 'center',
               overflowX: 'auto',

@@ -13,9 +13,12 @@ import {
 } from '@mui/material';
 import { Link } from '@tanstack/react-router';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { useProductsSection } from '~/hooks/shop/useProductsSection';
 
 export default function ProductsSection() {
+  const { t } = useTranslation();
+
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -48,7 +51,7 @@ export default function ProductsSection() {
             fontSize: { xs: '1rem', sm: '1.25rem', md: '1.5rem' },
           }}
         >
-          Shop our best products
+          {t('shop_our_best_products')}
           <Box
             sx={{
               width: 60,
@@ -198,21 +201,18 @@ export default function ProductsSection() {
               size="small"
               endIcon={<ArrowForward />}
               sx={{
-                zIndex: 10,
-                background: 'linear-gradient(135deg, #D4AF37, #B8860B)',
-                color: '#fff',
-                px: 3,
-                borderRadius: 8,
-                textTransform: 'uppercase',
-                fontWeight: 400,
-                letterSpacing: '1px',
-                boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+                backgroundColor: '#c29b7d',
+                borderRadius: '30px',
+                color: 'white',
+                px: 5,
+                py: 1,
+                boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
                 '&:hover': {
-                  background: 'linear-gradient(135deg, #B8860B, #D4AF37)',
+                  backgroundColor: '#a67c62',
                 },
               }}
             >
-              View All Products
+              {t('view_all_products')}
             </Button>
           </Link>
         </Box>

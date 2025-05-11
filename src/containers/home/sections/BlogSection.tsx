@@ -11,6 +11,7 @@ import {
 } from '@mui/material';
 import { Link } from '@tanstack/react-router';
 import { motion } from 'framer-motion';
+import { t } from 'i18next';
 import theme from '~/styles/theme';
 
 // Mock stories data
@@ -68,7 +69,7 @@ export default function BlogSection() {
         display: 'flex',
         alignItems: 'center',
         backgroundColor: '#F5F0E6',
-        py: 8,
+        py: { xs: 6, md: 8 },
       }}
     >
       <Container maxWidth="lg">
@@ -80,7 +81,7 @@ export default function BlogSection() {
             fontSize: '1.8rem',
             fontWeight: 600,
             mb: 1,
-            mt: isMobile ? -1 : -20,
+            mt: isMobile ? -5 : -20,
             fontFamily: 'Georgia, serif', // adjust if you're using a custom theme
           }}
         >
@@ -101,7 +102,7 @@ export default function BlogSection() {
 
         {isMobile ? (
           // Mobile: Horizontal scroll list
-          <Box
+          (<Box
             sx={{
               display: 'flex',
               overflowX: 'auto',
@@ -176,10 +177,10 @@ export default function BlogSection() {
                 </Link>
               </motion.div>
             ))}
-          </Box>
+          </Box>)
         ) : (
           // Desktop: Horizontal scroll list
-          <Box
+          (<Box
             sx={{
               display: 'flex',
               overflowX: 'auto',
@@ -253,7 +254,7 @@ export default function BlogSection() {
                 </Link>
               </motion.div>
             ))}
-          </Box>
+          </Box>)
         )}
 
         <Box
@@ -279,7 +280,7 @@ export default function BlogSection() {
                 },
               }}
             >
-              View all
+              {t('view_all')}
             </Button>
           </Link>
         </Box>
