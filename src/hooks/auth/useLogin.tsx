@@ -17,15 +17,12 @@ export const useLogin = () => {
 
   const form = useForm({
     defaultValues: {
-      phone: '',
+      identity: '',
       password: '',
     } as LoginForm,
     onSubmit: async ({ value }) => {
       login.mutate({
-        data: {
-          ...value,
-          phone: `+856${value.phone}`,
-        },
+        data: value,
       });
     },
   });

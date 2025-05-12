@@ -81,7 +81,7 @@ export default function BlogSection() {
             fontSize: '1.8rem',
             fontWeight: 600,
             mb: 1,
-            mt: isMobile ? -5 : -20,
+            mt: isMobile ? -8 : -20,
             fontFamily: 'Georgia, serif', // adjust if you're using a custom theme
           }}
         >

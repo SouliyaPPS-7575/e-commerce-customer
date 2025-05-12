@@ -12,7 +12,7 @@ import {
   Typography,
 } from '@mui/material';
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { Lock, Phone } from 'lucide-react';
+import { Lock, Mail } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import LanguageSelection from '~/components/LanguageSelection';
@@ -83,12 +83,13 @@ function RouteComponent() {
             >
               {/* Email Field */}
               <form.Field
-                name="phone"
+                name="identity"
                 validators={{
-                  onChange: ({ value }) =>
-                    !value || value.length < 6
-                      ? 'Phone number must be at least 6 characters'
-                      : undefined,
+                  onChange: ({ value }) => {
+                    if (!value) return 'Email is required';
+                    if (!/\S+@\S+\.\S+/.test(value))
+                      return 'Invalid email address';
+                  },
                 }}
               >
                 {(field) => (
@@ -96,9 +97,9 @@ function RouteComponent() {
                     required
                     id={field.name}
                     name={field.name}
-                    label={t('phone_number')}
+                    label={t('email')}
                     fullWidth
-                    type="tel"
+                    type="email"
                     margin="normal"
                     variant="outlined"
                     value={field.state.value ?? ''}
@@ -107,7 +108,7 @@ function RouteComponent() {
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
-                          <Phone size={20} /> &nbsp; 856
+                          <Mail size={20} />
                         </InputAdornment>
                       ),
                     }}

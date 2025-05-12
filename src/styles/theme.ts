@@ -14,7 +14,7 @@ const theme = createTheme({
     text: { primary: '#000', secondary: '#000' },
   },
   typography: {
-    fontFamily: 'Playfair Display Noto Sans Lao',
+    fontFamily: 'Playfair Display',
     button: { textTransform: 'none' },
   },
   components: {

@@ -1,5 +1,5 @@
 export interface LoginForm {
-  phone: string;
+  identity: string;
   password: string;
 }
 

@@ -1,9 +1,6 @@
 import {
-  AccountCircle,
   Close as CloseIcon,
-  ExitToApp as LogoutIcon,
   MenuRounded,
-  Person as ProfileIcon,
   SearchRounded,
   ShoppingCartOutlined,
 } from '@mui/icons-material';
@@ -20,7 +17,6 @@ import {
   IconButton,
   InputBase,
   List,
-  Menu,
   MenuItem,
   Toolbar,
   Typography,
@@ -32,9 +28,9 @@ import { useQuery } from '@tanstack/react-query';
 import { useNavigate, useRouterState } from '@tanstack/react-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import CurrencySelector from '~/components/CurrencySelector/CurrencySelector';
 import LanguageSelection from '~/components/LanguageSelection';
 import { type NavItem, navItems } from '~/layout/navItems';
-import { getToken } from '~/server/auth';
 import theme from '~/styles/theme';
 
 // Styled search component
@@ -114,8 +110,9 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
   });
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
+
+  // const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  // const open = Boolean(anchorEl);
 
   const navigate = useNavigate();
 
@@ -130,24 +127,24 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
     setSearchOpen(!searchOpen);
   };
 
-  const handleAccountClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    try {
-      // Store the current target before async operation
-      const currentTarget = e.currentTarget;
+  // const handleAccountClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  //   try {
+  //     // Store the current target before async operation
+  //     const currentTarget = e.currentTarget;
 
-      // Check authentication
-      const { token } = await getToken();
+  //     // Check authentication
+  //     const { token } = await getToken();
 
-      if (!token || token === '') {
-        navigate({ to: '/login' });
-      } else {
-        // Important: use the stored reference, not e.currentTarget which might be null after async
-        setAnchorEl(currentTarget);
-      }
-    } catch (error) {
-      navigate({ to: '/login' });
-    }
-  };
+  //     if (!token || token === '') {
+  //       navigate({ to: '/login' });
+  //     } else {
+  //       // Important: use the stored reference, not e.currentTarget which might be null after async
+  //       setAnchorEl(currentTarget);
+  //     }
+  //   } catch (error) {
+  //     navigate({ to: '/login' });
+  //   }
+  // };
 
   const isTransparent = currentPage === 0;
 
@@ -260,14 +257,23 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
             {/* Action icons */}
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               {/* Search */}
-              <IconButton color="inherit" onClick={toggleSearch}>
+              <IconButton
+                color="inherit"
+                onClick={toggleSearch}
+                sx={{
+                  mr: 1,
+                }}
+              >
                 <SearchRounded
                   sx={{ color: isTransparent ? '#F5F0E6' : 'back' }}
                 />
               </IconButton>
 
+              {/* Currency selector */}
+              <CurrencySelector isTransparent={isTransparent} />
+
               {/* User account dropdown */}
-              <Box sx={{ position: 'relative' }}>
+              {/* <Box sx={{ position: 'relative' }}>
                 <IconButton
                   color="inherit"
                   onClick={handleAccountClick}
@@ -341,7 +347,7 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
                     <Typography>Logout</Typography>
                   </MenuItem>
                 </Menu>
-              </Box>
+              </Box> */}
 
               {/* Shopping cart */}
               <IconButton color="inherit">
@@ -353,6 +359,7 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
                       color: '#ffffff',
                       fontSize: '1rem',
                     },
+                    ml: 1,
                   }}
                 >
                   <ShoppingCartOutlined
@@ -419,7 +426,7 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
                       toggleMobileMenu();
                     }}
                   >
-                    {item.name}
+                    {t(item.name)}
                   </MenuItem>
                 );
               })}

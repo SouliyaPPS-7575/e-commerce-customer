@@ -17,7 +17,7 @@ import {
 } from '@mui/material';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useState } from 'react';
-import Footer from '~/containers/blogs/footer';
+import Footer from '~/containers/footer';
 
 export const Route = createFileRoute('/blog/')({
   component: BlogComponent,

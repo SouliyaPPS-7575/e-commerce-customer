@@ -38,3 +38,27 @@ export interface CategoriesItem {
   name_la: string;
   updated: string;
 }
+
+export interface RelateProductsItem {
+  collectionId: string;
+  collectionName: string;
+  id: string;
+  product_id: string;
+  relate_product_id: string[];
+  created: string;
+  updated: string;
+}
+
+
+export type Currencies = CurrencyItem[]
+
+export interface CurrencyItem {
+  collectionId: string
+  collectionName: string
+  id: string
+  ccy: string
+  type: string
+  rate: number
+  created: string
+  updated: string
+}

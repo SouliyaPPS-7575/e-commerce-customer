@@ -14,9 +14,11 @@ import {
 import { useForm } from '@tanstack/react-form';
 import { useMutation } from '@tanstack/react-query';
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
-import { Lock, Mail, Phone } from 'lucide-react';
+import { Lock, Mail } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/material.css';
 import { toast } from 'sonner';
 import LanguageSelection from '~/components/LanguageSelection';
 import { SignupForm } from '~/models/auth';
@@ -65,10 +67,7 @@ function RouteComponent() {
     onSubmit: async ({ value }) => {
       // Handle form submission
       mutate.mutate({
-        data: {
-          ...value,
-          phone_number: `856${value.phone_number}`,
-        },
+        data: value,
       });
     },
   });
@@ -159,24 +158,16 @@ function RouteComponent() {
 
                 <form.Field name="phone_number">
                   {(field) => (
-                    <TextField
-                      id={field.name}
-                      name={field.name}
+                    <PhoneInput
+                      enableAreaCodes={true}
                       value={field.state.value ?? ''}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      onBlur={field.handleBlur}
-                      type="number"
-                      fullWidth
-                      label={t('phone_number')}
                       placeholder={t('phone_number')}
-                      margin="normal"
-                      required
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <Phone size={20} /> &nbsp; 856
-                          </InputAdornment>
-                        ),
+                      onChange={(phone) => field.handleChange(phone)}
+                      inputProps={{
+                        name: 'phone_number',
+                        required: true,
+                        autoFocus: true,
+                        backgroundColor: 'transparent',
                       }}
                     />
                   )}
@@ -218,54 +209,6 @@ function RouteComponent() {
                           ? field.state.meta.errors
                           : undefined
                       }
-                    />
-                  )}
-                </form.Field>
-
-                <form.Field name="province">
-                  {(field) => (
-                    <TextField
-                      id={field.name}
-                      name={field.name}
-                      value={field.state.value ?? ''}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      onBlur={field.handleBlur}
-                      fullWidth
-                      label={t('province')}
-                      placeholder={t('province')}
-                      margin="normal"
-                    />
-                  )}
-                </form.Field>
-
-                <form.Field name="district">
-                  {(field) => (
-                    <TextField
-                      id={field.name}
-                      name={field.name}
-                      value={field.state.value ?? ''}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      onBlur={field.handleBlur}
-                      fullWidth
-                      label={t('city')}
-                      placeholder={t('city')}
-                      margin="normal"
-                    />
-                  )}
-                </form.Field>
-
-                <form.Field name="village">
-                  {(field) => (
-                    <TextField
-                      id={field.name}
-                      name={field.name}
-                      value={field.state.value ?? ''}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      onBlur={field.handleBlur}
-                      fullWidth
-                      label={t('village')}
-                      placeholder={t('village')}
-                      margin="normal"
                     />
                   )}
                 </form.Field>

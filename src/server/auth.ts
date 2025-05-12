@@ -14,14 +14,12 @@ export const loginServer = createServerFn({ method: 'POST' })
   .validator((d: LoginForm) => d)
   .handler(async ({ data }) => {
     try {
-      const authData = await pb.send(`/auth/phone-login`, {
-        body: {
-          data,
-        },
-      });
+      const authData = await pb
+        .collection('customers')
+        .authWithPassword(data.identity, data.password);
 
       const farFutureDate = new Date();
-      farFutureDate.setFullYear(farFutureDate.getFullYear() + 20); // 20 years in the future
+      farFutureDate.setFullYear(farFutureDate.getFullYear() + 20);
 
       setCookie('token', authData.token, {
         sameSite: 'lax',

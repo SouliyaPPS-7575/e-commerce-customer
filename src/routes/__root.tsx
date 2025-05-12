@@ -13,6 +13,7 @@ import i18next from 'i18next';
 import * as React from 'react';
 import { I18nextProvider } from 'react-i18next';
 import { Toaster } from 'sonner';
+import { CurrencyProvider } from '~/components/CurrencySelector/CurrencyProvider';
 import { DefaultCatchBoundary } from '~/components/DefaultCatchBoundary';
 import { NotFound } from '~/components/NotFound';
 import PWAInstall from '~/components/PWAInstall';
@@ -123,18 +124,13 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           rel="stylesheet"
           href="https://fonts.googleapis.com/icon?family=Material+Icons"
         />
+        <script src="https://unpkg.com/react-phone-input-2@2.x/dist/lib.js"></script>
       </head>
-      <body
-        suppressHydrationWarning
-        style={{
-          fontFamily:
-            '"Playfair Display", "Noto Sans Lao", sans-serif',
-        }}
-      >
+      <body suppressHydrationWarning>
         <I18nextProvider i18n={i18next}>
           <QueryClientProvider client={queryClient}>
             <MuiProvider>
-              {children}
+              <CurrencyProvider>{children}</CurrencyProvider>
               <Toaster
                 visibleToasts={9}
                 position="top-right"
