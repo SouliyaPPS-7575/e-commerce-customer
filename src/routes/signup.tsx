@@ -17,9 +17,9 @@ import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { Lock, Mail } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/material.css';
 import { toast } from 'sonner';
+import ClientOnlyPhoneInput from '~/components/ClientOnlyPhoneInput';
 import LanguageSelection from '~/components/LanguageSelection';
 import { SignupForm } from '~/models/auth';
 import { signupServer, verifyEmailServer } from '~/server/auth';
@@ -81,7 +81,7 @@ function RouteComponent() {
         {
           onSuccess: () => {
             console.log('=> email', value.email);
-            
+
             verifyEmail({
               data: {
                 email: value.email,
@@ -186,18 +186,15 @@ function RouteComponent() {
                 <Box sx={{ my: 2 }}>
                   <form.Field name="phone_number">
                     {(field) => (
-                      // <Box className="phone-field-container">
-                        <PhoneInput
-                          country={'la'}
-                          enableAreaCodes={true}
-                          autocompleteSearch={true}
-                          placeholder={t('phone_number')}
-                          searchPlaceholder={t('phone_number')}
-                          enableSearch={true}
+                      <Box className="phone-field-container">
+                        <ClientOnlyPhoneInput
                           value={field.state.value ?? ''}
-                          onChange={(phone) => field.handleChange(phone)}
+                          onChange={(phone: string) =>
+                            field.handleChange(phone)
+                          }
+                          placeholder={t('phone_number')}
                         />
-                      // </Box>
+                      </Box>
                     )}
                   </form.Field>
                 </Box>
