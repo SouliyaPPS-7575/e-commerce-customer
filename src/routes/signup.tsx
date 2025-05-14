@@ -186,7 +186,7 @@ function RouteComponent() {
                 <Box sx={{ my: 2 }}>
                   <form.Field name="phone_number">
                     {(field) => (
-                      <Box className="phone-field-container">
+                      // <Box className="phone-field-container">
                         <PhoneInput
                           country={'la'}
                           enableAreaCodes={true}
@@ -197,7 +197,7 @@ function RouteComponent() {
                           value={field.state.value ?? ''}
                           onChange={(phone) => field.handleChange(phone)}
                         />
-                      </Box>
+                      // </Box>
                     )}
                   </form.Field>
                 </Box>
