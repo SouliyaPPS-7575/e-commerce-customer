@@ -22,7 +22,8 @@ import 'react-phone-input-2/lib/material.css';
 import { toast } from 'sonner';
 import LanguageSelection from '~/components/LanguageSelection';
 import { SignupForm } from '~/models/auth';
-import { signupServer } from '~/server/auth';
+import { signupServer, verifyEmailServer } from '~/server/auth';
+import '~/styles/phone-input-styles.css'; // Import the custom styles
 
 export const Route = createFileRoute('/signup')({
   component: RouteComponent,
@@ -42,11 +43,18 @@ function RouteComponent() {
     setShowPassword((prev) => !prev);
   };
 
-  const mutate = useMutation({
+  const { mutate: createUser } = useMutation({
     mutationFn: signupServer,
     onSuccess: () => {
-      navigate({ to: '/login' });
       toast.success(t('successfully'));
+    },
+  });
+
+  const { mutate: verifyEmail } = useMutation({
+    mutationFn: verifyEmailServer,
+    onSuccess: () => {
+      navigate({ to: '/login' });
+      toast.success(t('send_email_verifications'));
     },
   });
 
@@ -66,9 +74,22 @@ function RouteComponent() {
     } as SignupForm,
     onSubmit: async ({ value }) => {
       // Handle form submission
-      mutate.mutate({
-        data: value,
-      });
+      createUser(
+        {
+          data: value,
+        },
+        {
+          onSuccess: () => {
+            console.log('=> email', value.email);
+            
+            verifyEmail({
+              data: {
+                email: value.email,
+              },
+            });
+          },
+        },
+      );
     },
   });
 
@@ -101,7 +122,11 @@ function RouteComponent() {
             'linear-gradient(to right, rgba(0,0,0,0.6), rgba(0,0,0,0.3))',
           backdropFilter: 'blur(4px)',
           zIndex: 0,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
           overflow: 'auto',
+          px: 2,
         }}
       >
         <Box sx={{ position: 'absolute', top: 16, right: 16, zIndex: 2 }}>
@@ -139,6 +164,7 @@ function RouteComponent() {
                   form.handleSubmit();
                 }}
               >
+                {/* Username Field with Material-UI styling */}
                 <form.Field name="username">
                   {(field) => (
                     <TextField
@@ -156,22 +182,25 @@ function RouteComponent() {
                   )}
                 </form.Field>
 
-                <form.Field name="phone_number">
-                  {(field) => (
-                    <PhoneInput
-                      enableAreaCodes={true}
-                      value={field.state.value ?? ''}
-                      placeholder={t('phone_number')}
-                      onChange={(phone) => field.handleChange(phone)}
-                      inputProps={{
-                        name: 'phone_number',
-                        required: true,
-                        autoFocus: true,
-                        backgroundColor: 'transparent',
-                      }}
-                    />
-                  )}
-                </form.Field>
+                {/* Phone Number Field with Material-UI styling */}
+                <Box sx={{ my: 2 }}>
+                  <form.Field name="phone_number">
+                    {(field) => (
+                      <Box className="phone-field-container">
+                        <PhoneInput
+                          country={'la'}
+                          enableAreaCodes={true}
+                          autocompleteSearch={true}
+                          placeholder={t('phone_number')}
+                          searchPlaceholder={t('phone_number')}
+                          enableSearch={true}
+                          value={field.state.value ?? ''}
+                          onChange={(phone) => field.handleChange(phone)}
+                        />
+                      </Box>
+                    )}
+                  </form.Field>
+                </Box>
 
                 {/* Email Field */}
                 <form.Field

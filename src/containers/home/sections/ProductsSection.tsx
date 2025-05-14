@@ -14,7 +14,9 @@ import {
 import { Link } from '@tanstack/react-router';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
+import { useCurrencyContext } from '~/components/CurrencySelector/CurrencyProvider';
 import { useProductsSection } from '~/hooks/shop/useProductsSection';
+import { formatCurrency } from '~/utils/format';
 
 export default function ProductsSection() {
   const { t } = useTranslation();
@@ -23,6 +25,8 @@ export default function ProductsSection() {
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const { filteredProductsRanking } = useProductsSection();
+
+  const { displayCurrency, convert } = useCurrencyContext();
 
   return (
     <Box
@@ -43,12 +47,12 @@ export default function ProductsSection() {
           sx={{
             mb: 6,
             fontWeight: 600,
-            mt: isMobile ? -10 : -4,
+            mt: isMobile ? -10 : -1,
             position: 'relative',
             fontFamily: "'Playfair Display', Georgia, serif",
             letterSpacing: '0.5px',
             textTransform: 'uppercase',
-            fontSize: { xs: '1rem', sm: '1.25rem', md: '1.5rem' },
+            fontSize: { xs: '1rem', sm: '1.2rem', md: '1.2rem' },
           }}
         >
           {t('shop_our_best_products')}
@@ -165,7 +169,7 @@ export default function ProductsSection() {
                         >
                           {product.name}
                         </Typography>
-                        {/* <Typography
+                        <Typography
                           variant="body2"
                           sx={{
                             mt: -1,
@@ -177,8 +181,9 @@ export default function ProductsSection() {
                             color: '#7A6A55',
                           }}
                         >
-                          {formatCurrency(product.price || 0)}
-                        </Typography> */}
+                          {formatCurrency(convert(product.price || 0))}{' '}
+                          {displayCurrency}
+                        </Typography>
                       </CardContent>
                     </Card>
                   </Link>

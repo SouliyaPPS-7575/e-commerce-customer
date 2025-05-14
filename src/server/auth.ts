@@ -69,3 +69,13 @@ export const signupServer = createServerFn({ method: 'POST' })
       throw handleError(error);
     }
   });
+
+export const verifyEmailServer = createServerFn({ method: 'POST' })
+  .validator((d: { email: string }) => d)
+  .handler(async ({ data }) => {
+    try {
+      return await pb.collection('customers').requestVerification(data.email);
+    } catch (error) {
+      throw handleError(error);
+    }
+  });

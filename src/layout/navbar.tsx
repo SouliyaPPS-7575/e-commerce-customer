@@ -1,9 +1,12 @@
 import {
+  AccountCircle,
   Close as CloseIcon,
   MenuRounded,
   SearchRounded,
   ShoppingCartOutlined,
+  Logout,
 } from '@mui/icons-material';
+import Profile from '@mui/icons-material/Person'; // Adjust the import path if necessary
 import {
   AppBar,
   Badge,
@@ -17,6 +20,7 @@ import {
   IconButton,
   InputBase,
   List,
+  Menu,
   MenuItem,
   Toolbar,
   Typography,
@@ -30,7 +34,9 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import CurrencySelector from '~/components/CurrencySelector/CurrencySelector';
 import LanguageSelection from '~/components/LanguageSelection';
+import { useAuthToken } from '~/hooks/useAuthToken';
 import { type NavItem, navItems } from '~/layout/navItems';
+import { getToken } from '~/server/auth';
 import theme from '~/styles/theme';
 
 // Styled search component
@@ -111,8 +117,8 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
 
-  // const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  // const open = Boolean(anchorEl);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
 
   const navigate = useNavigate();
 
@@ -127,24 +133,26 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
     setSearchOpen(!searchOpen);
   };
 
-  // const handleAccountClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
-  //   try {
-  //     // Store the current target before async operation
-  //     const currentTarget = e.currentTarget;
+  const { token } = useAuthToken();
 
-  //     // Check authentication
-  //     const { token } = await getToken();
+  const handleAccountClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    try {
+      // Store the current target before async operation
+      const currentTarget = e.currentTarget;
 
-  //     if (!token || token === '') {
-  //       navigate({ to: '/login' });
-  //     } else {
-  //       // Important: use the stored reference, not e.currentTarget which might be null after async
-  //       setAnchorEl(currentTarget);
-  //     }
-  //   } catch (error) {
-  //     navigate({ to: '/login' });
-  //   }
-  // };
+      // Check authentication
+      const { token } = await getToken();
+
+      if (!token || token === '') {
+        navigate({ to: '/login' });
+      } else {
+        // Important: use the stored reference, not e.currentTarget which might be null after async
+        setAnchorEl(currentTarget);
+      }
+    } catch (error) {
+      navigate({ to: '/login' });
+    }
+  };
 
   const isTransparent = currentPage === 0;
 
@@ -273,81 +281,83 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
               <CurrencySelector isTransparent={isTransparent} />
 
               {/* User account dropdown */}
-              {/* <Box sx={{ position: 'relative' }}>
-                <IconButton
-                  color="inherit"
-                  onClick={handleAccountClick}
-                  aria-controls={open ? 'account-menu' : undefined}
-                  aria-haspopup="true"
-                  aria-expanded={open ? 'true' : undefined}
-                >
-                  <AccountCircle
-                    sx={{ color: isTransparent ? '#F5F0E6' : 'back' }}
-                  />
-                </IconButton>
-                <Menu
-                  id="account-menu"
-                  anchorEl={anchorEl}
-                  open={open}
-                  onClose={() => setAnchorEl(null)}
-                  MenuListProps={{
-                    'aria-labelledby': 'account-button',
-                  }}
-                  PaperProps={{
-                    elevation: 0,
-                    sx: {
-                      overflow: 'visible',
-                      filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.1))',
-                      mt: 1.5,
-                      borderRadius: 2,
-                      minWidth: 180,
-                      '& .MuiAvatar-root': {
-                        width: 32,
-                        height: 32,
-                        ml: -0.5,
-                        mr: 1,
-                      },
-                      '& .MuiMenuItem-root': {
-                        py: 1.5,
-                      },
-                    },
-                  }}
-                  transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-                  anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-                >
-                  <MenuItem
-                    onClick={() => {
-                      navigate({ to: '/profile' });
-                      setAnchorEl(null);
-                    }}
-                    sx={{
-                      color: '#4A5568',
-                      '&:hover': {
-                        backgroundColor: '#F7FAFC',
-                      },
-                    }}
+              {!isMobile && (
+                <Box sx={{ position: 'relative', ml: 1, mr: -1 }}>
+                  <IconButton
+                    color="inherit"
+                    onClick={handleAccountClick}
+                    aria-controls={open ? 'account-menu' : undefined}
+                    aria-haspopup="true"
+                    aria-expanded={open ? 'true' : undefined}
                   >
-                    <ProfileIcon sx={{ mr: 1, color: '#C98B6B' }} />
-                    <Typography>View Profile</Typography>
-                  </MenuItem>
-                  <Divider />
-                  <MenuItem
-                    onClick={() => {
-                      navigate({ to: '/logout' });
-                      setAnchorEl(null);
+                    <AccountCircle
+                      sx={{ color: isTransparent ? '#F5F0E6' : 'back' }}
+                    />
+                  </IconButton>
+                  <Menu
+                    id="account-menu"
+                    anchorEl={anchorEl}
+                    open={open}
+                    onClose={() => setAnchorEl(null)}
+                    MenuListProps={{
+                      'aria-labelledby': 'account-button',
                     }}
-                    sx={{
-                      color: '#4A5568',
-                      '&:hover': {
-                        backgroundColor: '#FEF2F2',
+                    PaperProps={{
+                      elevation: 0,
+                      sx: {
+                        overflow: 'visible',
+                        filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.1))',
+                        mt: 1.5,
+                        borderRadius: 2,
+                        minWidth: 180,
+                        '& .MuiAvatar-root': {
+                          width: 32,
+                          height: 32,
+                          ml: -0.5,
+                          mr: 1,
+                        },
+                        '& .MuiMenuItem-root': {
+                          py: 1.5,
+                        },
                       },
                     }}
+                    transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                    anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
                   >
-                    <LogoutIcon sx={{ mr: 1, color: '#E53E3E' }} />
-                    <Typography>Logout</Typography>
-                  </MenuItem>
-                </Menu>
-              </Box> */}
+                    <MenuItem
+                      onClick={() => {
+                        navigate({ to: '/profile' });
+                        setAnchorEl(null);
+                      }}
+                      sx={{
+                        color: '#4A5568',
+                        '&:hover': {
+                          backgroundColor: '#F7FAFC',
+                        },
+                      }}
+                    >
+                      <Profile sx={{ mr: 1, color: '#C98B6B' }} />
+                      <Typography>View Profile</Typography>
+                    </MenuItem>
+                    <Divider />
+                    <MenuItem
+                      onClick={() => {
+                        navigate({ to: '/logout' });
+                        setAnchorEl(null);
+                      }}
+                      sx={{
+                        color: '#4A5568',
+                        '&:hover': {
+                          backgroundColor: '#FEF2F2',
+                        },
+                      }}
+                    >
+                      <Logout sx={{ mr: 1, color: '#E53E3E' }} />
+                      <Typography>Logout</Typography>
+                    </MenuItem>
+                  </Menu>
+                </Box>
+              )}
 
               {/* Shopping cart */}
               <IconButton color="inherit">
@@ -430,6 +440,27 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
                   </MenuItem>
                 );
               })}
+
+              {token && (
+                <>
+                  <MenuItem
+                    onClick={() => {
+                      navigate({ to: '/profile' });
+                    }}
+                  >
+                    <Profile sx={{ mr: 1, color: '#C98B6B' }} />
+                    {t('profile')}
+                  </MenuItem>
+                  <MenuItem
+                    onClick={() => {
+                      navigate({ to: '/logout' });
+                    }}
+                  >
+                    <Logout sx={{ mr: 1, color: '#E53E3E' }} />
+                    {t('logout')}
+                  </MenuItem>
+                </>
+              )}
             </List>
           </Box>
         </Drawer>

@@ -76,6 +76,7 @@ function RouteComponent() {
 
             <form
               id="login-form"
+              onDragEnter={(e) => e.preventDefault()}
               onSubmit={(e) => {
                 e.preventDefault();
                 form.handleSubmit();

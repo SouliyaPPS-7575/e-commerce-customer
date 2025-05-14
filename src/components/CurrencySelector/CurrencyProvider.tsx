@@ -21,7 +21,13 @@ export const CurrencyProvider: React.FC<{ children: React.ReactNode }> = ({
   const [currency, setCurrency] = useState<string>('USD');
   const [rate, setRate] = useState<number>(1);
   const displayCurrency =
-    currency === 'THB' ? '฿' : currency === 'USD' ? '$' : currency;
+    currency === 'THB'
+      ? '฿'
+      : currency === 'USD'
+      ? '$'
+      : currency === 'LAK'
+      ? '₭'
+      : currency;
 
   useEffect(() => {
     const selected = currencies.find(
@@ -33,7 +39,7 @@ export const CurrencyProvider: React.FC<{ children: React.ReactNode }> = ({
   }, [currency, currencies]);
 
   const convert = (value: number) => {
-    if (currency === 'THB') return value * rate;
+    if (currency === 'THB') return value / rate;
     return value / rate; // for USD or others
   };
 
@@ -54,4 +60,16 @@ export const useCurrencyContext = () => {
     );
   }
   return context;
+};
+
+export const formatCurrency = (
+  value: number,
+  locale = 'en-US',
+) => {
+  const hasFraction = value % 1 !== 0;
+  return new Intl.NumberFormat(locale, {
+    style: 'decimal',
+    minimumFractionDigits: hasFraction ? 2 : 0,
+    maximumFractionDigits: 2,
+  }).format(value);
 };
