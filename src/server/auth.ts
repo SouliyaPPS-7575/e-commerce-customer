@@ -18,6 +18,8 @@ export const loginServer = createServerFn({ method: 'POST' })
         .collection('customers')
         .authWithPassword(data.identity, data.password);
 
+      pb.authStore.save(authData.token);
+
       const farFutureDate = new Date();
       farFutureDate.setFullYear(farFutureDate.getFullYear() + 20);
 
@@ -26,7 +28,7 @@ export const loginServer = createServerFn({ method: 'POST' })
         expires: farFutureDate,
       });
 
-      return { success: true };
+      return { success: true, authData };
     } catch (error) {
       throw handleError(error);
     }

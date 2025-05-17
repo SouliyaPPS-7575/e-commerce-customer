@@ -1,10 +1,11 @@
 import {
   AccountCircle,
   Close as CloseIcon,
+  Logout,
   MenuRounded,
+  Search,
   SearchRounded,
   ShoppingCartOutlined,
-  Logout,
 } from '@mui/icons-material';
 import Profile from '@mui/icons-material/Person'; // Adjust the import path if necessary
 import {
@@ -18,85 +19,25 @@ import {
   Divider,
   Drawer,
   IconButton,
-  InputBase,
   List,
   Menu,
   MenuItem,
   Toolbar,
   Typography,
-  alpha,
-  styled,
   useMediaQuery,
 } from '@mui/material';
-import { useQuery } from '@tanstack/react-query';
-import { useNavigate, useRouterState } from '@tanstack/react-router';
+import { Link, useNavigate, useRouterState } from '@tanstack/react-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import CurrencySelector from '~/components/CurrencySelector/CurrencySelector';
 import LanguageSelection from '~/components/LanguageSelection';
+import { useCountCartItems } from '~/hooks/shop/useAddCart';
 import { useAuthToken } from '~/hooks/useAuthToken';
 import { type NavItem, navItems } from '~/layout/navItems';
+import { NavbarProps } from '~/models/shop';
 import { getToken } from '~/server/auth';
+import { SearchIconWrapper, StyledInputBase } from '~/styles/navbar';
 import theme from '~/styles/theme';
-
-// Styled search component
-const Search = styled('div')(({ theme }) => ({
-  position: 'relative',
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.white, 0.15),
-  '&:hover': {
-    backgroundColor: alpha(theme.palette.common.white, 0.25),
-  },
-  marginRight: theme.spacing(2),
-  marginLeft: 0,
-  width: '100%',
-  [theme.breakpoints.up('sm')]: {
-    marginLeft: theme.spacing(3),
-    width: 'auto',
-  },
-  display: 'flex',
-  alignItems: 'center',
-}));
-
-const SearchIconWrapper = styled('div')(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: '100%',
-  position: 'absolute',
-  pointerEvents: 'none',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: 'inherit',
-  '& .MuiInputBase-input': {
-    padding: theme.spacing(1, 1, 1, 0),
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create('width'),
-    width: '100%',
-    [theme.breakpoints.up('md')]: {
-      width: '20ch',
-    },
-  },
-}));
-
-// Mock data fetching with TanStack Query
-const useCartItems = () => {
-  return useQuery({
-    queryKey: ['cartItems'],
-    queryFn: async () => {
-      // Simulate API call
-      return Promise.resolve(3);
-    },
-    initialData: 0,
-  });
-};
-
-interface NavbarProps {
-  currentPage?: number;
-  goToPage?: (page: number) => void;
-}
 
 const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
   const { t } = useTranslation();
@@ -107,7 +48,8 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
   const shouldRender = !(
     currentPath === '/login' ||
     currentPath === '/signup' ||
-    currentPath === '/forgot-password'
+    currentPath === '/forgot-password' ||
+    currentPath.startsWith('/verify-email')
   );
 
   // ✅ Only render null AFTER hooks
@@ -123,7 +65,7 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
   const navigate = useNavigate();
 
   // Get cart items count using TanStack Query
-  const { data: cartItemsCount } = useCartItems();
+  const { data: countCartItems } = useCountCartItems();
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -211,54 +153,56 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
                   mr: -10,
                 }}
               >
-                {navItems.map((item: NavItem) => (
-                  <Typography
-                    key={item.name}
-                    onClick={() => {
-                      if (currentPath === '/') {
-                        goToPage?.(item.page);
-                      } else {
-                        navigate({
-                          to: item.href,
-                        });
-                      }
-                    }}
-                    sx={{
-                      cursor: 'pointer',
-                      mx: 1,
-                      color: isTransparent ? '#F5F0E6' : 'back',
-                      fontWeight:
-                        currentPage === item.page ||
-                        (currentPath !== '/' &&
-                          currentPath.split('/')[1] ===
-                            item.href?.split('/')[1])
-                          ? 700
-                          : 400,
-                      position: 'relative',
-                      '&::after': {
-                        content: '""',
-                        position: 'absolute',
-                        width:
+                {navItems.map((item: NavItem) => {
+                  return (
+                    <Typography
+                      key={item.name}
+                      onClick={() => {
+                        if (currentPath === '/') {
+                          goToPage?.(item.page);
+                        } else {
+                          navigate({
+                            to: item.href,
+                          });
+                        }
+                      }}
+                      sx={{
+                        cursor: 'pointer',
+                        mx: 1,
+                        color: isTransparent ? '#F5F0E6' : 'back',
+                        fontWeight:
                           currentPage === item.page ||
                           (currentPath !== '/' &&
                             currentPath.split('/')[1] ===
                               item.href?.split('/')[1])
-                            ? '100%'
-                            : '0%',
-                        height: '2px',
-                        bottom: 0,
-                        left: 0,
-                        backgroundColor: 'primary.main',
-                        transition: 'width 0.3s ease',
-                      },
-                      '&:hover::after': {
-                        width: '100%',
-                      },
-                    }}
-                  >
-                    {t(item.name)}
-                  </Typography>
-                ))}
+                            ? 700
+                            : 400,
+                        position: 'relative',
+                        '&::after': {
+                          content: '""',
+                          position: 'absolute',
+                          width:
+                            currentPage === item.page ||
+                            (currentPath !== '/' &&
+                              currentPath.split('/')[1] ===
+                                item.href?.split('/')[1])
+                              ? '100%'
+                              : '0%',
+                          height: '2px',
+                          bottom: 0,
+                          left: 0,
+                          backgroundColor: 'primary.main',
+                          transition: 'width 0.3s ease',
+                        },
+                        '&:hover::after': {
+                          width: '100%',
+                        },
+                      }}
+                    >
+                      {t(item.name)}
+                    </Typography>
+                  );
+                })}
               </Box>
             )}
 
@@ -337,7 +281,7 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
                       }}
                     >
                       <Profile sx={{ mr: 1, color: '#C98B6B' }} />
-                      <Typography>View Profile</Typography>
+                      <Typography>{t('view_profile')}</Typography>
                     </MenuItem>
                     <Divider />
                     <MenuItem
@@ -353,30 +297,32 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
                       }}
                     >
                       <Logout sx={{ mr: 1, color: '#E53E3E' }} />
-                      <Typography>Logout</Typography>
+                      <Typography>{t('logout')}</Typography>
                     </MenuItem>
                   </Menu>
                 </Box>
               )}
 
               {/* Shopping cart */}
-              <IconButton color="inherit">
-                <Badge
-                  badgeContent={cartItemsCount}
-                  color="primary"
-                  sx={{
-                    '& .MuiBadge-badge': {
-                      color: '#ffffff',
-                      fontSize: '1rem',
-                    },
-                    ml: 1,
-                  }}
-                >
-                  <ShoppingCartOutlined
-                    sx={{ color: isTransparent ? '#F5F0E6' : 'back' }}
-                  />
-                </Badge>
-              </IconButton>
+              <Link to="/shop/add-cart" style={{ textDecoration: 'none' }}>
+                <IconButton color="inherit">
+                  <Badge
+                    badgeContent={countCartItems}
+                    color="primary"
+                    sx={{
+                      '& .MuiBadge-badge': {
+                        color: '#ffffff',
+                        fontSize: '1rem',
+                      },
+                      ml: 1,
+                    }}
+                  >
+                    <ShoppingCartOutlined
+                      sx={{ color: isTransparent ? '#F5F0E6' : 'back' }}
+                    />
+                  </Badge>
+                </IconButton>
+              </Link>
 
               {/* Language change */}
               <LanguageSelection />
@@ -417,6 +363,7 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
               {navItems.map((item) => {
                 const isSelected =
                   currentPath === '/' && currentPage === item.page;
+                const Icon = item.icon;
                 return (
                   <MenuItem
                     key={item.name}
@@ -436,6 +383,15 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
                       toggleMobileMenu();
                     }}
                   >
+                    {Icon && (
+                      <Icon
+                        sx={{
+                          fontSize: '1.25rem',
+                          verticalAlign: 'middle',
+                          mr: 1.5,
+                        }}
+                      />
+                    )}
                     {t(item.name)}
                   </MenuItem>
                 );

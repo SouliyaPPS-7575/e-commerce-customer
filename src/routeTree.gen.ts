@@ -21,6 +21,8 @@ import { Route as ShopIndexImport } from './routes/shop/index'
 import { Route as ContactIndexImport } from './routes/contact/index'
 import { Route as BlogIndexImport } from './routes/blog/index'
 import { Route as AboutIndexImport } from './routes/about/index'
+import { Route as VerifyEmailEmailImport } from './routes/verify-email.$email'
+import { Route as ShopAddCartImport } from './routes/shop/add-cart'
 import { Route as BlogViewIdImport } from './routes/blog/view.$id'
 import { Route as ShopViewProductIDCategoryIDImport } from './routes/shop/view.$productID.$categoryID'
 
@@ -86,6 +88,18 @@ const AboutIndexRoute = AboutIndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const VerifyEmailEmailRoute = VerifyEmailEmailImport.update({
+  id: '/verify-email/$email',
+  path: '/verify-email/$email',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ShopAddCartRoute = ShopAddCartImport.update({
+  id: '/shop/add-cart',
+  path: '/shop/add-cart',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const BlogViewIdRoute = BlogViewIdImport.update({
   id: '/blog/view/$id',
   path: '/blog/view/$id',
@@ -145,6 +159,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SignupImport
       parentRoute: typeof rootRoute
     }
+    '/shop/add-cart': {
+      id: '/shop/add-cart'
+      path: '/shop/add-cart'
+      fullPath: '/shop/add-cart'
+      preLoaderRoute: typeof ShopAddCartImport
+      parentRoute: typeof rootRoute
+    }
+    '/verify-email/$email': {
+      id: '/verify-email/$email'
+      path: '/verify-email/$email'
+      fullPath: '/verify-email/$email'
+      preLoaderRoute: typeof VerifyEmailEmailImport
+      parentRoute: typeof rootRoute
+    }
     '/about/': {
       id: '/about/'
       path: '/about'
@@ -199,6 +227,8 @@ export interface FileRoutesByFullPath {
   '/logout': typeof LogoutRoute
   '/profile': typeof ProfileRoute
   '/signup': typeof SignupRoute
+  '/shop/add-cart': typeof ShopAddCartRoute
+  '/verify-email/$email': typeof VerifyEmailEmailRoute
   '/about': typeof AboutIndexRoute
   '/blog': typeof BlogIndexRoute
   '/contact': typeof ContactIndexRoute
@@ -214,6 +244,8 @@ export interface FileRoutesByTo {
   '/logout': typeof LogoutRoute
   '/profile': typeof ProfileRoute
   '/signup': typeof SignupRoute
+  '/shop/add-cart': typeof ShopAddCartRoute
+  '/verify-email/$email': typeof VerifyEmailEmailRoute
   '/about': typeof AboutIndexRoute
   '/blog': typeof BlogIndexRoute
   '/contact': typeof ContactIndexRoute
@@ -230,6 +262,8 @@ export interface FileRoutesById {
   '/logout': typeof LogoutRoute
   '/profile': typeof ProfileRoute
   '/signup': typeof SignupRoute
+  '/shop/add-cart': typeof ShopAddCartRoute
+  '/verify-email/$email': typeof VerifyEmailEmailRoute
   '/about/': typeof AboutIndexRoute
   '/blog/': typeof BlogIndexRoute
   '/contact/': typeof ContactIndexRoute
@@ -247,6 +281,8 @@ export interface FileRouteTypes {
     | '/logout'
     | '/profile'
     | '/signup'
+    | '/shop/add-cart'
+    | '/verify-email/$email'
     | '/about'
     | '/blog'
     | '/contact'
@@ -261,6 +297,8 @@ export interface FileRouteTypes {
     | '/logout'
     | '/profile'
     | '/signup'
+    | '/shop/add-cart'
+    | '/verify-email/$email'
     | '/about'
     | '/blog'
     | '/contact'
@@ -275,6 +313,8 @@ export interface FileRouteTypes {
     | '/logout'
     | '/profile'
     | '/signup'
+    | '/shop/add-cart'
+    | '/verify-email/$email'
     | '/about/'
     | '/blog/'
     | '/contact/'
@@ -291,6 +331,8 @@ export interface RootRouteChildren {
   LogoutRoute: typeof LogoutRoute
   ProfileRoute: typeof ProfileRoute
   SignupRoute: typeof SignupRoute
+  ShopAddCartRoute: typeof ShopAddCartRoute
+  VerifyEmailEmailRoute: typeof VerifyEmailEmailRoute
   AboutIndexRoute: typeof AboutIndexRoute
   BlogIndexRoute: typeof BlogIndexRoute
   ContactIndexRoute: typeof ContactIndexRoute
@@ -306,6 +348,8 @@ const rootRouteChildren: RootRouteChildren = {
   LogoutRoute: LogoutRoute,
   ProfileRoute: ProfileRoute,
   SignupRoute: SignupRoute,
+  ShopAddCartRoute: ShopAddCartRoute,
+  VerifyEmailEmailRoute: VerifyEmailEmailRoute,
   AboutIndexRoute: AboutIndexRoute,
   BlogIndexRoute: BlogIndexRoute,
   ContactIndexRoute: ContactIndexRoute,
@@ -330,6 +374,8 @@ export const routeTree = rootRoute
         "/logout",
         "/profile",
         "/signup",
+        "/shop/add-cart",
+        "/verify-email/$email",
         "/about/",
         "/blog/",
         "/contact/",
@@ -355,6 +401,12 @@ export const routeTree = rootRoute
     },
     "/signup": {
       "filePath": "signup.tsx"
+    },
+    "/shop/add-cart": {
+      "filePath": "shop/add-cart.tsx"
+    },
+    "/verify-email/$email": {
+      "filePath": "verify-email.$email.tsx"
     },
     "/about/": {
       "filePath": "about/index.tsx"

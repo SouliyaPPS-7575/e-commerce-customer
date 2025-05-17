@@ -17,7 +17,7 @@ interface CurrencySelectorProps {
   size?: 'small' | 'medium';
   variant?: 'standard' | 'outlined' | 'filled';
   minWidth?: number;
-  isTransparent: boolean;
+  isTransparent?: boolean;
 }
 
 const CurrencySelector: React.FC<CurrencySelectorProps> = ({

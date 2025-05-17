@@ -43,18 +43,21 @@ export async function secureFetch<T>(
 // Generic function to fetch a single document from the collection
 export const fetchPb = async <T extends Record<string, any>>(
   collection: string,
-  id: string | any,
+  id: string,
 ): Promise<T> => {
-  const record = await pb.collection(collection).getOne<T>(id);
-  return record;
+  return await secureFetch(collection, async () => {
+    return await pb.collection(collection).getOne<T>(id);
+  });
 };
 
 // Generic function to fetch all documents from the collection
-export async function fetchAllPb<
-  T extends Record<string, any>,
->(collectionName: string): Promise<T[]> {
-  const records = await pb.collection(collectionName).getFullList();
-  return records.map((record) => record as unknown as T);
+export async function fetchAllPb<T extends Record<string, any>>(
+  collectionName: string,
+): Promise<T[]> {
+  return await secureFetch(collectionName, async () => {
+    const records = await pb.collection(collectionName).getFullList();
+    return records.map((record) => record as unknown as T);
+  });
 }
 
 // Generic function to create a document in the collection
@@ -62,8 +65,10 @@ export async function createPb<T extends Record<string, any>>(
   collectionName: string,
   data: T,
 ): Promise<string> {
-  const record = await pb.collection(collectionName).create(data);
-  return record.id;
+  return await secureFetch(collectionName, async () => {
+    const record = await pb.collection(collectionName).create(data);
+    return record.id;
+  });
 }
 
 // Generic function to update a document in the collection
@@ -72,7 +77,9 @@ export async function updatePb<T extends Record<string, any>>(
   id: string,
   data: Partial<T>,
 ): Promise<void> {
-  await pb.collection(collectionName).update(id, data);
+  await secureFetch(collectionName, async () => {
+    await pb.collection(collectionName).update(id, data);
+  });
 }
 
 // Generic function to delete a document from the collection
@@ -80,5 +87,7 @@ export async function deletePb(
   collectionName: string,
   id: string,
 ): Promise<void> {
-  await pb.collection(collectionName).delete(id);
+  await secureFetch(collectionName, async () => {
+    await pb.collection(collectionName).delete(id);
+  });
 }

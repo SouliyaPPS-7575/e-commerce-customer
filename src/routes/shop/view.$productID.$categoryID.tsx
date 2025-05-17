@@ -20,6 +20,7 @@ import { useTranslation } from 'react-i18next';
 import { useCurrencyContext } from '~/components/CurrencySelector/CurrencyProvider';
 import Footer from '~/containers/footer';
 import ProductImageGallery from '~/containers/shop/ProductImageGallery';
+import { useAddCart } from '~/hooks/shop/useAddCart';
 import { useProducts } from '~/hooks/shop/useProducts';
 import {
   productsByCategoryQueryOption,
@@ -76,6 +77,8 @@ function ProductDetailComponent() {
   const filteredRelateProducts = productsData.filter((product) =>
     relateProducts.some((relatedProduct) => relatedProduct === product.id),
   );
+
+  const { addCart } = useAddCart();
 
   return (
     <>
@@ -180,7 +183,17 @@ function ProductDetailComponent() {
                         <ShoppingBag />
                       )
                     }
-                    onClick={() => {}}
+                    onClick={() =>
+                      addCart({
+                        data: {
+                          product_id: product.id,
+                          customer_id:
+                            localStorage.getItem('customer_id') || '',
+                          status: 'pending',
+                          quantity: 1,
+                        },
+                      })
+                    }
                     disabled={isLoading}
                     sx={{
                       width: '70%',
@@ -341,7 +354,8 @@ function ProductDetailComponent() {
                               color: '#7A6A55',
                             }}
                           >
-                            {formatCurrency(product.price || 0)}
+                            {formatCurrency(convert(product.price || 0))}{' '}
+                            {displayCurrency}
                           </Typography>
                         </CardContent>
                       </Card>
@@ -480,7 +494,8 @@ function ProductDetailComponent() {
                               color: '#7A6A55',
                             }}
                           >
-                            {formatCurrency(product.price || 0)}
+                            {formatCurrency(convert(product.price || 0))}{' '}
+                            {displayCurrency}
                           </Typography>
                         </CardContent>
                       </Card>

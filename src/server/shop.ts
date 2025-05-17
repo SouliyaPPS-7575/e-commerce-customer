@@ -1,12 +1,19 @@
 import { createServerFn } from '@tanstack/react-start';
 import {
+  CartItem,
   CategoriesItem,
+  CreateAddCart,
   CurrencyItem,
+  EditCartItem,
   ProductItem,
   ProductRankingItem,
   RelateProductsItem,
 } from '~/models/shop';
-import pb, { fetchAllPb, fetchPb } from '~/services/pocketbaseService';
+import pb, {
+  createPb,
+  fetchAllPb,
+  fetchPb,
+} from '~/services/pocketbaseService';
 import { handleError } from './errorHandler';
 
 // This function fetches all products from the PocketBase database
@@ -95,6 +102,65 @@ export const getCurrency = createServerFn({
 }).handler(async () => {
   try {
     return await fetchAllPb<CurrencyItem>('currency');
+  } catch (error) {
+    throw handleError(error);
+  }
+});
+
+export const createAddCart = createServerFn({ method: 'POST' })
+  .validator((d: CreateAddCart) => d)
+  .handler(async ({ data }) => {
+    try {
+      const addCart = await createPb<CreateAddCart>('carts', data);
+
+      return { success: true, addCart };
+    } catch (error) {
+      throw handleError(error);
+    }
+  });
+
+export const getCartItems = createServerFn({
+  method: 'GET',
+}).handler(async () => {
+  try {
+    return await pb.collection<CartItem>('carts').getFullList();
+  } catch (error) {
+    throw handleError(error);
+  }
+});
+
+export const deleteCartItem = createServerFn({
+  method: 'POST',
+})
+  .validator((d: { id: string }) => d)
+  .handler(async ({ data }) => {
+    try {
+      return await pb.collection('carts').delete(data.id);
+    } catch (error) {
+      throw handleError(error);
+    }
+  });
+
+export const editCartItem = createServerFn({
+  method: 'POST',
+})
+  .validator((d: { id: string; formData: EditCartItem }) => d)
+  .handler(async ({ data }) => {
+    try {
+      return await pb.collection('carts').update(data.id, data.formData);
+    } catch (error) {
+      console.error('Cart update error:', error);
+      throw handleError(error);
+    }
+  });
+
+export const getCountCartItems = createServerFn({
+  method: 'GET',
+}).handler(async () => {
+  try {
+    const cartItems = await fetchAllPb<CartItem>('carts');
+    const countCartItems = cartItems.length;
+    return Promise.resolve(countCartItems);
   } catch (error) {
     throw handleError(error);
   }

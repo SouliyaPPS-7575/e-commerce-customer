@@ -32,30 +32,21 @@ export const Route = createFileRoute('/signup')({
 function RouteComponent() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  // const [_otpSent, setOtpSent] = useState(false);
-  // const handleSendOTP = () => {
-  //   setOtpSent(true);
-  // };
 
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleTogglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
   };
 
+  const handleToggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword((prev) => !prev);
+  };
+
   const { mutate: createUser } = useMutation({
     mutationFn: signupServer,
-    onSuccess: () => {
-      toast.success(t('successfully'));
-    },
-  });
-
-  const { mutate: verifyEmail } = useMutation({
-    mutationFn: verifyEmailServer,
-    onSuccess: () => {
-      navigate({ to: '/login' });
-      toast.success(t('send_email_verifications'));
-    },
+    onSuccess: () => {},
   });
 
   const form = useForm({
@@ -80,8 +71,6 @@ function RouteComponent() {
         },
         {
           onSuccess: () => {
-            console.log('=> email', value.email);
-
             verifyEmail({
               data: {
                 email: value.email,
@@ -93,6 +82,16 @@ function RouteComponent() {
     },
   });
 
+  const { mutate: verifyEmail } = useMutation({
+    mutationFn: verifyEmailServer,
+    onSuccess: () => {
+      navigate({
+        to: '/verify-email/$email',
+        params: { email: form.getFieldValue('email') },
+      });
+      toast.success(t('send_email_verifications'));
+    },
+  });
   return (
     <Box
       sx={{
@@ -262,7 +261,7 @@ function RouteComponent() {
                       type={showPassword ? 'text' : 'password'}
                       placeholder={t('password')}
                       value={field.state.value ?? ''}
-                      onChange={(e) => field.handleChange(e.target.value)}
+                      onChange={(e) => field.handleChange(e.target.value ?? '')}
                       onBlur={field.handleBlur}
                       InputProps={{
                         startAdornment: (
@@ -319,10 +318,10 @@ function RouteComponent() {
                       fullWidth
                       margin="normal"
                       variant="outlined"
-                      type={showPassword ? 'text' : 'password'}
+                      type={showConfirmPassword ? 'text' : 'password'}
                       placeholder={t('confirm_password')}
                       value={field.state.value ?? ''}
-                      onChange={(e) => field.handleChange(e.target.value)}
+                      onChange={(e) => field.handleChange(e.target.value ?? '')}
                       onBlur={field.handleBlur}
                       InputProps={{
                         startAdornment: (
@@ -333,15 +332,15 @@ function RouteComponent() {
                         endAdornment: (
                           <InputAdornment position="end">
                             <IconButton
-                              onClick={handleTogglePasswordVisibility}
+                              onClick={handleToggleConfirmPasswordVisibility}
                               edge="end"
                               sx={{
-                                color: showPassword
+                                color: showConfirmPassword
                                   ? 'primary.main'
                                   : 'grey.500',
                               }}
                             >
-                              {showPassword ? (
+                              {showConfirmPassword ? (
                                 <Visibility />
                               ) : (
                                 <VisibilityOff />
@@ -358,45 +357,6 @@ function RouteComponent() {
                     />
                   )}
                 </form.Field>
-
-                {/* OTP Field */}
-                {/* <Box sx={{ position: 'relative', mt: 0, mb: 2 }}>
-                  <form.Field name="otp">
-                    {(field) => (
-                      <TextField
-                        id={field.name}
-                        name={field.name}
-                        value={field.state.value ?? ''}
-                        onChange={(e) => field.handleChange(e.target.value)}
-                        onBlur={field.handleBlur}
-                        fullWidth
-                        label={t('verify_otp')}
-                        placeholder={t('verify_otp')}
-                        margin="normal"
-                      />
-                    )}
-                  </form.Field>
-
-                  <Box
-                    sx={{
-                      position: 'absolute',
-                      right: 0,
-                      top: '110%',
-                      transform: 'translateY(-50%)',
-                    }}
-                  >
-                    <Typography
-                      onClick={handleSendOTP}
-                      sx={{
-                        textTransform: 'none',
-                        color: '#0F5791',
-                        cursor: 'pointer',
-                      }}
-                    >
-                      {t('send_otp')}
-                    </Typography>
-                  </Box>
-                </Box> */}
 
                 <Button
                   type="submit"

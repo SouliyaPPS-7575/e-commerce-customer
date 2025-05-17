@@ -26,7 +26,7 @@ export const CurrencyProvider: React.FC<{ children: React.ReactNode }> = ({
       : currency === 'USD'
       ? '$'
       : currency === 'LAK'
-      ? '₭'
+      ? 'LAK'
       : currency;
 
   useEffect(() => {

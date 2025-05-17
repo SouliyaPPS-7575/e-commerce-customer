@@ -10,7 +10,8 @@ export const useLogin = () => {
   // TanStack Query mutation for login
   const login = useMutation({
     mutationFn: loginServer,
-    onSuccess: () => {
+    onSuccess: ({ authData }) => {
+      localStorage.setItem('customer_id', authData.record.id);
       navigate({ to: '/' });
     },
   });
