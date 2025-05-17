@@ -28,6 +28,11 @@ export const loginServer = createServerFn({ method: 'POST' })
         expires: farFutureDate,
       });
 
+      setCookie('customer_id', authData.record.id, {
+        sameSite: 'lax',
+        expires: farFutureDate,
+      });
+
       return { success: true, authData };
     } catch (error) {
       throw handleError(error);
@@ -39,6 +44,7 @@ export const logoutServer = createServerFn({ method: 'POST' }).handler(
   async () => {
     try {
       deleteCookie('token');
+      deleteCookie('customer_id');
       pb.authStore.clear();
       return { success: true };
     } catch (error) {

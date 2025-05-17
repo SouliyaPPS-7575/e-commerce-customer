@@ -1,4 +1,5 @@
 import { createServerFn } from '@tanstack/react-start';
+import { getCookie } from '@tanstack/react-start/server';
 import {
   CartItem,
   CategoriesItem,
@@ -123,7 +124,14 @@ export const getCartItems = createServerFn({
   method: 'GET',
 }).handler(async () => {
   try {
-    return await pb.collection<CartItem>('carts').getFullList();
+    const customer_id = await getCookie('customer_id');
+    if (!customer_id) return 0;
+
+    const cartItems = await pb.collection<CartItem>('carts').getFullList({
+      filter: `customer_id = "${customer_id}"`,
+    });
+
+    return cartItems;
   } catch (error) {
     throw handleError(error);
   }
@@ -158,9 +166,14 @@ export const getCountCartItems = createServerFn({
   method: 'GET',
 }).handler(async () => {
   try {
-    const cartItems = await fetchAllPb<CartItem>('carts');
-    const countCartItems = cartItems.length;
-    return Promise.resolve(countCartItems);
+    const customer_id = await getCookie('customer_id');
+    if (!customer_id) return 0;
+
+    const cartItems = await pb.collection('carts').getFullList({
+      filter: `customer_id = "${customer_id}"`,
+    });
+
+    return cartItems.length;
   } catch (error) {
     throw handleError(error);
   }

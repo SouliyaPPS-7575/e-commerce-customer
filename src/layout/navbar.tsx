@@ -220,10 +220,8 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
                   sx={{ color: isTransparent ? '#F5F0E6' : 'back' }}
                 />
               </IconButton>
-
               {/* Currency selector */}
               <CurrencySelector isTransparent={isTransparent} />
-
               {/* User account dropdown */}
               {!isMobile && (
                 <Box sx={{ position: 'relative', ml: 1, mr: -1 }}>
@@ -302,31 +300,33 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
                   </Menu>
                 </Box>
               )}
-
+              
               {/* Shopping cart */}
-              <Link to="/shop/add-cart" style={{ textDecoration: 'none' }}>
-                <IconButton color="inherit">
-                  <Badge
-                    badgeContent={countCartItems}
-                    color="primary"
-                    sx={{
-                      '& .MuiBadge-badge': {
-                        color: '#ffffff',
-                        fontSize: '1rem',
-                      },
-                      ml: 1,
-                    }}
-                  >
-                    <ShoppingCartOutlined
-                      sx={{ color: isTransparent ? '#F5F0E6' : 'back' }}
-                    />
-                  </Badge>
-                </IconButton>
-              </Link>
+              {localStorage.getItem('token') ||
+                (localStorage.getItem('customer_id') && (
+                  <Link to="/shop/add-cart" style={{ textDecoration: 'none' }}>
+                    <IconButton color="inherit">
+                      <Badge
+                        badgeContent={countCartItems}
+                        color="primary"
+                        sx={{
+                          '& .MuiBadge-badge': {
+                            color: '#ffffff',
+                            fontSize: '1rem',
+                          },
+                          ml: 1,
+                        }}
+                      >
+                        <ShoppingCartOutlined
+                          sx={{ color: isTransparent ? '#F5F0E6' : 'back' }}
+                        />
+                      </Badge>
+                    </IconButton>
+                  </Link>
+                ))}
 
               {/* Language change */}
               <LanguageSelection />
-
               {/* Mobile menu button */}
               <IconButton
                 color="inherit"

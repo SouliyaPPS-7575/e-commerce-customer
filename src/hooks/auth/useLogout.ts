@@ -8,6 +8,7 @@ export const useLogout = () => {
   const mutation = useMutation({
     mutationFn: logoutServer,
     onSuccess: () => {
+      localStorage.removeItem('customer_id');
       navigate({ to: '/login' });
     },
   });

@@ -14,7 +14,7 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import { createFileRoute, Link } from '@tanstack/react-router';
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useCurrencyContext } from '~/components/CurrencySelector/CurrencyProvider';
@@ -54,6 +54,8 @@ export const Route = createFileRoute('/shop/view/$productID/$categoryID')({
 });
 
 function ProductDetailComponent() {
+  const navigate = useNavigate();
+
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -183,17 +185,24 @@ function ProductDetailComponent() {
                         <ShoppingBag />
                       )
                     }
-                    onClick={() =>
-                      addCart({
-                        data: {
-                          product_id: product.id,
-                          customer_id:
-                            localStorage.getItem('customer_id') || '',
-                          status: 'pending',
-                          quantity: 1,
-                        },
-                      })
-                    }
+                    onClick={() => {
+                      if (
+                        localStorage.getItem('customer_id') === null ||
+                        localStorage.getItem('customer_id') === ''
+                      ) {
+                        navigate({ to: '/login' });
+                      } else {
+                        addCart({
+                          data: {
+                            product_id: product.id,
+                            customer_id:
+                              localStorage.getItem('customer_id') || '',
+                            status: 'pending',
+                            quantity: 1,
+                          },
+                        });
+                      }
+                    }}
                     disabled={isLoading}
                     sx={{
                       width: '70%',
