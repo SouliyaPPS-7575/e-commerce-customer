@@ -1,6 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { logoutServer } from '~/server/auth';
+import { localStorageData } from '~/server/cache';
 
 export const useLogout = () => {
   const navigate = useNavigate();
@@ -8,7 +9,7 @@ export const useLogout = () => {
   const mutation = useMutation({
     mutationFn: logoutServer,
     onSuccess: () => {
-      localStorage.removeItem('customer_id');
+      localStorageData('customer_id').removeLocalStorage();
       navigate({ to: '/login' });
     },
   });

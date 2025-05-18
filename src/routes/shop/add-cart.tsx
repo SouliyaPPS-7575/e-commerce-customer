@@ -12,6 +12,8 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -54,14 +56,20 @@ function RouteComponent() {
     handleQuantityChange,
     handleRemoveItem,
     calculateSubtotal,
+    onClose,
+    handleCheckout,
   } = useCartPage();
 
-  const onClose = () => {
-    history.back();
-  };
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
-    <StyledDialog open={true} onClose={onClose} fullWidth>
+    <StyledDialog
+      open={true}
+      onClose={onClose}
+      fullScreen={fullScreen}
+      fullWidth
+    >
       <Box
         sx={{
           display: 'flex',
@@ -127,7 +135,7 @@ function RouteComponent() {
 
                     <TextField
                       variant="standard"
-                      value={item.quantity === 0 ? '' : item.quantity}
+                      value={item.quantity}
                       InputProps={{ disableUnderline: true }}
                       sx={{
                         width: 30,
@@ -135,12 +143,9 @@ function RouteComponent() {
                         '& .MuiInputBase-input': { p: 0 },
                       }}
                       onChange={(e) => {
-                        const value = e.target.value;
-                        const numericValue = parseInt(value);
-                        if (value === '') {
-                          handleQuantityChange(item.id, 0);
-                        } else if (!isNaN(numericValue)) {
-                          handleQuantityChange(item.id, numericValue);
+                        const quantity = parseInt(e.target.value);
+                        if (!isNaN(quantity)) {
+                          handleQuantityChange(item.id, quantity);
                         }
                       }}
                     />
@@ -177,7 +182,7 @@ function RouteComponent() {
         </Typography>
       </Box>
       <DialogActions sx={{ flexDirection: 'column', p: 2, pt: 0 }}>
-        <CheckoutButton fullWidth variant="contained" onClick={() => {}}>
+        <CheckoutButton fullWidth variant="contained" onClick={handleCheckout}>
           {t('checkout')}
         </CheckoutButton>
 

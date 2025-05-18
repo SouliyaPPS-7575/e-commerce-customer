@@ -5,9 +5,13 @@ import { initReactI18next } from 'react-i18next';
 // ✅ Import translations directly from the public folder
 import enTranslation from '~/locales/en.json';
 import laTranslation from '~/locales/la.json';
+import { localStorageData } from '~/server/cache';
 
 // 🚀 Safely get language (Avoid `localStorage` in SSR)
-const getLanguage = () => (typeof window !== 'undefined' ? localStorage.getItem('language') || 'en' : 'en');
+const getLanguage = () =>
+  typeof window !== 'undefined'
+    ? localStorageData('language').getLocalStrage() || 'en'
+    : 'en';
 
 // ✅ Define resources
 const resources = {

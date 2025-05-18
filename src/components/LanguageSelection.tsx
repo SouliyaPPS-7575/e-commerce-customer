@@ -7,6 +7,7 @@ import {
   type SelectChangeEvent,
 } from '@mui/material';
 import { forwardRef, useEffect, useState } from 'react';
+import { localStorageData } from '~/server/cache';
 import i18next from '~/utils/i18n';
 
 const CustomSelect = forwardRef<HTMLDivElement, SelectProps>((props, ref) => (
@@ -16,7 +17,7 @@ const CustomSelect = forwardRef<HTMLDivElement, SelectProps>((props, ref) => (
 function LanguageSelection() {
   const [language, setLanguage] = useState<string>(() => {
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('language') || 'la';
+      return localStorageData('language').getLocalStrage() || 'la';
     }
     return 'la';
   });
@@ -31,7 +32,7 @@ function LanguageSelection() {
     const selectedLanguage = e.target.value;
     setLanguage(selectedLanguage as string);
     if (typeof window !== 'undefined') {
-      localStorage.setItem('language', selectedLanguage as string);
+      localStorageData('language').setLocalStorage(selectedLanguage as string);
     }
     i18next.changeLanguage(selectedLanguage as string);
   };

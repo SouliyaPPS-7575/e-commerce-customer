@@ -1,5 +1,12 @@
 // src/contexts/CurrencyContext.tsx
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useMemo,
+  useCallback,
+} from 'react';
 import { useCurrency } from '~/hooks/shop/useCurrency';
 
 interface CurrencyContextType {
@@ -20,14 +27,18 @@ export const CurrencyProvider: React.FC<{ children: React.ReactNode }> = ({
   const { currencies } = useCurrency();
   const [currency, setCurrency] = useState<string>('USD');
   const [rate, setRate] = useState<number>(1);
-  const displayCurrency =
-    currency === 'THB'
-      ? '฿'
-      : currency === 'USD'
-      ? '$'
-      : currency === 'LAK'
-      ? 'LAK'
-      : currency;
+  const displayCurrency = useMemo(() => {
+    switch (currency) {
+      case 'THB':
+        return '฿';
+      case 'USD':
+        return '$';
+      case 'LAK':
+        return 'LAK';
+      default:
+        return currency;
+    }
+  }, [currency]);
 
   useEffect(() => {
     const selected = currencies.find(
@@ -38,10 +49,9 @@ export const CurrencyProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, [currency, currencies]);
 
-  const convert = (value: number) => {
-    if (currency === 'THB') return value / rate;
-    return value / rate; // for USD or others
-  };
+  const convert = useCallback((value: number) => {
+    return value / rate;
+  }, [rate]);
 
   return (
     <CurrencyContext.Provider

@@ -14,7 +14,7 @@ const theme = createTheme({
     text: { primary: '#000', secondary: '#000' },
   },
   typography: {
-    fontFamily: 'Playfair Display',
+    fontFamily: 'Canela Trial',
     button: { textTransform: 'none' },
   },
   components: {
@@ -24,11 +24,11 @@ const theme = createTheme({
           // Load both fonts from Google Fonts
           '@font-face': [
             {
-              fontFamily: 'Playfair Display',
+              fontFamily: 'Canela Trial',
               fontStyle: 'normal',
               fontWeight: 400,
               fontDisplay: 'swap',
-              src: `url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap') format('woff2')`,
+              src: `url('https://fonts.googleapis.com/css2?family=Canela+Trial&display=swap') format('woff2')`,
             },
             {
               fontFamily: 'Noto Sans Lao',
@@ -41,14 +41,14 @@ const theme = createTheme({
           // Global font override using :lang()
           body: {
             background: 'linear-gradient(to bottom right, #F5F5F5, #F5F0E6)',
-            fontFamily: `'Playfair Display', 'Noto Sans Lao', sans-serif`,
+            fontFamily: `'Canela Trial', 'Noto Sans Lao', sans-serif`,
           },
           // Use Noto Sans Lao when content is in Lao
           ':lang(lo)': {
             fontFamily: `'Noto Sans Lao', sans-serif`,
           },
           ':lang(en)': {
-            fontFamily: `'Playfair Display', serif`,
+            fontFamily: `'Canela Trial', serif`,
           },
         },
       },

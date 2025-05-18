@@ -12,6 +12,14 @@ import React from 'react';
 import { useCurrency } from '~/hooks/shop/useCurrency';
 import { useCurrencyContext } from './CurrencyProvider';
 
+const CustomArrowDropDownIcon = ({ color }: { color: string }) => (
+  <ArrowDropDownIcon sx={{ color, marginLeft: -9.5 }} />
+);
+
+const CustomArrowDropUpIcon = ({ color }: { color: string }) => (
+  <ArrowDropUpIcon sx={{ color, marginLeft: -9.5 }} />
+);
+
 interface CurrencySelectorProps {
   showLabel?: boolean;
   size?: 'small' | 'medium';
@@ -38,20 +46,39 @@ const CurrencySelector: React.FC<CurrencySelectorProps> = ({
     setCurrency(event.target.value);
   };
 
-  const filteredCurrencies = currencies.filter((item) => item.type === 'SELL');
-
-  const CustomArrowDropDownIcon = ({ color }: { color: string }) => (
-    <ArrowDropDownIcon sx={{ color, marginLeft: -9.5 }} />
+  const filteredCurrencies = React.useMemo(
+    () => currencies.filter((item) => item.type === 'SELL'),
+    [currencies],
   );
 
-  const CustomArrowDropUpIcon = ({ color }: { color: string }) => (
-    <ArrowDropUpIcon sx={{ color, marginLeft: -9.5 }} />
+  const IconComponent = React.useMemo(
+    () => () =>
+      open ? (
+        <CustomArrowDropUpIcon color={'back'} />
+      ) : (
+        <CustomArrowDropDownIcon color={'back'} />
+      ),
+    [open, isTransparent],
   );
+
+  // const displayCurrency = (currency: string) =>
+  //   useMemo(() => {
+  //     switch (currency) {
+  //       case 'THB':
+  //         return '฿';
+  //       case 'USD':
+  //         return '$';
+  //       case 'LAK':
+  //         return '₭';
+  //       default:
+  //         return currency;
+  //     }
+  //   }, [currency]);
 
   return (
     <Box display="flex" alignItems="center">
       {showLabel && (
-        <Typography variant="body2" sx={{ mr: 1, color: '#7A6A55' }}>
+        <Typography variant="body2" sx={{ mr: 0, color: '#7A6A55' }}>
           Currency:
         </Typography>
       )}
@@ -60,17 +87,7 @@ const CurrencySelector: React.FC<CurrencySelectorProps> = ({
           open={open}
           onOpen={() => setOpen(true)}
           onClose={() => setOpen(false)}
-          IconComponent={() =>
-            open ? (
-              <CustomArrowDropUpIcon
-                color={isTransparent ? '#F5F0E6' : 'back'}
-              />
-            ) : (
-              <CustomArrowDropDownIcon
-                color={isTransparent ? '#F5F0E6' : 'back'}
-              />
-            )
-          }
+          IconComponent={IconComponent}
           value={currency}
           onChange={handleCurrencyChange}
           variant={variant}
@@ -79,10 +96,16 @@ const CurrencySelector: React.FC<CurrencySelectorProps> = ({
             '& .MuiSelect-select': {
               py: size === 'small' ? 0.5 : 1,
               px: size === 'small' ? -2 : 2,
-              color: isTransparent ? '#F5F0E6' : 'back',
+              color: 'back',
             },
             '& .MuiOutlinedInput-notchedOutline': {
-              borderColor: isTransparent ? '#F5F0E6' : 'back',
+              borderColor: 'transparent',
+            },
+            '&:hover .MuiOutlinedInput-notchedOutline': {
+              borderColor: 'transparent',
+            },
+            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+              borderColor: 'transparent',
             },
           }}
         >

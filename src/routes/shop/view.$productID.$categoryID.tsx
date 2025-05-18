@@ -32,6 +32,7 @@ import {
   useViewDetails,
   viewProductDetailsQueryOption,
 } from '~/hooks/shop/useViewDetails';
+import { localStorageData } from '~/server/cache';
 import { formatCurrency } from '~/utils/format';
 
 export const Route = createFileRoute('/shop/view/$productID/$categoryID')({
@@ -187,16 +188,19 @@ function ProductDetailComponent() {
                     }
                     onClick={() => {
                       if (
-                        localStorage.getItem('customer_id') === null ||
-                        localStorage.getItem('customer_id') === ''
+                        localStorageData('customer_id').getLocalStrage() ===
+                          null ||
+                        localStorageData('customer_id').getLocalStrage() === ''
                       ) {
-                        navigate({ to: '/login' });
+                        navigate({ to: '/shop/login' });
                       } else {
                         addCart({
                           data: {
                             product_id: product.id,
                             customer_id:
-                              localStorage.getItem('customer_id') || '',
+                              localStorageData(
+                                'customer_id',
+                              ).getLocalStrage() || '',
                             status: 'pending',
                             quantity: 1,
                           },
@@ -247,7 +251,7 @@ function ProductDetailComponent() {
               mt: 2,
               position: 'relative',
               textAlign: 'left',
-              fontFamily: "'Playfair Display', Georgia, serif",
+              fontFamily: "'Canela Trial', Georgia, serif",
               letterSpacing: '0.5px',
               fontSize: { xs: '1.1rem', sm: '1.2rem', md: '1.4rem' },
               flexShrink: 1, // Allow text to shrink if needed
@@ -387,7 +391,7 @@ function ProductDetailComponent() {
               mt: 2,
               position: 'relative',
               textAlign: 'left',
-              fontFamily: "'Playfair Display', Georgia, serif",
+              fontFamily: "'Canela Trial', Georgia, serif",
               letterSpacing: '0.5px',
               fontSize: { xs: '1.1rem', sm: '1.2rem', md: '1.4rem' },
               flexShrink: 1, // Allow text to shrink if needed

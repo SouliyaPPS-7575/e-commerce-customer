@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { localStorageData } from '~/server/cache';
 
 // Separate the client-side logic into a hook or component
 const useInstallPrompt = () => {
@@ -21,7 +22,8 @@ const useInstallPrompt = () => {
 
       // Add to Home Screen (A2HS) Prompt
       let deferredPrompt: any;
-      const hasShownA2HS = localStorage.getItem('hasShownA2HS') === 'true';
+      const hasShownA2HS =
+        localStorageData('hasShownA2HS').getLocalStrage() === 'true';
 
       if (!hasShownA2HS) {
         window.addEventListener('beforeinstallprompt', (event) => {
@@ -94,7 +96,7 @@ const useInstallPrompt = () => {
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
                 if (outcome === 'accepted') {
-                  localStorage.setItem('hasShownA2HS', 'true');
+                  localStorageData('hasShownA2HS').setLocalStorage('true');
                 }
                 deferredPrompt = null;
               }
@@ -106,7 +108,7 @@ const useInstallPrompt = () => {
             ?.addEventListener('click', () => {
               clearTimeout(timeout);
               installAlert.remove();
-              localStorage.setItem('hasShownA2HS', 'false');
+              localStorageData('hasShownA2HS').setLocalStorage('false');
             });
         });
       }

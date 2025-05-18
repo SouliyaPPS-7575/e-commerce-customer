@@ -1,4 +1,5 @@
 import { Box, Button, Dialog, Typography, styled } from '@mui/material';
+
 // Styled components
 export const StyledDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialog-paper': {
@@ -6,6 +7,11 @@ export const StyledDialog = styled(Dialog)(({ theme }) => ({
     width: '100%',
     borderRadius: 8,
     padding: theme.spacing(2),
+    [theme.breakpoints.down('sm')]: {
+      borderRadius: 0,
+      height: '100%',
+      maxWidth: '100%',
+    },
   },
 }));
 

@@ -24,7 +24,7 @@ export default function HeroSection({
       animate={{ opacity: 1 }}
       transition={{ duration: 1 }}
       sx={{
-        height: '110vh',
+        height: '105vh',
         width: '100%',
         display: 'flex',
         flexDirection: 'column',
@@ -44,11 +44,12 @@ export default function HeroSection({
           backgroundColor: 'rgba(0, 0, 0, 0.5)',
         },
         px: 2,
+        mt: -4,
       }}
     >
       <Container
         maxWidth="md"
-        sx={{ position: 'relative', zIndex: 1, textAlign: 'center', mt: -20 }}
+        sx={{ position: 'relative', zIndex: 1, textAlign: 'center', mt: 4 }}
       >
         <Box
           component={motion.div}
@@ -66,7 +67,7 @@ export default function HeroSection({
               textShadow: '0 2px 4px rgba(0,0,0,0.3)',
             }}
           >
-            Laos Fabric
+            Lao Silk
           </Typography>
         </Box>
         <Box
@@ -122,7 +123,7 @@ export default function HeroSection({
         <Box
           sx={{
             position: 'absolute',
-            bottom: isMobile ? '-80%' : '-95%',
+            bottom: isMobile ? '-70%' : '-50%',
             left: '50%',
             transform: 'translateX(-50%)',
             animation: 'bounce 2s infinite',

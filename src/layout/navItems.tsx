@@ -1,8 +1,7 @@
 import { SvgIconComponent } from '@mui/icons-material';
-import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
-import StorefrontOutlinedIcon from '@mui/icons-material/StorefrontOutlined';
 import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
+import StorefrontOutlinedIcon from '@mui/icons-material/StorefrontOutlined';
 
 export type NavItem = {
   name: string;
@@ -12,7 +11,6 @@ export type NavItem = {
 };
 
 export const navItems: NavItem[] = [
-  { name: 'home', page: 0, href: '/', icon: HomeOutlinedIcon },
   { name: 'shop', page: 1, href: '/shop', icon: StorefrontOutlinedIcon },
   { name: 'blog', page: 2, href: '/blog', icon: ArticleOutlinedIcon },
   { name: 'contact', page: 3, href: '/contact', icon: MailOutlineIcon },

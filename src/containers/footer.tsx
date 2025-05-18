@@ -14,7 +14,7 @@ function Footer() {
   return (
     <Box>
       {/* Green top border */}
-      <Box sx={{ bgcolor: '#7a8c5c', height: '100px', width: '100%' }} />
+      <Box sx={{ bgcolor: '#E8D9B1', height: '100px', width: '100%' }} />
       {/* Main content with white background */}
       <Box sx={{ bgcolor: 'white', color: '#333', py: 6 }}>
         <Container maxWidth="lg">
@@ -23,11 +23,12 @@ function Footer() {
             <Grid
               size={{
                 xs: 12,
-                md: 3
-              }}>
+                md: 3,
+              }}
+            >
               <Typography
                 variant="h6"
-                sx={{ fontWeight: 600, mb: 2, color: '#7a8c5c' }}
+                sx={{ fontWeight: 600, mb: 2, color: '#000' }}
               >
                 Logo
               </Typography>
@@ -40,13 +41,13 @@ function Footer() {
                 text ever since the 1500s
               </Typography>
               <Box sx={{ display: 'flex', gap: 2, mt: 3 }}>
-                <IconButton sx={{ color: '#7a8c5c', p: 0 }}>
+                <IconButton sx={{ color: '#E8D9B1', p: 0 }}>
                   <Facebook />
                 </IconButton>
-                <IconButton sx={{ color: '#7a8c5c', p: 0 }}>
+                <IconButton sx={{ color: '#E8D9B1', p: 0 }}>
                   <YouTube />
                 </IconButton>
-                <IconButton sx={{ color: '#7a8c5c', p: 0 }}>
+                <IconButton sx={{ color: '#E8D9B1', p: 0 }}>
                   <Email />
                 </IconButton>
               </Box>
@@ -56,11 +57,12 @@ function Footer() {
             <Grid
               size={{
                 xs: 12,
-                md: 3
-              }}>
+                md: 3,
+              }}
+            >
               <Typography
                 variant="h6"
-                sx={{ fontWeight: 600, mb: 2, color: '#7a8c5c' }}
+                sx={{ fontWeight: 600, mb: 2, color: '#000' }}
               >
                 Contact
               </Typography>
@@ -82,11 +84,12 @@ function Footer() {
             <Grid
               size={{
                 xs: 12,
-                md: 3
-              }}>
+                md: 3,
+              }}
+            >
               <Typography
                 variant="h6"
-                sx={{ fontWeight: 600, mb: 2, color: '#7a8c5c' }}
+                sx={{ fontWeight: 600, mb: 2, color: '#000' }}
               >
                 Navigation
               </Typography>
@@ -105,11 +108,12 @@ function Footer() {
             <Grid
               size={{
                 xs: 12,
-                md: 3
-              }}>
+                md: 3,
+              }}
+            >
               <Typography
                 variant="h6"
-                sx={{ fontWeight: 600, mb: 2, color: '#7a8c5c' }}
+                sx={{ fontWeight: 600, mb: 2, color: '#000' }}
               >
                 Join us
               </Typography>
@@ -158,10 +162,10 @@ function Footer() {
         </Container>
       </Box>
       {/* Green bottom border with copyright */}
-      <Box sx={{ bgcolor: '#7a8c5c', py: 3 }}>
+      <Box sx={{ bgcolor: '#E8D9B1', py: 3 }}>
         <Typography
           variant="body2"
-          sx={{ color: '#f5f0e6', opacity: 0.9, textAlign: 'center' }}
+          sx={{ color: '#000', opacity: 0.9, textAlign: 'center' }}
         >
           © 2025 Copyright Company Brand. All rights reserved.
         </Typography>

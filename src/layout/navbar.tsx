@@ -3,7 +3,6 @@ import {
   Close as CloseIcon,
   Logout,
   MenuRounded,
-  Search,
   SearchRounded,
   ShoppingCartOutlined,
 } from '@mui/icons-material';
@@ -22,6 +21,7 @@ import {
   List,
   Menu,
   MenuItem,
+  Paper,
   Toolbar,
   Typography,
   useMediaQuery,
@@ -36,7 +36,8 @@ import { useAuthToken } from '~/hooks/useAuthToken';
 import { type NavItem, navItems } from '~/layout/navItems';
 import { NavbarProps } from '~/models/shop';
 import { getToken } from '~/server/auth';
-import { SearchIconWrapper, StyledInputBase } from '~/styles/navbar';
+import { localStorageData } from '~/server/cache';
+import { StyledInputBase } from '~/styles/navbar';
 import theme from '~/styles/theme';
 
 const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
@@ -96,7 +97,7 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
     }
   };
 
-  const isTransparent = currentPage === 0;
+  const isTransparent = currentPage === 1;
 
   if (!shouldRender) {
     return null;
@@ -109,7 +110,7 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
         color="transparent"
         sx={{
           boxShadow: 'none',
-          bgcolor: isTransparent ? 'transparent' : 'rgba(255, 255, 255, 0.455)',
+          bgcolor: 'rgba(255, 255, 255, 0.455)',
           backdropFilter: isTransparent ? 'none' : 'blur(10px)',
           transition: 'background-color 0.3s ease',
           borderBottom: isTransparent
@@ -119,25 +120,48 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
         }}
       >
         <Container maxWidth="xl">
-          <Toolbar disableGutters sx={{ justifyContent: 'space-between' }}>
-            {/* Logo */}
-            <Typography
-              variant="h6"
-              component="div"
+          <Toolbar
+            disableGutters
+            sx={{ justifyContent: 'space-between', position: 'relative' }}
+          >
+            {/* Mobile menu button */}
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              edge="start"
+              onClick={toggleMobileMenu}
               sx={{
-                fontFamily: "'Playfair Display', serif",
-                fontWeight: 700,
-                fontSize: '1.5rem',
-                color: isTransparent ? '#F5F0E6' : 'back',
-                cursor: 'pointer',
-              }}
-              onClick={() => {
-                goToPage?.(0);
-                navigate({ to: '/' });
+                display: { xs: 'flex', md: 'none' },
               }}
             >
-              Laos
-            </Typography>
+              <MenuRounded sx={{ color: 'back' }} />
+            </IconButton>
+
+            {/* Logo - Centered on Desktop */}
+            <Box
+              sx={{
+                transform: 'translateX(-5%)',
+                display: { xs: 'block', md: 'none' },
+              }}
+            >
+              <Typography
+                variant="h6"
+                component="div"
+                sx={{
+                  fontFamily: "'Canela Trial', serif",
+                  fontWeight: 700,
+                  fontSize: '1.5rem',
+                  color: 'back',
+                  cursor: 'pointer',
+                }}
+                onClick={() => {
+                  goToPage?.(0);
+                  navigate({ to: '/' });
+                }}
+              >
+                Lao Silk
+              </Typography>
+            </Box>
 
             {/* Desktop Navigation */}
             {!isMobile && (
@@ -145,7 +169,6 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
                 sx={{
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center',
                   flexGrow: 1,
                   flexDirection: 'row',
                   flexWrap: 'wrap',
@@ -158,18 +181,14 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
                     <Typography
                       key={item.name}
                       onClick={() => {
-                        if (currentPath === '/') {
-                          goToPage?.(item.page);
-                        } else {
-                          navigate({
-                            to: item.href,
-                          });
-                        }
+                        navigate({
+                          to: item.href,
+                        });
                       }}
                       sx={{
                         cursor: 'pointer',
                         mx: 1,
-                        color: isTransparent ? '#F5F0E6' : 'back',
+                        color: 'back',
                         fontWeight:
                           currentPage === item.page ||
                           (currentPath !== '/' &&
@@ -206,25 +225,75 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
               </Box>
             )}
 
+            {/* Logo - Centered on Desktop */}
+            <Box
+              sx={{
+                position: 'absolute',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                display: { xs: 'none', md: 'block' },
+              }}
+            >
+              <Typography
+                variant="h6"
+                component="div"
+                sx={{
+                  fontFamily: "'Canela Trial', serif",
+                  fontWeight: 700,
+                  fontSize: '1.5rem',
+                  color: 'back',
+                  cursor: 'pointer',
+                }}
+                onClick={() => {
+                  goToPage?.(0);
+                  navigate({ to: '/' });
+                }}
+              >
+                Lao Silk
+              </Typography>
+            </Box>
+
             {/* Action icons */}
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              {/* Currency selector */}
+              <CurrencySelector isTransparent={isTransparent} />
+
               {/* Search */}
               <IconButton
                 color="inherit"
                 onClick={toggleSearch}
                 sx={{
-                  mr: 1,
+                  mr: 0,
                 }}
               >
-                <SearchRounded
-                  sx={{ color: isTransparent ? '#F5F0E6' : 'back' }}
-                />
+                <SearchRounded sx={{ color: 'back' }} />
               </IconButton>
-              {/* Currency selector */}
-              <CurrencySelector isTransparent={isTransparent} />
+
+              {/* Shopping cart */}
+              {localStorageData('token').getLocalStrage() ||
+                (localStorageData('customer_id').getLocalStrage() && (
+                  <Link to="/shop/add-cart" style={{ textDecoration: 'none' }}>
+                    <IconButton color="inherit">
+                      <Badge
+                        badgeContent={countCartItems}
+                        color="primary"
+                        sx={{
+                          '& .MuiBadge-badge': {
+                            color: '#ffffff',
+                            fontSize: '1rem',
+                          },
+                          ml: 1,
+                        }}
+                      >
+                        <ShoppingCartOutlined sx={{ color: 'back' }} />
+                      </Badge>
+                    </IconButton>
+                  </Link>
+                ))}
+
               {/* User account dropdown */}
               {!isMobile && (
-                <Box sx={{ position: 'relative', ml: 1, mr: -1 }}>
+                <Box sx={{ position: 'relative', ml: 1, mr: 0 }}>
                   <IconButton
                     color="inherit"
                     onClick={handleAccountClick}
@@ -232,9 +301,7 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
                     aria-haspopup="true"
                     aria-expanded={open ? 'true' : undefined}
                   >
-                    <AccountCircle
-                      sx={{ color: isTransparent ? '#F5F0E6' : 'back' }}
-                    />
+                    <AccountCircle sx={{ color: 'back' }} />
                   </IconButton>
                   <Menu
                     id="account-menu"
@@ -300,49 +367,9 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
                   </Menu>
                 </Box>
               )}
-              
-              {/* Shopping cart */}
-              {localStorage.getItem('token') ||
-                (localStorage.getItem('customer_id') && (
-                  <Link to="/shop/add-cart" style={{ textDecoration: 'none' }}>
-                    <IconButton color="inherit">
-                      <Badge
-                        badgeContent={countCartItems}
-                        color="primary"
-                        sx={{
-                          '& .MuiBadge-badge': {
-                            color: '#ffffff',
-                            fontSize: '1rem',
-                          },
-                          ml: 1,
-                        }}
-                      >
-                        <ShoppingCartOutlined
-                          sx={{ color: isTransparent ? '#F5F0E6' : 'back' }}
-                        />
-                      </Badge>
-                    </IconButton>
-                  </Link>
-                ))}
 
               {/* Language change */}
               <LanguageSelection />
-              {/* Mobile menu button */}
-              <IconButton
-                color="inherit"
-                aria-label="open drawer"
-                edge="start"
-                onClick={toggleMobileMenu}
-                sx={{
-                  display: { xs: 'flex', md: 'none' },
-                  ml: '5px',
-                  mr: '-7px',
-                }}
-              >
-                <MenuRounded
-                  sx={{ color: isTransparent ? '#F5F0E6' : 'back' }}
-                />
-              </IconButton>
             </Box>
           </Toolbar>
         </Container>
@@ -429,20 +456,52 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
         fullWidth
         maxWidth="sm"
       >
-        <DialogTitle>Search</DialogTitle>
+        <DialogTitle>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}
+          >
+            <Typography variant="h6">{t('search')}</Typography>
+            <IconButton onClick={() => setSearchOpen(false)}>
+              <CloseIcon />
+            </IconButton>
+          </Box>
+        </DialogTitle>
         <DialogContent>
-          <Search sx={{ width: '100%' }}>
-            <SearchIconWrapper>
-              <SearchRounded sx={{ color: 'text.primary' }} />
-            </SearchIconWrapper>
+          <Paper
+            elevation={3}
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              borderRadius: 2,
+              px: 2,
+              py: 0.5,
+              bgcolor: 'background.default',
+              transition: 'box-shadow 0.3s ease-in-out',
+              boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.05)',
+            }}
+          >
+            <SearchRounded sx={{ color: 'text.secondary', mr: 1 }} />
             <StyledInputBase
-              placeholder="Search…"
-              id="outlined-search"
-              type="search"
+              placeholder={t('please_enter_search_text')}
               autoFocus
               fullWidth
+              inputProps={{ 'aria-label': 'search' }}
+              sx={{
+                flex: 1,
+              }}
             />
-          </Search>
+            <IconButton
+              size="small"
+              sx={{ visibility: 'hidden' }} // Change to visible when input is not empty (optional)
+              // onClick={clearInputFunction}  // Add handler to clear input
+            >
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          </Paper>
         </DialogContent>
       </Dialog>
     </>

@@ -113,7 +113,7 @@ function RouteComponent() {
             {/* Scrollable Category Filter Tabs */}
             <Box
               sx={{
-                fontFamily: 'Playfair Display Noto Sans Lao',
+                fontFamily: 'Canela Trial Noto Sans Lao',
                 display: 'inline-flex',
                 alignItems: 'center',
                 overflowX: 'auto',
@@ -212,7 +212,7 @@ function RouteComponent() {
                   mt: isMobile ? 1 : 2,
                   position: 'relative',
                   textAlign: 'left',
-                  fontFamily: "'Playfair Display', Georgia, serif",
+                  fontFamily: "'Canela Trial', Georgia, serif",
                   letterSpacing: '0.5px',
                   textTransform: 'uppercase',
                   fontSize: { xs: '1rem', sm: '1.2rem', md: '1.4rem' },
@@ -231,7 +231,7 @@ function RouteComponent() {
                   mt: isMobile ? 1 : 2,
                   position: 'relative',
                   textAlign: 'left',
-                  fontFamily: "'Playfair Display', Georgia, serif",
+                  fontFamily: "'Canela Trial', Georgia, serif",
                   letterSpacing: '0.5px',
                   textTransform: 'uppercase',
                   fontSize: { xs: '1.1rem', sm: '1.2rem', md: '1.4rem' },

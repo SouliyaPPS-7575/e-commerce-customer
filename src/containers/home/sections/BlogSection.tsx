@@ -64,7 +64,7 @@ export default function BlogSection() {
   return (
     <Box
       sx={{
-        minHeight: '110vh',
+        minHeight: '108vh',
         width: '100%',
         display: 'flex',
         alignItems: 'center',
@@ -81,7 +81,7 @@ export default function BlogSection() {
             fontSize: '1.8rem',
             fontWeight: 600,
             mb: 1,
-            mt: isMobile ? -4 : -15,
+            mt: isMobile ? -5 : -15,
             fontFamily: 'Georgia, serif', // adjust if you're using a custom theme
           }}
         >
@@ -102,7 +102,7 @@ export default function BlogSection() {
 
         {isMobile ? (
           // Mobile: Horizontal scroll list
-          (<Box
+          <Box
             sx={{
               display: 'flex',
               overflowX: 'auto',
@@ -177,10 +177,10 @@ export default function BlogSection() {
                 </Link>
               </motion.div>
             ))}
-          </Box>)
+          </Box>
         ) : (
           // Desktop: Horizontal scroll list
-          (<Box
+          <Box
             sx={{
               display: 'flex',
               overflowX: 'auto',
@@ -254,7 +254,7 @@ export default function BlogSection() {
                 </Link>
               </motion.div>
             ))}
-          </Box>)
+          </Box>
         )}
 
         <Box
