@@ -10,6 +10,8 @@ export const useLogout = () => {
     mutationFn: logoutServer,
     onSuccess: () => {
       localStorageData('customer_id').removeLocalStorage();
+      // localStorageData('selected_cart_items').removeLocalStorage();
+
       navigate({ to: '/login' });
     },
   });

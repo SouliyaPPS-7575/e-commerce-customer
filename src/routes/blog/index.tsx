@@ -98,7 +98,7 @@ function BlogComponent() {
   return (
     <Box
       sx={{
-        bgcolor: '#f5f0e6',
+        bgcolor: '#F3ECD8',
         minHeight: '100vh',
       }}
     >

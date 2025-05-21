@@ -11,7 +11,7 @@ export type NavItem = {
 };
 
 export const navItems: NavItem[] = [
-  { name: 'shop', page: 1, href: '/shop', icon: StorefrontOutlinedIcon },
+  { name: 'shop', page: 1, href: '/shop/index/all', icon: StorefrontOutlinedIcon },
   { name: 'blog', page: 2, href: '/blog', icon: ArticleOutlinedIcon },
   { name: 'contact', page: 3, href: '/contact', icon: MailOutlineIcon },
 ];

@@ -97,7 +97,8 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
     }
   };
 
-  const isTransparent = currentPage === 1;
+  const adjustedPage = currentPath !== '/' ? 1 : currentPage;
+  const isTransparent = adjustedPage === 1;
 
   if (!shouldRender) {
     return null;
@@ -110,12 +111,12 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
         color="transparent"
         sx={{
           boxShadow: 'none',
-          bgcolor: 'rgba(255, 255, 255, 0.455)',
-          backdropFilter: isTransparent ? 'none' : 'blur(10px)',
+          bgcolor: isTransparent ? 'rgba(255, 255, 255, 0.455)' : 'transparent',
+          backdropFilter: isTransparent ? 'blur(10px)' : 'none',
           transition: 'background-color 0.3s ease',
           borderBottom: isTransparent
-            ? 'none'
-            : '1px solid rgba(0, 0, 0, 0.05)',
+            ? '1px solid rgba(0, 0, 0, 0.05)'
+            : 'none',
           zIndex: 1000,
         }}
       >
@@ -134,7 +135,7 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
                 display: { xs: 'flex', md: 'none' },
               }}
             >
-              <MenuRounded sx={{ color: 'back' }} />
+              <MenuRounded sx={{ color: isTransparent ? 'back' : 'white' }} />
             </IconButton>
 
             {/* Logo - Centered on Desktop */}
@@ -151,16 +152,14 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
                   fontFamily: "'Canela Trial', serif",
                   fontWeight: 700,
                   fontSize: '1.5rem',
-                  color: 'back',
+                  color: isTransparent ? 'back' : 'white',
                   cursor: 'pointer',
                 }}
                 onClick={() => {
                   goToPage?.(0);
                   navigate({ to: '/' });
                 }}
-              >
-                Lao Silk
-              </Typography>
+              ></Typography>
             </Box>
 
             {/* Desktop Navigation */}
@@ -188,7 +187,7 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
                       sx={{
                         cursor: 'pointer',
                         mx: 1,
-                        color: 'back',
+                        color: isTransparent ? 'back' : 'white',
                         fontWeight:
                           currentPage === item.page ||
                           (currentPath !== '/' &&
@@ -241,7 +240,7 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
                   fontFamily: "'Canela Trial', serif",
                   fontWeight: 700,
                   fontSize: '1.5rem',
-                  color: 'back',
+                  color: isTransparent ? 'back' : 'white',
                   cursor: 'pointer',
                 }}
                 onClick={() => {
@@ -266,7 +265,9 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
                   mr: 0,
                 }}
               >
-                <SearchRounded sx={{ color: 'back' }} />
+                <SearchRounded
+                  sx={{ color: isTransparent ? 'back' : 'white' }}
+                />
               </IconButton>
 
               {/* Shopping cart */}
@@ -285,7 +286,9 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
                           ml: 1,
                         }}
                       >
-                        <ShoppingCartOutlined sx={{ color: 'back' }} />
+                        <ShoppingCartOutlined
+                          sx={{ color: isTransparent ? 'back' : 'white' }}
+                        />
                       </Badge>
                     </IconButton>
                   </Link>
@@ -301,7 +304,9 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
                     aria-haspopup="true"
                     aria-expanded={open ? 'true' : undefined}
                   >
-                    <AccountCircle sx={{ color: 'back' }} />
+                    <AccountCircle
+                      sx={{ color: isTransparent ? 'back' : 'white' }}
+                    />
                   </IconButton>
                   <Menu
                     id="account-menu"
@@ -335,8 +340,8 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
                   >
                     <MenuItem
                       onClick={() => {
-                        navigate({ to: '/profile' });
                         setAnchorEl(null);
+                        navigate({ to: '/profile' });
                       }}
                       sx={{
                         color: '#4A5568',
@@ -351,8 +356,8 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
                     <Divider />
                     <MenuItem
                       onClick={() => {
-                        navigate({ to: '/logout' });
                         setAnchorEl(null);
+                        navigate({ to: '/logout' });
                       }}
                       sx={{
                         color: '#4A5568',

@@ -16,7 +16,7 @@ import {
 } from '@mui/material';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { motion } from 'framer-motion';
-import { SetStateAction, useMemo, useState } from 'react';
+import { SetStateAction, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCurrencyContext } from '~/components/CurrencySelector/CurrencyProvider';
 import Footer from '~/containers/footer';
@@ -27,7 +27,7 @@ import {
 import { productsQueryOption, useProducts } from '~/hooks/shop/useProducts';
 import { formatCurrency } from '~/utils/format';
 
-export const Route = createFileRoute('/shop/')({
+export const Route = createFileRoute('/shop/index/$category_id')({
   loader: async ({ context }) => {
     const productsData = context.queryClient.ensureQueryData(
       productsQueryOption(),
@@ -46,7 +46,10 @@ function RouteComponent() {
   const { t } = useTranslation();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  
+
+  const { category_id } = Route.useParams();
+  const navigate = Route.useNavigate();
+
   const { displayCurrency, convert } = useCurrencyContext();
 
   const { productsData } = useProducts();
@@ -60,7 +63,9 @@ function RouteComponent() {
     setSortBy(event.target.value);
   };
 
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string>(
+    category_id ?? 'all',
+  );
 
   const { categoriesData } = useCategories();
 
@@ -68,9 +73,12 @@ function RouteComponent() {
   const filteredProducts = useMemo(() => {
     if (!productsData) return [];
 
-    const filtered = selectedCategory
-      ? productsData.filter((p) => p.category_id === selectedCategory)
-      : productsData;
+    const filtered =
+      selectedCategory && selectedCategory !== 'all'
+        ? productsData.filter((p) => p.category_id === selectedCategory)
+        : productsData;
+
+    if (!filtered) return [];
 
     const sorted = [...filtered];
     switch (sortBy) {
@@ -87,18 +95,32 @@ function RouteComponent() {
     }
   }, [productsData, selectedCategory, sortBy]);
 
+  useEffect(() => {
+    if (category_id) {
+      setSelectedCategory(category_id);
+    } else {
+      setSelectedCategory('all');
+    }
+  }, [category_id]);
 
   return (
     <>
       <Box
         sx={{
           width: '100%',
-          minHeight: '100vh',
+          minHeight: '120vh',
           backgroundColor: theme.palette.background.paper,
           py: 4,
-          mt: isMobile ? 5 : 4,
+          mt: isMobile ? -4 : 0,
         }}
       >
+        <br />
+        {isMobile && (
+          <>
+            <br />
+            <br />
+          </>
+        )}
         <Container maxWidth="lg">
           {/* Wrapper for horizontal centering */}
           <Box
@@ -129,18 +151,23 @@ function RouteComponent() {
                 component={motion.div}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.97 }}
-                onClick={() => setSelectedCategory(null)}
+                onClick={() => {
+                  setSelectedCategory('all');
+                  navigate({
+                    params: { category_id: 'all' },
+                  });
+                }}
                 sx={{
                   px: 2,
                   py: 0.7,
                   borderRadius: '999px',
                   whiteSpace: 'nowrap',
                   backgroundColor:
-                    selectedCategory === null
+                    selectedCategory === 'all'
                       ? 'primary.main'
                       : theme.palette.grey[200],
                   color:
-                    selectedCategory === null
+                    selectedCategory === 'all'
                       ? '#fff'
                       : theme.palette.text.primary,
                   fontWeight: 500,
@@ -148,11 +175,11 @@ function RouteComponent() {
                   cursor: 'pointer',
                   flexShrink: 0,
                   boxShadow:
-                    selectedCategory === null ? theme.shadows[1] : 'none',
+                    selectedCategory === 'all' ? theme.shadows[1] : 'none',
                   transition: 'all 0.2s ease',
                 }}
               >
-                All
+                {t('all')}
               </Box>
 
               {categoriesData?.map((category) => (
@@ -161,7 +188,12 @@ function RouteComponent() {
                   component={motion.div}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.97 }}
-                  onClick={() => setSelectedCategory(category.id)}
+                  onClick={() => {
+                    setSelectedCategory(category.id);
+                    navigate({
+                      params: { category_id: category.id },
+                    });
+                  }}
                   sx={{
                     px: 2,
                     py: 0.7,

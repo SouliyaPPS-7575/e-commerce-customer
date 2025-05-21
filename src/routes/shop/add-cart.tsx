@@ -5,6 +5,7 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import RemoveIcon from '@mui/icons-material/Remove';
 import {
   Box,
+  Checkbox,
   DialogActions,
   DialogContent,
   Divider,
@@ -12,8 +13,8 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -51,13 +52,15 @@ function RouteComponent() {
   const {
     // Data
     enrichedCartItems,
-
+    selectedItemIds,
     // Function
     handleQuantityChange,
     handleRemoveItem,
     calculateSubtotal,
     onClose,
     handleCheckout,
+    toggleSelectItem,
+    selectAllItems,
   } = useCartPage();
 
   const theme = useTheme();
@@ -81,7 +84,7 @@ function RouteComponent() {
         <ShoppingCartOutlined sx={{ color: '#c19a7e', fontSize: 32, ml: 1 }} />
 
         {/* Currency selector */}
-        <CurrencySelector isTransparent={false} />
+        <CurrencySelector isTransparent={true} />
 
         <IconButton onClick={onClose} edge="end">
           <CloseIcon />
@@ -91,10 +94,24 @@ function RouteComponent() {
       <Divider sx={{ my: 1 }} />
 
       <DialogContent sx={{ p: 1 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+          <Checkbox
+            checked={
+              enrichedCartItems.length > 0 &&
+              enrichedCartItems.every((item) => selectedItemIds.includes(item.id))
+            }
+            onChange={selectAllItems}
+          />
+          <Typography>{t('select_all')}</Typography>
+        </Box>
         {enrichedCartItems?.map((item) => (
           <React.Fragment key={item.id}>
             <CartItemBox>
-              <Box sx={{ display: 'flex', gap: 2 }}>
+              <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+                <Checkbox
+                  checked={selectedItemIds.includes(item.id)}
+                  onChange={() => toggleSelectItem(item.id)}
+                />
                 <Box
                   component="img"
                   src={item.image_url}
@@ -123,6 +140,7 @@ function RouteComponent() {
                 </Typography>
 
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  {/* Quantity control */}
                   <QuantityControl>
                     <IconButton
                       size="small"
@@ -160,6 +178,7 @@ function RouteComponent() {
                     </IconButton>
                   </QuantityControl>
 
+                  {/* Delete button */}
                   <IconButton
                     size="small"
                     onClick={() => handleRemoveItem(item.id)}
@@ -189,7 +208,8 @@ function RouteComponent() {
         <ContinueShoppingButton
           onClick={() => {
             navigate({
-              to: '/shop',
+              to: '/shop/index/$category_id',
+              params: { category_id: 'all' },
             });
           }}
           sx={{ mt: 2 }}

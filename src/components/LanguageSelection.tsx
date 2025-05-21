@@ -72,7 +72,12 @@ function LanguageSelection() {
                   : 'https://flagcdn.com/w40/gb.png'
               }
               alt={selected === 'la' ? 'Lao flag' : 'English flag'}
-              sx={{ width: { xs: '22px', sm: '26px' }, height: 'auto' }}
+              sx={{
+                width: 21,
+                height: 21,
+                borderRadius: '50%',
+                border: '1px solid white',
+              }}
             />
           )}
           inputProps={{ 'aria-label': 'Select language' }}

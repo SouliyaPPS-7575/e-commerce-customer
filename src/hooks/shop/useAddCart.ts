@@ -6,6 +6,9 @@ import {
 } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
+import { localStorageData } from '~/server/cache';
 import {
   createAddCart,
   deleteCartItem,
@@ -15,7 +18,6 @@ import {
 } from '~/server/shop';
 import { queryClient } from '~/services/queryClient';
 import { useProducts } from './useProducts';
-import { localStorageData } from '~/server/cache';
 
 export const getCartItemsQueryOption = () =>
   queryOptions({
@@ -36,13 +38,12 @@ export const useCountCartItems = () => {
 };
 
 export const useAddCart = () => {
-  const navigate = useNavigate();
-
+  const { t } = useTranslation();
   const { mutateAsync: addCart } = useMutation({
     mutationFn: createAddCart,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['countCartItems'] });
-      navigate({ to: '/shop/add-cart' });
+      toast.success(t('item_added_cart'));
     },
   });
 
@@ -100,6 +101,24 @@ export function useCartPage() {
       })) || [],
   );
 
+  const [selectedItemIds, setSelectedItemIds] = useState<string[]>([]);
+
+  const selectedItemStorage = localStorageData('selected_cart_items');
+
+  useEffect(() => {
+    const saved = selectedItemStorage.getLocalStrage();
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          setSelectedItemIds(parsed);
+        }
+      } catch {
+        // ignore
+      }
+    }
+  }, []);
+
   useEffect(() => {
     setLocalCartState((prev) => {
       const updated = enrichedCartItems.map((item) => {
@@ -125,6 +144,36 @@ export function useCartPage() {
   const handleRemoveItem = (id: string) => {
     setLocalCartState((prev) => prev.filter((item) => item.id !== id));
   };
+
+  const toggleSelectItem = (id: string) => {
+    setSelectedItemIds((prev) => {
+      const newSelection = prev.includes(id)
+        ? prev.filter((itemId) => itemId !== id)
+        : [...prev, id];
+      selectedItemStorage.setLocalStorage(JSON.stringify(newSelection));
+      return newSelection;
+    });
+  };
+
+  const selectAllItems = () => {
+    setSelectedItemIds((prev) => {
+      const newSelection =
+        prev.length === localCartState.length
+          ? []
+          : localCartState.map((item) => item.id);
+      selectedItemStorage.setLocalStorage(JSON.stringify(newSelection));
+      return newSelection;
+    });
+  };
+
+  const calculateSubtotal = () =>
+    localCartState.reduce(
+      (total, item) =>
+        selectedItemIds.includes(item.id)
+          ? total + item.price * item.quantity
+          : total,
+      0,
+    );
 
   const onClose = () => {
     const originalMap = new Map(
@@ -167,57 +216,20 @@ export function useCartPage() {
   };
 
   const handleCheckout = () => {
-    const originalMap = new Map(
-      enrichedCartItems.map((item) => [item.id, item]),
-    );
-
-    localCartState.forEach((item) => {
-      const original = originalMap.get(item.id);
-      if (!original) {
-        if (
-          !enrichedCartItems.find((enrichedItem) => enrichedItem.id === item.id)
-        ) {
-          deleteMutation({ data: { id: item.id } });
-        }
-        return;
-      }
-
-      if (original.quantity !== item.quantity) {
-        editMutation({
-          data: {
-            id: item.id,
-            formData: {
-              customer_id: localStorageData('customer_id').getLocalStrage(),
-              product_id: item.product_id,
-              quantity: item.quantity,
-              status: item.status,
-            },
-          },
-        });
-      }
-    });
-
-    enrichedCartItems.forEach((item) => {
-      if (!localCartState.find((localItem) => localItem.id === item.id)) {
-        deleteMutation({ data: { id: item.id } });
-      }
-    });
-
     navigate({ to: '/shop/checkout' });
   };
 
   return {
     // Data
     enrichedCartItems: localCartState,
+    selectedItemIds,
 
     // Function
     handleQuantityChange,
     handleRemoveItem,
-    calculateSubtotal: () =>
-      localCartState.reduce(
-        (total, item) => total + item.price * item.quantity,
-        0,
-      ),
+    toggleSelectItem,
+    selectAllItems,
+    calculateSubtotal,
 
     onClose,
     handleCheckout,

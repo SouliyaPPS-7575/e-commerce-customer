@@ -42,6 +42,7 @@ export interface CategoriesItem {
   name: string;
   name_la: string;
   updated: string;
+  image_url: string;
 }
 
 export interface RelateProductsItem {
@@ -75,52 +76,49 @@ export interface CreateAddCart {
 }
 
 export interface CreateAddCartRes {
-  collectionId: string
-  collectionName: string
-  id: string
-  customer_id: string
-  product_id: string
-  quantity: number
-  status: string
-  created: string
-  updated: string
+  collectionId: string;
+  collectionName: string;
+  id: string;
+  customer_id: string;
+  product_id: string;
+  quantity: number;
+  status: string;
+  created: string;
+  updated: string;
 }
 
-
-export type CartItems = CartItem[]
+export type CartItems = CartItem[];
 
 export interface CartItem {
-  collectionId: string
-  collectionName: string
-  id: string
-  customer_id: string
-  product_id: string
-  quantity: number
-  status: string
-  created: string
-  updated: string
+  collectionId: string;
+  collectionName: string;
+  id: string;
+  customer_id: string;
+  product_id: string;
+  quantity: number;
+  status: string;
+  created: string;
+  updated: string;
 }
-
 
 export interface EditCartItem {
-  customer_id: string
-  product_id: string
-  quantity: number
-  status: string
+  customer_id: string;
+  product_id: string;
+  quantity: number;
+  status: string;
 }
 
-
 export interface EnrichedCartItems {
-  collectionId: string
-  collectionName: string
-  created: string
-  customer_id: string
-  id: string
-  product_id: string
-  quantity: number
-  status: string
-  updated: string
-  name: string
-  price: number
-  image_url: string
+  collectionId: string;
+  collectionName: string;
+  created: string;
+  customer_id: string;
+  id: string;
+  product_id: string;
+  quantity: number;
+  status: string;
+  updated: string;
+  name: string;
+  price: number;
+  image_url: string;
 }

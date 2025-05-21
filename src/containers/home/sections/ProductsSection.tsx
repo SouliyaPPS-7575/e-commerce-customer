@@ -1,4 +1,4 @@
-import { ArrowForward } from '@mui/icons-material';
+import { ArrowForward, ChevronLeft, ChevronRight } from '@mui/icons-material';
 import {
   Box,
   Button,
@@ -19,6 +19,7 @@ import Footer from '~/containers/footer';
 import { useProductsSection } from '~/hooks/shop/useProductsSection';
 import { formatCurrency } from '~/utils/format';
 import BlogSection from './BlogSection';
+import { useCategories } from '~/hooks/shop/useCategories';
 
 export default function ProductsSection() {
   const { t } = useTranslation();
@@ -26,12 +27,81 @@ export default function ProductsSection() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
+  const { categoriesData } = useCategories();
+
   const { filteredProductsRanking } = useProductsSection();
 
   const { displayCurrency, convert } = useCurrencyContext();
 
+  const handlePrevSlide = () => {
+    const container = document.getElementById('product-carousel');
+    if (container) {
+      container.scrollBy({ left: -container.offsetWidth, behavior: 'smooth' });
+    }
+  };
+
+  const handleNextSlide = () => {
+    const container = document.getElementById('product-carousel');
+    if (container) {
+      container.scrollBy({ left: container.offsetWidth, behavior: 'smooth' });
+    }
+  };
+
   return (
     <>
+      {/* Hero Section with Three Textile Types */}
+      <Box sx={{ width: '100%', overflow: 'hidden' }}>
+        <Grid container>
+          {categoriesData?.slice(0, 3).map((category) => (
+            <Grid
+              key={category.id}
+              size={{
+                xs: 12,
+                md: 4,
+              }}
+            >
+              <Link
+                to="/shop/index/$category_id"
+                params={{ category_id: category.id }}
+              >
+                <Box
+                  sx={{
+                    position: 'relative',
+                    height: { xs: 300, md: 500 },
+                    overflow: 'hidden',
+                  }}
+                >
+                  <Box
+                    component="img"
+                    src={category.image_url}
+                    alt={category.name}
+                    sx={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                    }}
+                  />
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      position: 'absolute',
+                      bottom: 20,
+                      left: 0,
+                      width: '100%',
+                      color: '#fff',
+                      textAlign: 'center',
+                      fontFamily: "'Canela', serif",
+                      letterSpacing: 1,
+                    }}
+                  >
+                    {category.name}
+                  </Typography>
+                </Box>
+              </Link>
+            </Grid>
+          ))}
+        </Grid>
+      </Box>
       <Box
         sx={{
           minHeight: '100vh',
@@ -39,40 +109,81 @@ export default function ProductsSection() {
           width: '100%',
           display: 'flex',
           alignItems: 'center',
-          backgroundColor: '#F5F0E6',
+          backgroundColor: '#F3ECD8',
           border: '1px solid #E0DCD5',
+          mb: isMobile ? -10 : -10,
         }}
       >
-        <Container maxWidth="lg">
-          <Typography
-            variant="h2"
-            component="h2"
-            align="center"
+        <Container maxWidth="lg" sx={{ py: 0 }}>
+          {/* Best Sellers Section */}
+          <Box
             sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
               mb: 6,
-              fontWeight: 600,
-              mt: isMobile ? 2 : 4,
-              position: 'relative',
-              fontFamily: "'Canela Trial', Georgia, serif",
-              letterSpacing: '0.5px',
-              textTransform: 'uppercase',
-              fontSize: { xs: '1rem', sm: '1.2rem', md: '1.2rem' },
             }}
           >
-            {t('shop_our_best_products')}
-            <Box
+          <Typography
+              variant="h5"
+              component="h3"
               sx={{
-                width: 60,
-                height: 4,
-                backgroundColor: theme.palette.primary.main,
-                borderRadius: 2,
-                mx: 'auto',
-                mt: 1,
+                fontFamily: "'Canela', serif",
+                fontWeight: 500,
+                color: '#3a3a3a',
+                letterSpacing: 0.5,
+                textTransform: 'uppercase',
               }}
-            />
-          </Typography>
-          <Grid container spacing={2}>
+            >
+              {t('our_best_seller')}
+            </Typography>
+            <Link
+              to={'/shop/index/$category_id'}
+              params={{ category_id: 'all' }}
+            >
+              <Typography
+                sx={{
+                  color: '#3a3a3a',
+                  textTransform: 'none',
+                  fontSize: '1rem',
+                  textDecoration: 'underline',
+                  '&:hover': {
+                    backgroundColor: 'transparent',
+                    textDecoration: 'underline',
+                  },
+                }}
+              >
+                {t('shop_all')}
+              </Typography>
+            </Link>
+          </Box>
+
+          {/* Product Carousel */}
+          <Box sx={{ position: 'relative', mt: 4 }}>
+            <Button
+              onClick={handlePrevSlide}
+              sx={{
+                position: 'absolute',
+                left: -20,
+                top: '50%',
+                transform: 'translateY(-50%)',
+                minWidth: 40,
+                width: 40,
+                height: 40,
+                borderRadius: '50%',
+                backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                color: '#fff',
+                zIndex: 2,
+                '&:hover': {
+                  backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                },
+              }}
+            >
+              <ChevronLeft />
+            </Button>
+
             <Box
+              id="product-carousel"
               sx={{
                 display: 'flex',
                 gap: 2,
@@ -194,15 +305,41 @@ export default function ProductsSection() {
                 </Box>
               ))}
             </Box>
-          </Grid>
+
+            <Button
+              onClick={handleNextSlide}
+              sx={{
+                position: 'absolute',
+                right: -20,
+                top: '50%',
+                transform: 'translateY(-50%)',
+                minWidth: 40,
+                width: 40,
+                height: 40,
+                borderRadius: '50%',
+                backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                color: '#fff',
+                zIndex: 2,
+                '&:hover': {
+                  backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                },
+              }}
+            >
+              <ChevronRight />
+            </Button>
+          </Box>
+
           <Box
             sx={{
               display: 'flex',
               justifyContent: 'center',
-              mt: isMobile ? -3.5 : 1,
+              mt: isMobile ? -3.5 : -1,
             }}
           >
-            <Link to={'/shop'}>
+            <Link
+              to={'/shop/index/$category_id'}
+              params={{ category_id: 'all' }}
+            >
               <Button
                 variant="contained"
                 size="small"

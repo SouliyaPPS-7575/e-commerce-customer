@@ -55,7 +55,7 @@
   "view_all": "View all",
   "profile": "Profile",
   "logout": "Logout",
-  "view_profile":"View Profile",
+  "view_profile": "View Profile",
   "search": "Search",
   "please_enter_search_text": "Please enter search text",
   "____________comment_Shop_page____________": "Shop Page",
@@ -68,5 +68,9 @@
   "sort_by": "Sort by:",
   "checkout": "Checkout",
   "continue_shopping": "Continue Shopping",
-  "subtotal": "Subtotal"
+  "subtotal": "Subtotal",
+  "all": "All",
+  "our_best_seller": "OUR BEST SELLER",
+  "item_added_cart":"Item added to cart",
+  "select_all": "Select All"
 }

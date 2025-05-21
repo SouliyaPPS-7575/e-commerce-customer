@@ -8,8 +8,8 @@ const theme = createTheme({
     warning: { main: '#FF5722' },
     success: { main: '#8BC34A' },
     background: {
-      default: 'linear-gradient(to bottom right, #F5F5F5, #F5F0E6)',
-      paper: '#F5F0E6',
+      default: 'linear-gradient(to bottom right, #F5F5F5, #F3ECD8)',
+      paper: '#F3ECD8',
     },
     text: { primary: '#000', secondary: '#000' },
   },
@@ -40,7 +40,7 @@ const theme = createTheme({
           ],
           // Global font override using :lang()
           body: {
-            background: 'linear-gradient(to bottom right, #F5F5F5, #F5F0E6)',
+            background: 'linear-gradient(to bottom right, #F5F5F5, #F3ECD8)',
             fontFamily: `'Canela Trial', 'Noto Sans Lao', sans-serif`,
           },
           // Use Noto Sans Lao when content is in Lao

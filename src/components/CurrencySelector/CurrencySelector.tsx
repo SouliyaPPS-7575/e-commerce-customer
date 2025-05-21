@@ -11,6 +11,7 @@ import {
 import React from 'react';
 import { useCurrency } from '~/hooks/shop/useCurrency';
 import { useCurrencyContext } from './CurrencyProvider';
+import { useRouterState } from '@tanstack/react-router';
 
 const CustomArrowDropDownIcon = ({ color }: { color: string }) => (
   <ArrowDropDownIcon sx={{ color, marginLeft: -9.5 }} />
@@ -35,6 +36,12 @@ const CurrencySelector: React.FC<CurrencySelectorProps> = ({
   minWidth = 80,
   isTransparent,
 }) => {
+  // Current Path URL
+  const location = useRouterState({ select: (state) => state.location });
+  const currentPath = location.pathname;
+  const adjustedPage =
+    currentPath !== '/' ? isTransparent === true : isTransparent;
+
   const { currencies } = useCurrency(); // should be of type CurrencyItem[]
 
   // Inside your component:
@@ -54,11 +61,11 @@ const CurrencySelector: React.FC<CurrencySelectorProps> = ({
   const IconComponent = React.useMemo(
     () => () =>
       open ? (
-        <CustomArrowDropUpIcon color={'back'} />
+        <CustomArrowDropUpIcon color={adjustedPage ? '#000' : '#fff'} />
       ) : (
-        <CustomArrowDropDownIcon color={'back'} />
+        <CustomArrowDropDownIcon color={adjustedPage ? '#000' : '#fff'} />
       ),
-    [open, isTransparent],
+    [open, adjustedPage],
   );
 
   // const displayCurrency = (currency: string) =>
@@ -96,7 +103,7 @@ const CurrencySelector: React.FC<CurrencySelectorProps> = ({
             '& .MuiSelect-select': {
               py: size === 'small' ? 0.5 : 1,
               px: size === 'small' ? -2 : 2,
-              color: 'back',
+              color: adjustedPage ? '#000' : '#fff',
             },
             '& .MuiOutlinedInput-notchedOutline': {
               borderColor: 'transparent',

@@ -1,4 +1,6 @@
 import { ShoppingBag } from '@mui/icons-material';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
 import {
   AccordionDetails,
   Box,
@@ -10,12 +12,15 @@ import {
   Container,
   Divider,
   Grid,
+  IconButton,
+  TextField,
   Typography,
   useMediaQuery,
   useTheme,
 } from '@mui/material';
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { motion } from 'framer-motion';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCurrencyContext } from '~/components/CurrencySelector/CurrencyProvider';
 import Footer from '~/containers/footer';
@@ -33,6 +38,7 @@ import {
   viewProductDetailsQueryOption,
 } from '~/hooks/shop/useViewDetails';
 import { localStorageData } from '~/server/cache';
+import { QuantityControl } from '~/styles/add-cart';
 import { formatCurrency } from '~/utils/format';
 
 export const Route = createFileRoute('/shop/view/$productID/$categoryID')({
@@ -83,6 +89,12 @@ function ProductDetailComponent() {
 
   const { addCart } = useAddCart();
 
+  const [quantity, setQuantity] = useState(1);
+
+  const handleQuantityChange = (newQuantity: number) => {
+    if (newQuantity < 1) return;
+    setQuantity(Math.max(newQuantity, 1));
+  };
   return (
     <>
       <Box
@@ -167,6 +179,48 @@ function ProductDetailComponent() {
                   {displayCurrency}
                 </Typography>
 
+                {/* Quantity control */}
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <QuantityControl>
+                    <IconButton
+                      size="small"
+                      onClick={() => handleQuantityChange(quantity - 1)}
+                    >
+                      <RemoveIcon fontSize="small" />
+                    </IconButton>
+
+                    <TextField
+                      variant="standard"
+                      value={quantity}
+                      InputProps={{ disableUnderline: true }}
+                      sx={{
+                        width: 30,
+                        input: { textAlign: 'center' },
+                        '& .MuiInputBase-input': { p: 0 },
+                      }}
+                      onChange={(e) => {
+                        const quantity = parseInt(e.target.value);
+                        if (!isNaN(quantity)) {
+                          handleQuantityChange(quantity);
+                        }
+                      }}
+                    />
+
+                    <IconButton
+                      size="small"
+                      onClick={() => handleQuantityChange(quantity + 1)}
+                    >
+                      <AddIcon fontSize="small" />
+                    </IconButton>
+                  </QuantityControl>
+                </Box>
+
+                <br />
+                <Typography variant="body2" fontWeight="bold">
+                  &nbsp;{'In Stock'}
+                </Typography>
+                <br />
+
                 {/* Add to Cart Button */}
                 <Box
                   sx={{
@@ -202,7 +256,7 @@ function ProductDetailComponent() {
                                 'customer_id',
                               ).getLocalStrage() || '',
                             status: 'pending',
-                            quantity: 1,
+                            quantity,
                           },
                         });
                       }

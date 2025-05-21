@@ -41,7 +41,7 @@ export default function HeroSection({
           left: 0,
           right: 0,
           bottom: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          backgroundColor: 'rgba(0, 0, 0, 0.2)',
         },
         px: 2,
         mt: -4,
@@ -88,9 +88,8 @@ export default function HeroSection({
               textShadow: '0 1px 2px rgba(0,0,0,0.3)',
             }}
           >
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum has been the industry's standard dummy text
-            ever since the 1500s
+            Timeless Elegance, Woven by Tradition – Discover the Luxury of
+            Handcrafted Lao Silk.
           </Typography>
         </Box>
         <Box
@@ -99,31 +98,35 @@ export default function HeroSection({
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6, duration: 0.6 }}
         >
-          <Typography
-            sx={{
-              color: 'white',
-              backgroundColor: 'transparent',
-              '&:hover': {
-                backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                borderColor: 'white',
-              },
-              px: 4,
-              py: 1.5,
-              cursor: 'pointer',
-              fontSize: { xs: '0.875rem', sm: '1.1rem' },
-            }}
+          <Box
             onClick={() => {
               goToPage(1);
               handleScroll();
             }}
+            sx={{
+              color: 'white',
+              border: '2px solid white',
+              borderRadius: '999px',
+              px: 4,
+              py: 1.5,
+              cursor: 'pointer',
+              fontSize: { xs: '0.875rem', sm: '1.1rem' },
+              display: 'inline-block',
+              textAlign: 'center',
+              transition: 'background-color 0.3s',
+              backgroundColor: 'rgba(11, 9, 9, 0.212)',
+              '&:hover': {
+                backgroundColor: 'rgba(255, 255, 255, 0.1)',
+              },
+            }}
           >
-            Explore more
-          </Typography>
+            Shop now
+          </Box>
         </Box>
         <Box
           sx={{
             position: 'absolute',
-            bottom: isMobile ? '-70%' : '-50%',
+            bottom: isMobile ? '-70%' : '-80%',
             left: '50%',
             transform: 'translateX(-50%)',
             animation: 'bounce 2s infinite',

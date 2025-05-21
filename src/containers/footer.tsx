@@ -1,20 +1,22 @@
 import { Email, YouTube } from '@mui/icons-material';
 import {
-     Box,
-     Button,
-     Container,
-     Grid,
-     IconButton,
-     TextField,
-     Typography
+  Box,
+  Button,
+  Container,
+  Grid,
+  IconButton,
+  TextField,
+  Typography,
 } from '@mui/material';
 import { Facebook } from 'lucide-react';
 
 function Footer() {
   return (
-    <Box>
+    <>
       {/* Green top border */}
-      <Box sx={{ bgcolor: '#E8D9B1', height: '100px', width: '100%' }} />
+      <Box
+        sx={{ bgcolor: '#E8D9B1', height: '100px', width: '100%', zIndex: 1 }}
+      />
       {/* Main content with white background */}
       <Box sx={{ bgcolor: 'white', color: '#333', py: 6 }}>
         <Container maxWidth="lg">
@@ -170,7 +172,7 @@ function Footer() {
           © 2025 Copyright Company Brand. All rights reserved.
         </Typography>
       </Box>
-    </Box>
+    </>
   );
 }
 

@@ -35,27 +35,22 @@ function Home() {
   };
 
   //  Handle scroll
+  let lastScrollTop = 0;
+
   const handleScroll = () => {
     const container = containerRef.current;
     if (!container) return;
 
     const scrollTop = container.scrollTop;
-    const sections = container.children;
+    const direction = scrollTop > lastScrollTop ? 'down' : 'up';
+    lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
 
-    // Check each section's top offset relative to the scroll position
-    for (let i = 0; i < sections.length; i++) {
-      const section = sections[i] as HTMLElement;
-      const offsetTop = section.offsetTop;
-      const offsetHeight = section.offsetHeight;
-
-      if (scrollTop >= offsetTop - offsetHeight / 2) {
-        if (currentPage !== i) {
-          setCurrentPage(i);
-        }
-      }
+    if (direction === 'down' && currentPage === 0) {
+      setCurrentPage(1);
+    } else if (direction === 'up' && scrollTop <= 10 && currentPage === 1) {
+      setCurrentPage(0);
     }
   };
-
   // Get sections: render only the appropriate sections based on current page
   const sections = useMemo(() => {
     return [
@@ -71,16 +66,17 @@ function Home() {
   return (
     <>
       {/* <Navbar /> */}
-      <Navbar currentPage={currentPage} goToPage={goToPage} />∏
+      <Navbar currentPage={currentPage} goToPage={goToPage} />
+
       {/* Scrollable container */}
       <div
         ref={containerRef}
         onScroll={handleScroll}
         style={{
-          height: 'auto',
-          overflowY: 'visible',
-          scrollSnapType: 'none',
-          scrollBehavior: 'smooth', // extra fallback
+          height: '100vh', // Full viewport height
+          overflowY: 'auto', // Enable vertical scrolling
+          scrollSnapType: 'y mandatory', // Optional if you want snap scrolling
+          scrollBehavior: 'smooth',
         }}
       >
         {sections.map((section, index) => (
