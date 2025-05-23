@@ -14,6 +14,7 @@ export const Route = createFileRoute('/')({
   },
   component: Home,
 });
+
 function Home() {
   // States
   const containerRef = useRef<HTMLDivElement | null>(null);
