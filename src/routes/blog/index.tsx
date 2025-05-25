@@ -273,7 +273,8 @@ function BlogComponent() {
                   color: '#333',
                   fontWeight: page === 1 ? 600 : 400,
                   '&:hover': {
-                    bgcolor: '#e0e0e0',
+                    bgcolor: page === 1 ? '#e0e0e0' : '#f0f0f0',
+                    color: '#f0f0f0',
                   },
                 }}
               >

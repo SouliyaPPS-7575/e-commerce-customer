@@ -282,12 +282,19 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
                           '& .MuiBadge-badge': {
                             color: '#ffffff',
                             fontSize: '1rem',
+                            textAlign: 'center',
+                            fontSizeAdjust: '0.5em',
+                            fontSmooth: 'always',
+                            background:
+                              'linear-gradient(45deg,#f39c5ae2 10%, #ab6936 90%)',
                           },
                           ml: 1,
                         }}
                       >
                         <ShoppingCartOutlined
-                          sx={{ color: isTransparent ? 'back' : 'white' }}
+                          sx={{
+                            color: isTransparent ? 'back' : 'white',
+                          }}
                         />
                       </Badge>
                     </IconButton>

@@ -32,10 +32,10 @@ export const QuantityControl = styled(Box)(() => ({
 }));
 
 export const CheckoutButton = styled(Button)(() => ({
-  backgroundColor: '#c19a7e',
   color: 'white',
   borderRadius: 25,
   padding: '12px 0',
+  background: 'linear-gradient(45deg,#de9c69 10%, #C98B6B 90%)',
   '&:hover': {
     backgroundColor: '#a88269',
   },

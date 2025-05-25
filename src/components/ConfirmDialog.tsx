@@ -16,7 +16,6 @@ interface ConfirmDialogProps {
   message: string;
 }
 
-
 function ConfirmDialog({
   open,
   onClose,
@@ -33,10 +32,21 @@ function ConfirmDialog({
         <DialogContentText>{t(message)}</DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} color='primary'>
+        <Button
+          onClick={onClose}
+          sx={{
+            background: 'linear-gradient(45deg, #ab6936 20%, #C98B6B 90%)',
+          }}
+        >
           {t('cancel')}
         </Button>
-        <Button onClick={onConfirm} color='primary'>
+        <Button
+          onClick={onConfirm}
+          color="primary"
+          sx={{
+            background: 'linear-gradient(45deg, #C98B6B 30%, #ab6936 90%)',
+          }}
+        >
           {t('confirm')}
         </Button>
       </DialogActions>

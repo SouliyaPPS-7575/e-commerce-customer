@@ -22,6 +22,7 @@ function Home() {
 
   const [currentPage, setCurrentPage] = useState(0);
 
+
   // Handle page change
   const goToPage = (pageNumber: number) => {
     // Allow navigation state to update before scrolling
@@ -85,7 +86,6 @@ function Home() {
           <div
             key={index}
             style={{
-              height: 'auto',
               minHeight: 'auto',
               scrollSnapAlign: 'none',
               opacity: currentPage === index || 1 === 1 ? 1 : 0,

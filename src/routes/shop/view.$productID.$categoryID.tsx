@@ -1,4 +1,3 @@
-import { ShoppingBag } from '@mui/icons-material';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import {
@@ -20,6 +19,7 @@ import {
 } from '@mui/material';
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { motion } from 'framer-motion';
+import { ShoppingCart } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCurrencyContext } from '~/components/CurrencySelector/CurrencyProvider';
@@ -31,7 +31,6 @@ import {
   productsByCategoryQueryOption,
   useProductsByCategory,
 } from '~/hooks/shop/useProductsByCategory';
-import { useProductsSection } from '~/hooks/shop/useProductsSection';
 import {
   relateProductsQueryOption,
   useViewDetails,
@@ -79,7 +78,7 @@ function ProductDetailComponent() {
     .replace(/<\/h1>/g, '</h1>')
     .replace(/<h2>/g, '<h1 style="font-weight: bold;">');
 
-  const { filteredProductsRanking } = useProductsSection();
+  // const { filteredProductsRanking } = useProductsSection();
 
   const { productsData } = useProducts();
 
@@ -222,59 +221,88 @@ function ProductDetailComponent() {
                 <br />
 
                 {/* Add to Cart Button */}
-                <Box
-                  sx={{
-                    display: 'flex',
-                    flexDirection: { xs: 'column', sm: 'row' },
-                    gap: 2,
-                    mb: 2,
-                  }}
-                >
-                  <Button
-                    variant="contained"
-                    size="small"
-                    startIcon={
-                      isLoading ? (
-                        <CircularProgress size={20} color="inherit" />
-                      ) : (
-                        <ShoppingBag />
-                      )
-                    }
-                    onClick={() => {
-                      if (
-                        localStorageData('customer_id').getLocalStrage() ===
-                          null ||
-                        localStorageData('customer_id').getLocalStrage() === ''
-                      ) {
-                        navigate({ to: '/shop/login' });
-                      } else {
-                        addCart({
-                          data: {
-                            product_id: product.id,
-                            customer_id:
-                              localStorageData(
-                                'customer_id',
-                              ).getLocalStrage() || '',
-                            status: 'pending',
-                            quantity,
-                          },
-                        });
-                      }
-                    }}
-                    disabled={isLoading}
-                    sx={{
-                      width: '70%',
-                      mx: 'auto',
-                      fontSize: '1.2rem',
-                      backgroundColor: '#212121',
-                      '&:hover': {
-                        backgroundColor: '#000000',
-                      },
+                <Grid container spacing={2} sx={{ mb: 2 }}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      sm: 6,
                     }}
                   >
-                    {t('add_to_cart')}
-                  </Button>
-                </Box>
+                    <Button
+                      variant="contained"
+                      size="small"
+                      startIcon={
+                        isLoading ? (
+                          <CircularProgress size={20} color="inherit" />
+                        ) : (
+                          <ShoppingCart />
+                        )
+                      }
+                      onClick={() => {
+                        const customerId =
+                          localStorageData('customer_id').getLocalStrage();
+                        if (!customerId) {
+                          navigate({ to: '/shop/login' });
+                        } else {
+                          addCart({
+                            data: {
+                              product_id: product.id,
+                              customer_id: customerId,
+                              status: 'pending',
+                              quantity,
+                            },
+                          });
+                        }
+                      }}
+                      disabled={isLoading}
+                      sx={{
+                        width: '100%', // Full width within Grid item
+                        fontSize: '1.2rem',
+                        backgroundColor: '#ffffff',
+                        color: '#C98B6B',
+                        '&:hover': {
+                          color: '#fff',
+                          backgroundColor: '#f0f0f0',
+                        },
+                      }}
+                    >
+                      {t('add_to_cart')}
+                    </Button>
+                  </Grid>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      sm: 6,
+                    }}
+                  >
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      sx={{
+                        background:
+                          'linear-gradient(45deg,#de9c69 10%, #C98B6B 90%)',
+                        width: '100%', // Full width within Grid item
+                        fontSize: '1.2rem',
+                        color: '#fff',
+                        '&:hover': {
+                          borderColor: '#fff',
+                          color: '#fff',
+                        },
+                      }}
+                      onClick={() => {
+                        const customerId =
+                          localStorageData('customer_id').getLocalStrage();
+                        if (!customerId) {
+                          navigate({ to: '/shop/login' });
+                        } else {
+                          navigate({ to: '/shop/checkout' });
+                        }
+                      }}
+                    >
+                      {t('buy_now')}
+                    </Button>
+                  </Grid>
+                </Grid>
 
                 {/* Accordion Sections */}
                 <Divider sx={{ my: 1 }} />
@@ -296,7 +324,7 @@ function ProductDetailComponent() {
 
           <Divider sx={{ my: 1, mt: 2 }} />
 
-          {/* Similar Products */}
+          {/* YOU_MIGHT_ALSO_LIKE Products */}
           <Typography
             variant="h2"
             component="h2"
@@ -305,13 +333,13 @@ function ProductDetailComponent() {
               mt: 2,
               position: 'relative',
               textAlign: 'left',
-              fontFamily: "'Canela Trial', Georgia, serif",
+              fontFamily: 'Canela Trial',
               letterSpacing: '0.5px',
               fontSize: { xs: '1.1rem', sm: '1.2rem', md: '1.4rem' },
               flexShrink: 1, // Allow text to shrink if needed
             }}
           >
-            {t('similar_products')}
+            {t('YOU_MIGHT_ALSO_LIKE')}
           </Typography>
 
           <Grid container spacing={2}>
@@ -433,10 +461,9 @@ function ProductDetailComponent() {
             </Box>
           </Grid>
 
-          <Divider sx={{ my: 1, mt: -1 }} />
-
+          {/* <Divider sx={{ my: 1, mt: -1 }} /> */}
           {/* Featured Products */}
-          <Typography
+          {/* <Typography
             variant="h2"
             component="h2"
             sx={{
@@ -571,10 +598,9 @@ function ProductDetailComponent() {
                 </Box>
               ))}
             </Box>
-          </Grid>
+          </Grid> */}
         </Container>
       </Box>
-
       <Footer />
     </>
   );

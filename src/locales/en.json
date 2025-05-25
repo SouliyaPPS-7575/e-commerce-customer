@@ -62,6 +62,7 @@
   "description": "DESCRIPTION",
   "add_to_cart": "ADD TO CART",
   "similar_products": "Similar Products",
+  "YOU_MIGHT_ALSO_LIKE": "YOU MIGHT ALSO LIKE",
   "featured_products": "People also Viewed",
   "shops": "Shops",
   "shop_all": "Shop All",
@@ -72,5 +73,6 @@
   "all": "All",
   "our_best_seller": "OUR BEST SELLER",
   "item_added_cart":"Item added to cart",
-  "select_all": "Select All"
+  "select_all": "Select All",
+  "buy_now": "Buy Now"
 }

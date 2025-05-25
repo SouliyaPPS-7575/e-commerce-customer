@@ -359,7 +359,7 @@ export default function BlogSection() {
               variant="contained"
               endIcon={<ArrowForward />}
               sx={{
-                backgroundColor: '#c29b7d',
+                background: 'linear-gradient(45deg,#de9c69 10%, #C98B6B 90%)',
                 borderRadius: '30px',
                 color: 'white',
                 px: 5,

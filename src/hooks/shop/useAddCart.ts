@@ -70,6 +70,9 @@ export function useCartPage() {
             image_url:
               productsData?.find((p) => p.id === item.product_id)
                 ?.image_url?.[0] ?? '',
+            category_id:
+              productsData?.find((p) => p.id === item.product_id)
+                ?.category_id ?? '',
           },
         ]),
       ).values(),

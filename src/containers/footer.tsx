@@ -43,13 +43,13 @@ function Footer() {
                 text ever since the 1500s
               </Typography>
               <Box sx={{ display: 'flex', gap: 2, mt: 3 }}>
-                <IconButton sx={{ color: '#E8D9B1', p: 0 }}>
+                <IconButton sx={{ color: '#D4AF37', p: 0 }}>
                   <Facebook />
                 </IconButton>
-                <IconButton sx={{ color: '#E8D9B1', p: 0 }}>
+                <IconButton sx={{ color: '#D4AF37', p: 0 }}>
                   <YouTube />
                 </IconButton>
-                <IconButton sx={{ color: '#E8D9B1', p: 0 }}>
+                <IconButton sx={{ color: '#D4AF37', p: 0 }}>
                   <Email />
                 </IconButton>
               </Box>
@@ -146,7 +146,8 @@ function Footer() {
                 <Button
                   variant="contained"
                   sx={{
-                    bgcolor: '#c19a6b',
+                    background:
+                      'linear-gradient(45deg,#de9c69 10%, #C98B6B 90%)',
                     color: 'white',
                     textTransform: 'none',
                     '&:hover': {

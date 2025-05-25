@@ -15,7 +15,7 @@ import {
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -98,7 +98,9 @@ function RouteComponent() {
           <Checkbox
             checked={
               enrichedCartItems.length > 0 &&
-              enrichedCartItems.every((item) => selectedItemIds.includes(item.id))
+              enrichedCartItems.every((item) =>
+                selectedItemIds.includes(item.id),
+              )
             }
             onChange={selectAllItems}
           />
@@ -112,22 +114,39 @@ function RouteComponent() {
                   checked={selectedItemIds.includes(item.id)}
                   onChange={() => toggleSelectItem(item.id)}
                 />
-                <Box
-                  component="img"
-                  src={item.image_url}
-                  alt={item.name}
-                  sx={{
-                    width: 80,
-                    height: 80,
-                    backgroundColor: '#e0e0e0',
-                    borderRadius: 1,
+                <Link
+                  to="/shop/view/$productID/$categoryID"
+                  params={{
+                    productID: item.product_id,
+                    categoryID: item.category_id,
                   }}
-                />
-                <Box>
-                  <Typography variant="subtitle1" fontWeight="medium">
-                    {item.name}
-                  </Typography>
-                </Box>
+                >
+                  <Box
+                    component="img"
+                    src={item.image_url}
+                    alt={item.name}
+                    sx={{
+                      width: 80,
+                      height: 80,
+                      backgroundColor: '#e0e0e0',
+                      borderRadius: 1,
+                    }}
+                  />
+                </Link>
+
+                <Link
+                  to="/shop/view/$productID/$categoryID"
+                  params={{
+                    productID: item.product_id,
+                    categoryID: item.category_id,
+                  }}
+                >
+                  <Box>
+                    <Typography variant="subtitle1" fontWeight="medium">
+                      {item.name}
+                    </Typography>
+                  </Box>
+                </Link>
               </Box>
 
               <Box sx={{ textAlign: 'right' }}>

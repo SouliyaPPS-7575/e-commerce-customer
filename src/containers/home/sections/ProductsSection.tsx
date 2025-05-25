@@ -50,7 +50,12 @@ export default function ProductsSection() {
   return (
     <>
       {/* Hero Section with Three Textile Types */}
-      <Box sx={{ width: '100%', overflow: 'hidden' }}>
+      <Box
+        sx={{
+          width: '100%',
+          overflow: 'hidden',
+        }}
+      >
         <Grid container>
           {categoriesData?.slice(0, 3).map((category) => (
             <Grid
@@ -60,48 +65,59 @@ export default function ProductsSection() {
                 md: 4,
               }}
             >
-              <Link
-                to="/shop/index/$category_id"
-                params={{ category_id: category.id }}
+              <motion.div
+                whileHover={{ y: -5, scale: 1.03 }}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4 }}
+                style={{ height: '100%' }}
               >
-                <Box
-                  sx={{
-                    position: 'relative',
-                    height: { xs: 300, md: 500 },
-                    overflow: 'hidden',
-                  }}
+                <Link
+                  to="/shop/index/$category_id"
+                  params={{ category_id: category.id }}
                 >
                   <Box
-                    component="img"
-                    src={category.image_url}
-                    alt={category.name}
                     sx={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover',
-                    }}
-                  />
-                  <Typography
-                    variant="h6"
-                    sx={{
-                      position: 'absolute',
-                      bottom: 20,
-                      left: 0,
-                      width: '100%',
-                      color: '#fff',
-                      textAlign: 'center',
-                      fontFamily: "'Canela', serif",
-                      letterSpacing: 1,
+                      position: 'relative',
+                      height: { xs: 300, md: 500 },
+                      overflow: 'hidden',
                     }}
                   >
-                    {category.name}
-                  </Typography>
-                </Box>
-              </Link>
+                    <Box
+                      component="img"
+                      src={category.image_url}
+                      alt={category.name}
+                      sx={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                      }}
+                    />
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        position: 'absolute',
+                        bottom: 20,
+                        left: 0,
+                        width: '100%',
+                        color: '#fff',
+                        textAlign: 'center',
+                        fontFamily: "'Canela', serif",
+                        letterSpacing: 1,
+                      }}
+                    >
+                      {category.name}
+                    </Typography>
+                  </Box>
+                </Link>
+              </motion.div>
             </Grid>
           ))}
         </Grid>
       </Box>
+
+      {/* Best Sellers Section */}
       <Box
         sx={{
           minHeight: '100vh',
@@ -124,7 +140,7 @@ export default function ProductsSection() {
               mb: 6,
             }}
           >
-          <Typography
+            <Typography
               variant="h5"
               component="h3"
               sx={{
@@ -158,176 +174,183 @@ export default function ProductsSection() {
             </Link>
           </Box>
 
-          {/* Product Carousel */}
-          <Box sx={{ position: 'relative', mt: 4 }}>
-            <Button
-              onClick={handlePrevSlide}
-              sx={{
-                position: 'absolute',
-                left: -20,
-                top: '50%',
-                transform: 'translateY(-50%)',
-                minWidth: 40,
-                width: 40,
-                height: 40,
-                borderRadius: '50%',
-                backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                color: '#fff',
-                zIndex: 2,
-                '&:hover': {
-                  backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                },
-              }}
-            >
-              <ChevronLeft />
-            </Button>
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            {/* Product Carousel */}
+            <Box sx={{ position: 'relative', mt: 4 }}>
+              <Button
+                onClick={handlePrevSlide}
+                sx={{
+                  position: 'absolute',
+                  left: -20,
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  minWidth: 40,
+                  width: 40,
+                  height: 40,
+                  borderRadius: '50%',
+                  background: 'linear-gradient(45deg,#de9c69 10%, #C98B6B 90%)',
+                  color: '#fff',
+                  zIndex: 2,
+                  '&:hover': {
+                    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                  },
+                }}
+              >
+                <ChevronLeft />
+              </Button>
 
-            <Box
-              id="product-carousel"
-              sx={{
-                display: 'flex',
-                gap: 2,
-                overflowX: 'auto',
-                scrollSnapType: 'x mandatory',
-                scrollBehavior: 'smooth',
-                pb: 1,
-                px: 1,
-                mt: -4,
-                '&::-webkit-scrollbar': { display: 'none' }, // Hide scrollbar
-              }}
-            >
-              {filteredProductsRanking.map((product) => (
-                <Box
-                  key={product.id}
-                  sx={{
-                    flex: '0 0 auto',
-                    minWidth: {
-                      xs: '75%',
-                      sm: '40%',
-                      md: '28%',
-                      lg: '22%',
-                    },
-                    maxWidth: {
-                      xs: '90%',
-                      sm: '45%',
-                      md: '30%',
-                      lg: '24%',
-                    },
-                    scrollSnapAlign: 'start',
-                  }}
-                >
-                  <motion.div
-                    whileHover={{ y: -5, scale: 1.03 }}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3 }}
-                    style={{ height: '100%' }}
+              <Box
+                id="product-carousel"
+                sx={{
+                  display: 'flex',
+                  gap: 2,
+                  overflowX: 'auto',
+                  scrollSnapType: 'x mandatory',
+                  scrollBehavior: 'smooth',
+                  pb: 1,
+                  px: 1,
+                  mt: -4,
+                  '&::-webkit-scrollbar': { display: 'none' }, // Hide scrollbar
+                }}
+              >
+                {filteredProductsRanking.map((product) => (
+                  <Box
+                    key={product.id}
+                    sx={{
+                      flex: '0 0 auto',
+                      minWidth: {
+                        xs: '75%',
+                        sm: '40%',
+                        md: '28%',
+                        lg: '22%',
+                      },
+                      maxWidth: {
+                        xs: '90%',
+                        sm: '45%',
+                        md: '30%',
+                        lg: '24%',
+                      },
+                      scrollSnapAlign: 'start',
+                    }}
                   >
-                    <Link
-                      to="/shop/view/$productID/$categoryID"
-                      params={{
-                        productID: product.id ?? '',
-                        categoryID: product.category_id ?? '',
-                      }}
+                    <motion.div
+                      whileHover={{ y: -5, scale: 1.03 }}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3 }}
+                      style={{ height: '100%' }}
                     >
-                      <Card
-                        sx={{
-                          height: '100%',
-                          borderRadius: 0,
-                          overflow: 'hidden',
-                          boxShadow: 0,
-                          display: 'flex',
-                          flexDirection: 'column',
-                          backgroundColor: 'transparent',
-                          p: 0,
+                      <Link
+                        to="/shop/view/$productID/$categoryID"
+                        params={{
+                          productID: product.id ?? '',
+                          categoryID: product.category_id ?? '',
                         }}
                       >
-                        <CardMedia
-                          component="img"
-                          image={
-                            product.image_url?.[0] === null
-                              ? ''
-                              : product.image_url?.[0]
-                          }
-                          alt={product.name}
+                        <Card
                           sx={{
-                            aspectRatio: '3 / 5',
-                            width: '100%',
-                            objectFit: 'cover',
-                            boxShadow: 3,
-                            transition: 'transform 0.4s ease',
-                            '&:hover': { transform: 'scale(1.05)' },
-                          }}
-                        />
-                        <CardContent
-                          sx={{
-                            p: 1,
-                            textAlign: 'left',
+                            height: '100%',
+                            borderRadius: 0,
+                            overflow: 'hidden',
+                            boxShadow: 0,
+                            display: 'flex',
+                            flexDirection: 'column',
                             backgroundColor: 'transparent',
+                            p: 0,
                           }}
                         >
-                          <Typography
-                            variant="subtitle1"
-                            component="h3"
-                            gutterBottom
-                            noWrap
+                          <CardMedia
+                            component="img"
+                            image={
+                              product.image_url?.[0] === null
+                                ? ''
+                                : product.image_url?.[0]
+                            }
+                            alt={product.name}
                             sx={{
-                              mt: -0.1,
-                              fontSize: {
-                                xs: '1rem',
-                                sm: '1.15rem',
-                                md: '1.25rem',
-                              },
-                              color: '#333333',
+                              aspectRatio: '3 / 5',
+                              width: '100%',
+                              objectFit: 'cover',
+                              boxShadow: 3,
+                              transition: 'transform 0.4s ease',
+                              '&:hover': { transform: 'scale(1.05)' },
+                            }}
+                          />
+                          <CardContent
+                            sx={{
+                              p: 1,
+                              textAlign: 'left',
+                              backgroundColor: 'transparent',
                             }}
                           >
-                            {product.name}
-                          </Typography>
-                          <Typography
-                            variant="body2"
-                            sx={{
-                              mt: -1,
-                              fontSize: {
-                                xs: '1rem',
-                                sm: '1.1rem',
-                                md: '1.1rem',
-                              },
-                              color: '#7A6A55',
-                            }}
-                          >
-                            {formatCurrency(convert(product.price || 0))}{' '}
-                            {displayCurrency}
-                          </Typography>
-                        </CardContent>
-                      </Card>
-                    </Link>
-                  </motion.div>
-                </Box>
-              ))}
-            </Box>
+                            <Typography
+                              variant="subtitle1"
+                              component="h3"
+                              gutterBottom
+                              noWrap
+                              sx={{
+                                mt: -0.1,
+                                fontSize: {
+                                  xs: '1rem',
+                                  sm: '1.15rem',
+                                  md: '1.25rem',
+                                },
+                                color: '#333333',
+                              }}
+                            >
+                              {product.name}
+                            </Typography>
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                mt: -1,
+                                fontSize: {
+                                  xs: '1rem',
+                                  sm: '1.1rem',
+                                  md: '1.1rem',
+                                },
+                                color: '#7A6A55',
+                              }}
+                            >
+                              {formatCurrency(convert(product.price || 0))}{' '}
+                              {displayCurrency}
+                            </Typography>
+                          </CardContent>
+                        </Card>
+                      </Link>
+                    </motion.div>
+                  </Box>
+                ))}
+              </Box>
 
-            <Button
-              onClick={handleNextSlide}
-              sx={{
-                position: 'absolute',
-                right: -20,
-                top: '50%',
-                transform: 'translateY(-50%)',
-                minWidth: 40,
-                width: 40,
-                height: 40,
-                borderRadius: '50%',
-                backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                color: '#fff',
-                zIndex: 2,
-                '&:hover': {
-                  backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                },
-              }}
-            >
-              <ChevronRight />
-            </Button>
-          </Box>
+              <Button
+                onClick={handleNextSlide}
+                sx={{
+                  position: 'absolute',
+                  right: -20,
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  minWidth: 40,
+                  width: 40,
+                  height: 40,
+                  borderRadius: '50%',
+                  background: 'linear-gradient(45deg,#de9c69 10%, #C98B6B 90%)',
+                  color: '#fff',
+                  zIndex: 2,
+                  '&:hover': {
+                    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                  },
+                }}
+              >
+                <ChevronRight />
+              </Button>
+            </Box>
+          </motion.div>
 
           <Box
             sx={{
@@ -345,7 +368,7 @@ export default function ProductsSection() {
                 size="small"
                 endIcon={<ArrowForward />}
                 sx={{
-                  backgroundColor: '#c29b7d',
+                  background: 'linear-gradient(45deg,#de9c69 10%, #C98B6B 90%)',
                   borderRadius: '30px',
                   color: 'white',
                   px: 5,

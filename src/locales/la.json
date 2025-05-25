@@ -62,6 +62,7 @@
   "description": "ລາຍລະອຽດ",
   "add_to_cart": "ເພີ່ມໃສ່ກະຕ່າ",
   "similar_products": "ຜະລິດຕະພັນທີ່ຄ້າຍຄືກັນ",
+  "YOU_MIGHT_ALSO_LIKE": "ທ່ານອາດຈະມັກຄືກັນ",
   "featured_products": "ສິນຄ້າເເນະນຳ",
   "shops": "ຮ້ານຄ້າ",
   "shop_all": "ຮ້ານຄ້າທັງໝົດ",
@@ -72,5 +73,6 @@
   "all": "ທັງໝົດ",
   "our_best_seller": "ສິນຄ້າທີ່ເປັນທີ່ນິຍົມ",
   "item_added_cart": "ສິນຄ້າເພີ່ມໃສ່ກະຕ່າເເລ້ວ",
-  "select_all": "ເລືອກທັງໝົດ"
+  "select_all": "ເລືອກທັງໝົດ",
+  "buy_now": "ຊື້ດຽວນີ້"
 }
