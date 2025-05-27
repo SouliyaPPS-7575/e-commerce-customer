@@ -36,8 +36,8 @@ export default defineConfig({
           name: 'E-Commerce Customer',
           short_name: 'E-Commerce Customer',
           description: 'E-Commerce Customer',
-          theme_color: '#F3ECD8',
-          background_color: '#F3ECD8',
+          theme_color: '#FBF8F4',
+          background_color: '#FBF8F4',
           display: 'standalone',
           start_url: '/',
           icons: [

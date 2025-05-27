@@ -125,7 +125,7 @@ export default function ProductsSection() {
           width: '100%',
           display: 'flex',
           alignItems: 'center',
-          backgroundColor: '#F3ECD8',
+          backgroundColor: '#FBF8F4',
           border: '1px solid #E0DCD5',
           mb: isMobile ? -10 : -10,
         }}

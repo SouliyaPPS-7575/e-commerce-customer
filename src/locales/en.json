@@ -60,7 +60,7 @@
   "please_enter_search_text": "Please enter search text",
   "____________comment_Shop_page____________": "Shop Page",
   "description": "DESCRIPTION",
-  "add_to_cart": "ADD TO CART",
+  "add_to_cart": "Add to Cart",
   "similar_products": "Similar Products",
   "YOU_MIGHT_ALSO_LIKE": "YOU MIGHT ALSO LIKE",
   "featured_products": "People also Viewed",
@@ -72,7 +72,8 @@
   "subtotal": "Subtotal",
   "all": "All",
   "our_best_seller": "OUR BEST SELLER",
-  "item_added_cart":"Item added to cart",
+  "item_added_cart": "Item added to cart",
   "select_all": "Select All",
-  "buy_now": "Buy Now"
+  "buy_now": "Buy Now",
+  "journal": "Journal"
 }

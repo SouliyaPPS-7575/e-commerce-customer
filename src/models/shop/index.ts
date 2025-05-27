@@ -76,6 +76,19 @@ export interface CreateAddCart {
 }
 
 export interface CreateAddCartRes {
+  collectionId: string
+  collectionName: string
+  id: string
+  customer_id: string
+  product_id: string
+  quantity: number
+  status: string
+  created: string
+  updated: string
+}
+
+
+export interface CreateAddCartRes {
   collectionId: string;
   collectionName: string;
   id: string;

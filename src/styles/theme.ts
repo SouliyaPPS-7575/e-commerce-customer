@@ -8,8 +8,8 @@ const theme = createTheme({
     warning: { main: '#FF5722' },
     success: { main: '#8BC34A' },
     background: {
-      default: 'linear-gradient(to bottom right, #F5F5F5, #F3ECD8)',
-      paper: '#F3ECD8',
+      default: 'linear-gradient(to bottom right, #F5F5F5, #FBF8F4)',
+      paper: '#FBF8F4',
     },
     text: { primary: '#000', secondary: '#000' },
   },
@@ -40,7 +40,7 @@ const theme = createTheme({
           ],
           // Global font override using :lang()
           body: {
-            background: 'linear-gradient(to bottom right, #F5F5F5, #F3ECD8)',
+            background: 'linear-gradient(to bottom right, #F5F5F5, #FBF8F4)',
             fontFamily: `'Canela Trial', 'Noto Sans Lao', sans-serif`,
           },
           // Use Noto Sans Lao when content is in Lao
@@ -53,7 +53,6 @@ const theme = createTheme({
         },
       },
     },
-
     MuiButton: {
       styleOverrides: {
         root: {

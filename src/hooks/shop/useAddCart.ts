@@ -104,6 +104,8 @@ export function useCartPage() {
       })) || [],
   );
 
+  console.log('=> localCartState', localCartState);
+  
   const [selectedItemIds, setSelectedItemIds] = useState<string[]>([]);
 
   const selectedItemStorage = localStorageData('selected_cart_items');
@@ -219,6 +221,42 @@ export function useCartPage() {
   };
 
   const handleCheckout = () => {
+    const originalMap = new Map(
+      enrichedCartItems.map((item) => [item.id, item]),
+    );
+
+    localCartState.forEach((item) => {
+      const original = originalMap.get(item.id);
+      if (!original) {
+        if (
+          !enrichedCartItems.find((enrichedItem) => enrichedItem.id === item.id)
+        ) {
+          deleteMutation({ data: { id: item.id } });
+        }
+        return;
+      }
+
+      if (original.quantity !== item.quantity) {
+        editMutation({
+          data: {
+            id: item.id,
+            formData: {
+              customer_id: localStorageData('customer_id').getLocalStrage(),
+              product_id: item.product_id,
+              quantity: item.quantity,
+              status: item.status,
+            },
+          },
+        });
+      }
+    });
+
+    enrichedCartItems.forEach((item) => {
+      if (!localCartState.find((localItem) => localItem.id === item.id)) {
+        deleteMutation({ data: { id: item.id } });
+      }
+    });
+
     navigate({ to: '/shop/checkout' });
   };
 
@@ -226,6 +264,7 @@ export function useCartPage() {
     // Data
     enrichedCartItems: localCartState,
     selectedItemIds,
+    localCartState,
 
     // Function
     handleQuantityChange,
@@ -233,6 +272,7 @@ export function useCartPage() {
     toggleSelectItem,
     selectAllItems,
     calculateSubtotal,
+    editMutation,
 
     onClose,
     handleCheckout,

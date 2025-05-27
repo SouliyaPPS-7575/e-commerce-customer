@@ -220,7 +220,14 @@ function RouteComponent() {
         </Typography>
       </Box>
       <DialogActions sx={{ flexDirection: 'column', p: 2, pt: 0 }}>
-        <CheckoutButton fullWidth variant="contained" onClick={handleCheckout}>
+        <CheckoutButton
+          fullWidth
+          variant="contained"
+          disabled={
+            enrichedCartItems.length === 0 || selectedItemIds.length === 0
+          }
+          onClick={handleCheckout}
+        >
           {t('checkout')}
         </CheckoutButton>
 

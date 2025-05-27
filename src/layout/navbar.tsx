@@ -440,7 +440,9 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
                 <>
                   <MenuItem
                     onClick={() => {
+                      setAnchorEl(null);
                       navigate({ to: '/profile' });
+                      toggleMobileMenu();
                     }}
                   >
                     <Profile sx={{ mr: 1, color: '#C98B6B' }} />
@@ -448,7 +450,9 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
                   </MenuItem>
                   <MenuItem
                     onClick={() => {
+                      setAnchorEl(null);
                       navigate({ to: '/logout' });
+                      toggleMobileMenu();
                     }}
                   >
                     <Logout sx={{ mr: 1, color: '#E53E3E' }} />

@@ -366,9 +366,10 @@ function RouteComponent() {
                     mt: 3,
                     mb: 2,
                     py: 1.5,
-                    bgcolor: '#64b5f6',
+                    bgcolor: 'linear-gradient(45deg, #C98B6B 30%, #ab6936 90%)',
                     '&:hover': {
-                      bgcolor: '#42a5f5',
+                      bgcolor:
+                        'linear-gradient(45deg, #ab6936 30%, #C98B6B 90%)',
                     },
                     borderRadius: 1,
                     textTransform: 'none',

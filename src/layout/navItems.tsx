@@ -1,6 +1,5 @@
 import { SvgIconComponent } from '@mui/icons-material';
 import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
-import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import StorefrontOutlinedIcon from '@mui/icons-material/StorefrontOutlined';
 
 export type NavItem = {
@@ -11,7 +10,11 @@ export type NavItem = {
 };
 
 export const navItems: NavItem[] = [
-  { name: 'shop', page: 1, href: '/shop/index/all', icon: StorefrontOutlinedIcon },
-  { name: 'blog', page: 2, href: '/blog', icon: ArticleOutlinedIcon },
-  { name: 'contact', page: 3, href: '/contact', icon: MailOutlineIcon },
+  {
+    name: 'shop',
+    page: 1,
+    href: '/shop/index/all',
+    icon: StorefrontOutlinedIcon,
+  },
+  { name: 'journal', page: 2, href: '/blog', icon: ArticleOutlinedIcon },
 ];

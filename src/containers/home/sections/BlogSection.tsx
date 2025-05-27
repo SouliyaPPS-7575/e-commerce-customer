@@ -182,7 +182,7 @@ export default function BlogSection() {
 
         {isMobile ? (
           // Mobile: Horizontal scroll list
-          <Box
+          (<Box
             sx={{
               display: 'flex',
               overflowX: 'auto',
@@ -262,10 +262,10 @@ export default function BlogSection() {
                 </Link>
               </motion.div>
             ))}
-          </Box>
+          </Box>)
         ) : (
           // Desktop: Horizontal scroll list
-          <Box
+          (<Box
             sx={{
               display: 'flex',
               overflowX: 'auto',
@@ -344,7 +344,7 @@ export default function BlogSection() {
                 </Link>
               </motion.div>
             ))}
-          </Box>
+          </Box>)
         )}
 
         <Box

@@ -4,6 +4,7 @@ import {
   CartItem,
   CategoriesItem,
   CreateAddCart,
+  CreateAddCartRes,
   CurrencyItem,
   EditCartItem,
   ProductItem,
@@ -108,12 +109,13 @@ export const getCurrency = createServerFn({
   }
 });
 
+
 export const createAddCart = createServerFn({ method: 'POST' })
-  .validator((d: CreateAddCart) => d)
+  .validator((d: CreateAddCart) => d )
   .handler(async ({ data }) => {
     try {
-      const addCart = await createPb<CreateAddCart>('carts', data);
-
+      const res = await createPb<CreateAddCart>('carts', data);
+      const addCart = res as unknown as CreateAddCartRes;
       return { success: true, addCart };
     } catch (error) {
       throw handleError(error);

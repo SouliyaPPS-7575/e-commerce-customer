@@ -25,7 +25,7 @@ import { useTranslation } from 'react-i18next';
 import { useCurrencyContext } from '~/components/CurrencySelector/CurrencyProvider';
 import Footer from '~/containers/footer';
 import ProductImageGallery from '~/containers/shop/ProductImageGallery';
-import { useAddCart } from '~/hooks/shop/useAddCart';
+import { useAddCart, useCartPage } from '~/hooks/shop/useAddCart';
 import { useProducts } from '~/hooks/shop/useProducts';
 import {
   productsByCategoryQueryOption,
@@ -87,13 +87,49 @@ function ProductDetailComponent() {
   );
 
   const { addCart } = useAddCart();
+  const { enrichedCartItems } = useCartPage();
+
+  const checkSameAddedCartItem = enrichedCartItems.some(
+    (item) => item.product_id === product.id,
+  );
+
+  console.log('=> checkSameAddedCartItem:', checkSameAddedCartItem);
 
   const [quantity, setQuantity] = useState(1);
 
   const handleQuantityChange = (newQuantity: number) => {
+    if (checkSameAddedCartItem) {
+      navigate({ to: '/shop/add-cart' });
+      return;
+    }
+
     if (newQuantity < 1) return;
     setQuantity(Math.max(newQuantity, 1));
   };
+
+  const handleAddToCart = () => {
+    const customerId = localStorageData('customer_id').getLocalStrage();
+
+    if (checkSameAddedCartItem) {
+      navigate({ to: '/shop/add-cart' });
+      return;
+    }
+
+    if (!customerId) {
+      navigate({ to: '/shop/login' });
+      return;
+    }
+
+    addCart({
+      data: {
+        product_id: product.id,
+        customer_id: customerId,
+        status: 'pending',
+        quantity,
+      },
+    });
+  };
+
   return (
     <>
       <Box
@@ -238,22 +274,7 @@ function ProductDetailComponent() {
                           <ShoppingCart />
                         )
                       }
-                      onClick={() => {
-                        const customerId =
-                          localStorageData('customer_id').getLocalStrage();
-                        if (!customerId) {
-                          navigate({ to: '/shop/login' });
-                        } else {
-                          addCart({
-                            data: {
-                              product_id: product.id,
-                              customer_id: customerId,
-                              status: 'pending',
-                              quantity,
-                            },
-                          });
-                        }
-                      }}
+                      onClick={handleAddToCart}
                       disabled={isLoading}
                       sx={{
                         width: '100%', // Full width within Grid item
@@ -278,6 +299,7 @@ function ProductDetailComponent() {
                     <Button
                       variant="outlined"
                       size="small"
+                      disabled={isLoading}
                       sx={{
                         background:
                           'linear-gradient(45deg,#de9c69 10%, #C98B6B 90%)',
@@ -292,10 +314,19 @@ function ProductDetailComponent() {
                       onClick={() => {
                         const customerId =
                           localStorageData('customer_id').getLocalStrage();
+
+                        if (
+                          localStorageData('selected_cart_items')
+                            .getLocalStrage()
+                            .includes(product.id)
+                        ) {
+                          navigate({ to: '/shop/checkout' });
+                          return;
+                        }
+
                         if (!customerId) {
                           navigate({ to: '/shop/login' });
                         } else {
-                          navigate({ to: '/shop/checkout' });
                         }
                       }}
                     >
