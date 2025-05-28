@@ -53,6 +53,7 @@ function RouteComponent() {
     // Data
     enrichedCartItems,
     selectedItemIds,
+
     // Function
     handleQuantityChange,
     handleRemoveItem,

@@ -14,17 +14,24 @@ import Autocomplete from '@mui/material/Autocomplete';
 import { styled, useTheme } from '@mui/material/styles';
 import { useForm } from '@tanstack/react-form';
 import { useMutation } from '@tanstack/react-query';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { useState } from 'react';
+import { toast } from 'sonner';
 import {
   formatCurrency,
   useCurrencyContext,
 } from '~/components/CurrencySelector/CurrencyProvider';
+import {
+  useViewAddress,
+  viewAddressQueryOption,
+} from '~/hooks/checkout/useViewAddress';
 import { useDistricts } from '~/hooks/profile/useDistricts';
 import { useProvinces } from '~/hooks/profile/useProvinces';
 import { useCartPage } from '~/hooks/shop/useAddCart';
 import { CreateAddressesForm } from '~/models/checkout';
 import { localStorageData } from '~/server/cache';
-import { createAdresses } from '~/server/checkout';
+import { createAdresses, createOrder, editAdresses } from '~/server/checkout';
+import { queryClient } from '~/services/queryClient';
 
 const StyledCard = styled(Card)(({ theme }) => ({
   boxShadow: 'none',
@@ -53,15 +60,32 @@ const PlaceOrderButton = styled(Button)({
 });
 
 export const Route = createFileRoute('/shop/checkout')({
+  loader: async ({ context }) => {
+    const address = context.queryClient.ensureQueryData(
+      viewAddressQueryOption(),
+    );
+    return { address };
+  },
   component: RouteComponent,
 });
 
 function RouteComponent() {
+  const navigate = useNavigate();
   const theme = useTheme();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { mutate: createAdress } = useMutation({
+  const { mutate: createAddressMutate } = useMutation({
     mutationFn: createAdresses,
-    onSuccess: () => {},
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['viewAddress'] });
+    },
+  });
+
+  const { mutate: editAdressMutate } = useMutation({
+    mutationFn: editAdresses,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['viewAddress'] });
+    },
   });
 
   const { enrichedCartItems, selectedItemIds } = useCartPage();
@@ -79,23 +103,122 @@ function RouteComponent() {
   const shippingFee = 0;
   const total = subtotal + shippingFee;
 
-  const form = useForm({
+  const [provinceID, setProvinceID] = useState('');
+
+  const { address } = useViewAddress();
+
+  const formAddress = useForm({
     defaultValues: {
       customer_id: localStorageData('customer_id').getLocalStrage(),
-      province_id: '',
-      district_id: '',
-      village: '',
-      shipping_name: '',
+      province_id: address?.province_id || '',
+      district_id: address?.district_id || '',
+      village: address?.village || '',
+      shipping_name: address?.shipping_name || '',
     } as CreateAddressesForm,
+    listeners: {
+      onChange: (e) => {
+        setProvinceID(e.formApi.store.state.values.province_id);
+      },
+    },
     onSubmit: async ({ value }) => {
-      console.log('Form submitted:', value);
-      createAdress({ data: value });
+      const isSame =
+        value.province_id === address?.province_id &&
+        value.district_id === address?.district_id &&
+        value.village === address?.village &&
+        value.shipping_name === address?.shipping_name;
+
+      if (isSame) {
+        // No need to call API if nothing changed
+        return Promise.resolve();
+      } else if (address !== undefined) {
+        return new Promise((resolve, reject) => {
+          editAdressMutate(
+            {
+              data: {
+                id: address?.id,
+                formData: value,
+              },
+            },
+            {
+              onSuccess: () => resolve(undefined),
+              onError: (error) => reject(error),
+            },
+          );
+        });
+      }
+
+      if (address === undefined) {
+        return new Promise((resolve, reject) => {
+          createAddressMutate(
+            {
+              data: value,
+            },
+            {
+              onSuccess: () => resolve(undefined),
+              onError: (error) => reject(error),
+            },
+          );
+        });
+      }
+    },
+  });
+
+  const { mutate: createOrderMutate } = useMutation({
+    mutationFn: createOrder,
+    onSuccess: () => {
+      toast.success('Order placed successfully');
+      navigate({ to: '/shop/add-cart' });
+      setIsSubmitting(false);
+    },
+    onError: () => {
+      setIsSubmitting(false);
+    },
+  });
+
+  const formCheckout = useForm({
+    defaultValues: {
+      remark: '',
+    },
+    onSubmit: ({ value }) => {
+      return new Promise((resolve, reject) => {
+        createOrderMutate(
+          {
+            data: {
+              cartItems: selectedItemIds,
+              remark: value.remark,
+            },
+          },
+          {
+            onSuccess: () => {
+              resolve(undefined);
+              localStorageData('selected_cart_items').removeLocalStorage();
+            },
+            onError: (error) => reject(error),
+          },
+        );
+      });
     },
   });
 
   const { provinces } = useProvinces();
+  const { districts } = useDistricts(provinceID || address?.province_id);
 
-  const { districts } = useDistricts(form.getFieldValue('province_id'));
+  const handlePlaceOrder = async () => {
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+
+    try {
+      // First submit the address form
+      await formAddress.handleSubmit();
+      // Then submit the checkout form
+      await formCheckout.handleSubmit();
+    } catch (error) {
+      console.error('Error submitting forms:', error);
+      toast.error('Failed to place order. Please try again.');
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <Box
@@ -127,106 +250,122 @@ function RouteComponent() {
                   Billing & Shipping
                 </Typography>
 
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    form.handleSubmit();
-                  }}
-                >
-                  <Stack spacing={3}>
-                    {/* Province ID */}
-                    <form.Field
-                      name="province_id"
-                      children={(field) => (
-                        <Autocomplete
-                          fullWidth
-                          options={provinces}
-                          getOptionLabel={(option) => option.name}
-                          isOptionEqualToValue={(option, value) => option.id === value.id}
-                          value={
-                            provinces.find((province) => province.id === field.state.value) || null
-                          }
-                          onChange={(_, newValue) =>
-                            field.handleChange(newValue ? newValue.id : '')
-                          }
-                          renderInput={(params) => (
-                            <TextField {...params} label="Province" size="small" />
-                          )}
-                        />
-                      )}
-                    />
+                <Stack spacing={3}>
+                  {/* Province ID */}
+                  <formAddress.Field
+                    name="province_id"
+                    children={(field) => (
+                      <Autocomplete
+                        fullWidth
+                        options={provinces}
+                        getOptionLabel={(option) => option.name}
+                        isOptionEqualToValue={(option, value) =>
+                          option.id === value.id
+                        }
+                        value={
+                          provinces.find(
+                            (province) => province.id === field.state.value,
+                          ) || null
+                        }
+                        onChange={(_, newValue) => {
+                          field.handleChange(newValue ? newValue.id : '');
+                          // Clear district when province changes
+                          formAddress.setFieldValue('district_id', '');
+                        }}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Province"
+                            size="small"
+                          />
+                        )}
+                      />
+                    )}
+                  />
 
-                    {/* District ID */}
-                    <form.Field
-                      name="district_id"
-                      children={(field) => (
-                        <Autocomplete
-                          fullWidth
-                          options={districts}
-                          getOptionLabel={(option) => option.name}
-                          isOptionEqualToValue={(option, value) => option.id === value.id}
-                          value={
-                            districts.find((district) => district.id === field.state.value) || null
-                          }
-                          onChange={(_, newValue) =>
-                            field.handleChange(newValue ? newValue.id : '')
-                          }
-                          renderInput={(params) => (
-                            <TextField {...params} label="District" size="small" />
-                          )}
-                        />
-                      )}
-                    />
+                  {/* District ID */}
+                  <formAddress.Field
+                    name="district_id"
+                    children={(field) => (
+                      <Autocomplete
+                        fullWidth
+                        disabled={!formAddress.state.values.province_id}
+                        options={districts}
+                        getOptionLabel={(option) => option.name}
+                        isOptionEqualToValue={(option, value) =>
+                          option.id === value.id
+                        }
+                        value={
+                          districts.find(
+                            (district) => district.id === field.state.value,
+                          ) || null
+                        }
+                        onChange={(_, newValue) =>
+                          field.handleChange(newValue ? newValue.id : '')
+                        }
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="District"
+                            size="small"
+                            placeholder={
+                              !formAddress.state.values.province_id
+                                ? 'Please select a province first'
+                                : 'Select district'
+                            }
+                          />
+                        )}
+                      />
+                    )}
+                  />
 
-                    {/* Village */}
-                    <form.Field
-                      name="village"
-                      children={(field) => (
-                        <TextField
-                          fullWidth
-                          label="Village"
-                          variant="outlined"
-                          value={field.state.value}
-                          onChange={(e) => field.handleChange(e.target.value)}
-                          size="small"
-                        />
-                      )}
-                    />
+                  {/* Village */}
+                  <formAddress.Field
+                    name="village"
+                    children={(field) => (
+                      <TextField
+                        fullWidth
+                        label="Village"
+                        variant="outlined"
+                        value={field.state.value}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                        size="small"
+                      />
+                    )}
+                  />
 
-                    {/* Shipping Name */}
-                    <form.Field
-                      name="shipping_name"
-                      children={(field) => (
-                        <TextField
-                          fullWidth
-                          label="Shipping Name"
-                          variant="outlined"
-                          value={field.state.value}
-                          onChange={(e) => field.handleChange(e.target.value)}
-                          size="small"
-                        />
-                      )}
-                    />
+                  {/* Shipping Name */}
+                  <formAddress.Field
+                    name="shipping_name"
+                    children={(field) => (
+                      <TextField
+                        fullWidth
+                        label="Shipping Name"
+                        variant="outlined"
+                        value={field.state.value}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                        size="small"
+                      />
+                    )}
+                  />
 
-                    {/* Additional Information */}
-                    {/* <form.Field
-                      name="additionalInfo"
-                      children={(field) => (
-                        <TextField
-                          fullWidth
-                          label="Additional Information"
-                          variant="outlined"
-                          multiline
-                          rows={6}
-                          value={field.state.value}
-                          onChange={(e) => field.handleChange(e.target.value)}
-                          size="small"
-                        />
-                      )}
-                    /> */}
-                  </Stack>
-                </form>
+                  {/* Additional Information */}
+                  <formCheckout.Field
+                    name="remark"
+                    children={(field) => (
+                      <TextField
+                        fullWidth
+                        label="Additional Information"
+                        variant="outlined"
+                        multiline
+                        rows={3}
+                        value={field.state.value}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                        size="small"
+                      />
+                    )}
+                  />
+                </Stack>
               </CardContent>
             </StyledCard>
           </Grid>
@@ -338,9 +477,10 @@ function RouteComponent() {
                   fullWidth
                   variant="contained"
                   size="medium"
-                  onClick={() => form.handleSubmit()}
+                  onClick={handlePlaceOrder}
+                  disabled={isSubmitting || !formAddress || !formCheckout}
                 >
-                  Place Order
+                  {isSubmitting ? 'Processing...' : 'Place Order'}
                 </PlaceOrderButton>
               </CardContent>
             </StyledCard>

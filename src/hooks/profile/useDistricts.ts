@@ -3,7 +3,7 @@ import { getDistricts } from '~/server/profile';
 
 export const districtsQueryOption = (province_id: string) =>
   queryOptions({
-    queryKey: ['districts'],
+    queryKey: ['districts', province_id],
     queryFn: () => getDistricts({ data: { province_id } }),
   });
 

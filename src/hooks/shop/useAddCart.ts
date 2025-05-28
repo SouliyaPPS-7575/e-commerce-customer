@@ -23,8 +23,7 @@ export const getCartItemsQueryOption = () =>
   queryOptions({
     queryKey: ['addCartItems'],
     queryFn: getCartItems,
-    staleTime: 0, // make sure it's not considered "fresh" forever
-    refetchInterval: 5000, // poll every 5 seconds
+    staleTime: 1,
   });
 
 // Mock data fetching with TanStack Query
@@ -104,8 +103,6 @@ export function useCartPage() {
       })) || [],
   );
 
-  console.log('=> localCartState', localCartState);
-  
   const [selectedItemIds, setSelectedItemIds] = useState<string[]>([]);
 
   const selectedItemStorage = localStorageData('selected_cart_items');
@@ -265,7 +262,8 @@ export function useCartPage() {
     enrichedCartItems: localCartState,
     selectedItemIds,
     localCartState,
-
+    selectedItemStorage,
+    
     // Function
     handleQuantityChange,
     handleRemoveItem,
