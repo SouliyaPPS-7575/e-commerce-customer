@@ -1,8 +1,58 @@
 import { createServerFn } from '@tanstack/react-start';
-import { Districts, Provinces } from '~/models/profile';
-import pb, { fetchAllPb } from '~/services/pocketbaseService';
+import { getCookie } from '@tanstack/react-start/server';
+import { Districts, EditProfileForm, GetMe, Provinces } from '~/models/profile';
+import pb, {
+  createPb,
+  fetchAllPb,
+  updatePb,
+} from '~/services/pocketbaseService';
 import { handleError } from './errorHandler';
+import {
+  CreateAddressesForm,
+  EditAddressesForm,
+  ViewAddress,
+} from '~/models/checkout';
 
+export const createAdresses = createServerFn({
+  method: 'POST',
+})
+  .validator((d: CreateAddressesForm) => d)
+  .handler(async ({ data }) => {
+    try {
+      const res = await createPb<CreateAddressesForm>('addresses', data);
+      return { success: true, res };
+    } catch (error) {
+      throw handleError(error);
+    }
+  });
+
+export const editAdresses = createServerFn({
+  method: 'POST',
+})
+  .validator((d: { id: string; formData: EditAddressesForm }) => d)
+  .handler(async ({ data: { id, formData } }) => {
+    try {
+      const res = await updatePb<EditAddressesForm>('addresses', id, formData);
+      return { success: true, res };
+    } catch (error) {
+      throw handleError(error);
+    }
+  });
+
+export const getViewAddresses = createServerFn({
+  method: 'GET',
+}).handler(async () => {
+  try {
+    const address = await pb.collection('addresses').getFullList<ViewAddress>({
+      filter: `customer_id="${getCookie('customer_id')}"`,
+    });
+    return { success: true, address: address[0] };
+  } catch (error) {
+    throw handleError(error);
+  }
+});
+
+// This function fetches all provinces from the PocketBase database
 export const getProvinces = createServerFn({
   method: 'GET',
 }).handler(async () => {
@@ -14,6 +64,7 @@ export const getProvinces = createServerFn({
   }
 });
 
+// This function fetches all districts from the PocketBase database
 export const getDistricts = createServerFn({
   method: 'GET',
 })
@@ -25,6 +76,86 @@ export const getDistricts = createServerFn({
         .collection('districts')
         .getFullList<Districts>({ filter: `province_id = "${province_id}"` });
       return { districts };
+    } catch (error) {
+      throw handleError(error);
+    }
+  });
+
+// This function fetches the user from the PocketBase database
+export const getMe = createServerFn({
+  method: 'GET',
+}).handler(async () => {
+  try {
+    const customer_id = getCookie('customer_id') as string;
+    return await pb.collection<GetMe>('customers').getOne(customer_id);
+  } catch (error) {
+    throw handleError(error);
+  }
+});
+
+// Change email
+export const changeEmail = createServerFn({ method: 'POST' })
+  .validator((d: { email: string; password: string }) => d)
+  .handler(async ({ data: { email, password } }) => {
+    try {
+      const token = getCookie('token') as string;
+
+      // Set the token before making the request
+      pb.authStore.save(token, null);
+
+      const resRequestEmailChange = await pb.send(
+        '/api/collections/customers/request-email-change',
+        {
+          method: 'POST',
+          body: { email },
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${getCookie('token')}`,
+          },
+        },
+      );
+
+      const resConfirmEmailChange = await pb.send(
+        '/api/collections/customers/confirm-email-change',
+        {
+          method: 'POST',
+          body: {
+            token,
+            password,
+          },
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${getCookie('token')}`,
+          },
+        },
+      );
+
+      return { success: true, resRequestEmailChange, resConfirmEmailChange };
+    } catch (error) {
+      throw handleError(error);
+    }
+  });
+
+// Edit profile
+export const editProfile = createServerFn({ method: 'POST' })
+  .validator((d: EditProfileForm) => d)
+  .handler(async ({ data }) => {
+    try {
+      const customer_id = getCookie('customer_id') as string;
+      return await pb.collection('customers').update(customer_id, data);
+    } catch (error) {
+      throw handleError(error);
+    }
+  });
+
+// Upload avatar
+export const uploadAvatar = createServerFn({ method: 'POST' })
+  .validator((d: FormData) => d)
+  .handler(async ({ data }) => {
+    try {
+      const customer_id = getCookie('customer_id') as string;
+      // PocketBase will handle the FormData automatically
+      return await pb.collection('customers').update(customer_id, data);
     } catch (error) {
       throw handleError(error);
     }

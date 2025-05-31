@@ -75,5 +75,12 @@
   "item_added_cart": "ສິນຄ້າເພີ່ມໃສ່ກະຕ່າເເລ້ວ",
   "select_all": "ເລືອກທັງໝົດ",
   "buy_now": "ຊື້ດຽວນີ້",
-  "journal": "ບົດຄວາມ"
+  "journal": "ບົດຄວາມ",
+  "____________comment_Profile_page____________": "Profile Page",
+  "account_details": "ລາຍລະອຽດບັນຊີ",
+  "old_password": "ລະຫັດຜ່ານເກົ່າ",
+  "shipping_address": "ທີ່ຢູ່ຈັດສົ່ງ",
+  "shipping_info": "ຂໍ້ມູນການຂົນສົ່ງ",
+  "order_history": "ປະຫວັດການສັ່ງຊື້",
+  "no_orders_found": "ບໍ່ພົບການສັ່ງຊື້."
 }

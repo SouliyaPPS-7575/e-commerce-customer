@@ -75,5 +75,12 @@
   "item_added_cart": "Item added to cart",
   "select_all": "Select All",
   "buy_now": "Buy Now",
-  "journal": "Journal"
+  "journal": "Journal",
+  "____________comment_Profile_page____________": "Profile Page",
+  "account_details": "Account Details",
+  "old_password": "Old Password",
+  "shipping_address":"Shipping Address",
+  "shipping_info": "Shipping information",
+  "order_history": "Order History",
+  "no_orders_found":"No orders found."
 }

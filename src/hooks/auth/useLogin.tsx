@@ -12,6 +12,7 @@ export const useLogin = () => {
   const login = useMutation({
     mutationFn: loginServer,
     onSuccess: ({ authData }) => {
+      localStorageData('token').setLocalStorage(authData.token);
       localStorageData('customer_id').setLocalStorage(authData.record.id);
       navigate({ to: '/' });
     },

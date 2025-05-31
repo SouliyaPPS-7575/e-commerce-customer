@@ -22,16 +22,12 @@ import {
   useCurrencyContext,
 } from '~/components/CurrencySelector/CurrencyProvider';
 import {
-  useViewAddress,
-  viewAddressQueryOption,
+  viewAddressQueryOption
 } from '~/hooks/checkout/useViewAddress';
-import { useDistricts } from '~/hooks/profile/useDistricts';
-import { useProvinces } from '~/hooks/profile/useProvinces';
+import { useAddress } from '~/hooks/profile/useAddress';
 import { useCartPage } from '~/hooks/shop/useAddCart';
-import { CreateAddressesForm } from '~/models/checkout';
 import { localStorageData } from '~/server/cache';
-import { createAdresses, createOrder, editAdresses } from '~/server/checkout';
-import { queryClient } from '~/services/queryClient';
+import { createOrder } from '~/server/checkout';
 
 const StyledCard = styled(Card)(({ theme }) => ({
   boxShadow: 'none',
@@ -47,7 +43,6 @@ const ProductImage = styled('img')({
 });
 
 const PlaceOrderButton = styled(Button)({
-  backgroundColor: '#D4C5A0',
   color: 'white',
   padding: '16px',
   fontSize: '16px',
@@ -74,20 +69,6 @@ function RouteComponent() {
   const theme = useTheme();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { mutate: createAddressMutate } = useMutation({
-    mutationFn: createAdresses,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['viewAddress'] });
-    },
-  });
-
-  const { mutate: editAdressMutate } = useMutation({
-    mutationFn: editAdresses,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['viewAddress'] });
-    },
-  });
-
   const { enrichedCartItems, selectedItemIds } = useCartPage();
 
   const orderItems = enrichedCartItems.filter((item) =>
@@ -103,65 +84,7 @@ function RouteComponent() {
   const shippingFee = 0;
   const total = subtotal + shippingFee;
 
-  const [provinceID, setProvinceID] = useState('');
-
-  const { address } = useViewAddress();
-
-  const formAddress = useForm({
-    defaultValues: {
-      customer_id: localStorageData('customer_id').getLocalStrage(),
-      province_id: address?.province_id || '',
-      district_id: address?.district_id || '',
-      village: address?.village || '',
-      shipping_name: address?.shipping_name || '',
-    } as CreateAddressesForm,
-    listeners: {
-      onChange: (e) => {
-        setProvinceID(e.formApi.store.state.values.province_id);
-      },
-    },
-    onSubmit: async ({ value }) => {
-      const isSame =
-        value.province_id === address?.province_id &&
-        value.district_id === address?.district_id &&
-        value.village === address?.village &&
-        value.shipping_name === address?.shipping_name;
-
-      if (isSame) {
-        // No need to call API if nothing changed
-        return Promise.resolve();
-      } else if (address !== undefined) {
-        return new Promise((resolve, reject) => {
-          editAdressMutate(
-            {
-              data: {
-                id: address?.id,
-                formData: value,
-              },
-            },
-            {
-              onSuccess: () => resolve(undefined),
-              onError: (error) => reject(error),
-            },
-          );
-        });
-      }
-
-      if (address === undefined) {
-        return new Promise((resolve, reject) => {
-          createAddressMutate(
-            {
-              data: value,
-            },
-            {
-              onSuccess: () => resolve(undefined),
-              onError: (error) => reject(error),
-            },
-          );
-        });
-      }
-    },
-  });
+  const { formAddress, provinces, districts } = useAddress();
 
   const { mutate: createOrderMutate } = useMutation({
     mutationFn: createOrder,
@@ -199,9 +122,6 @@ function RouteComponent() {
       });
     },
   });
-
-  const { provinces } = useProvinces();
-  const { districts } = useDistricts(provinceID || address?.province_id);
 
   const handlePlaceOrder = async () => {
     if (isSubmitting) return;

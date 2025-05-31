@@ -1,5 +1,5 @@
 import { queryOptions, useSuspenseQuery } from '@tanstack/react-query';
-import { getViewAddresses } from '~/server/checkout';
+import { getViewAddresses } from '~/server/profile';
 
 export const viewAddressQueryOption = () =>
   queryOptions({

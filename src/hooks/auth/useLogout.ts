@@ -17,7 +17,7 @@ export const useLogout = () => {
   });
 
   const handleClose = () => {
-    navigate({ to: '/' });
+    history.back();
   };
 
   const handleConfirm = () => {

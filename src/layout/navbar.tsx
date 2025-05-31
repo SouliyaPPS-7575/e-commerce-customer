@@ -85,8 +85,9 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
 
       // Check authentication
       const { token } = await getToken();
+      const localToken = localStorageData('token').getLocalStrage();
 
-      if (!token || token === '') {
+      if (!token || token === '' || !localToken) {
         navigate({ to: '/login' });
       } else {
         // Important: use the stored reference, not e.currentTarget which might be null after async
@@ -271,35 +272,35 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
               </IconButton>
 
               {/* Shopping cart */}
-              {localStorageData('token').getLocalStrage() ||
-                (localStorageData('customer_id').getLocalStrage() && (
-                  <Link to="/shop/add-cart" style={{ textDecoration: 'none' }}>
-                    <IconButton color="inherit">
-                      <Badge
-                        badgeContent={countCartItems}
-                        color="primary"
+              {(!!localStorageData('token').getLocalStrage() ||
+                !!localStorageData('customer_id').getLocalStrage()) && (
+                <Link to="/shop/add-cart" style={{ textDecoration: 'none' }}>
+                  <IconButton color="inherit">
+                    <Badge
+                      badgeContent={countCartItems}
+                      color="primary"
+                      sx={{
+                        '& .MuiBadge-badge': {
+                          color: '#ffffff',
+                          fontSize: '1rem',
+                          textAlign: 'center',
+                          fontSizeAdjust: '0.5em',
+                          fontSmooth: 'always',
+                          background:
+                            'linear-gradient(45deg,#f39c5ae2 10%, #ab6936 90%)',
+                        },
+                        ml: 1,
+                      }}
+                    >
+                      <ShoppingCartOutlined
                         sx={{
-                          '& .MuiBadge-badge': {
-                            color: '#ffffff',
-                            fontSize: '1rem',
-                            textAlign: 'center',
-                            fontSizeAdjust: '0.5em',
-                            fontSmooth: 'always',
-                            background:
-                              'linear-gradient(45deg,#f39c5ae2 10%, #ab6936 90%)',
-                          },
-                          ml: 1,
+                          color: isTransparent ? 'back' : 'white',
                         }}
-                      >
-                        <ShoppingCartOutlined
-                          sx={{
-                            color: isTransparent ? 'back' : 'white',
-                          }}
-                        />
-                      </Badge>
-                    </IconButton>
-                  </Link>
-                ))}
+                      />
+                    </Badge>
+                  </IconButton>
+                </Link>
+              )}
 
               {/* User account dropdown */}
               {!isMobile && (

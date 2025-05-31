@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { localStorageData } from '~/server/cache';
 
 export const formatCurrency = (value: number, locale = 'en-US') => {
   const hasFraction = value % 1 !== 0;
@@ -20,3 +21,10 @@ export function formattedDate(isoDate?: string): string {
     });
   }, [isoDate]);
 }
+
+export const viewAvatar = (avatar?: string) => {
+  const avatarUrl = avatar?.startsWith('http')
+    ? avatar
+    : `${process.env.BASE_URL}/api/files/_pb_users_auth_/${localStorageData('customer_id').getLocalStrage()}/${avatar}?token=${localStorageData('token').getLocalStrage()}`;
+  return avatarUrl;
+};

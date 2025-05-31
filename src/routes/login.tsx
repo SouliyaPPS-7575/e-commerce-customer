@@ -33,6 +33,7 @@ function RouteComponent() {
   const handleTogglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
   };
+
   return (
     <Box
       sx={{
@@ -127,8 +128,8 @@ function RouteComponent() {
                 name="password"
                 validators={{
                   onChange: ({ value }) =>
-                    !value || value.length < 6
-                      ? 'Password must be at least 6 characters'
+                    !value || value.length < 8
+                      ? 'Password must be at least 8 characters'
                       : undefined,
                 }}
               >

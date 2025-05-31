@@ -17,13 +17,11 @@ import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { Lock, Mail } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import 'react-phone-input-2/lib/material.css';
 import { toast } from 'sonner';
 import ClientOnlyPhoneInput from '~/components/ClientOnlyPhoneInput';
 import LanguageSelection from '~/components/LanguageSelection';
 import { SignupForm } from '~/models/auth';
 import { signupServer, verifyEmailServer } from '~/server/auth';
-import '~/styles/phone-input-styles.css'; // Import the custom styles
 
 export const Route = createFileRoute('/signup')({
   component: RouteComponent,
@@ -243,8 +241,8 @@ function RouteComponent() {
                   name="password"
                   validators={{
                     onChange: ({ value }) =>
-                      !value || value.length < 6
-                        ? 'Password must be at least 6 characters'
+                      !value || value.length < 8
+                        ? 'Password must be at least 8 characters'
                         : undefined,
                   }}
                 >
@@ -303,8 +301,8 @@ function RouteComponent() {
                   name="passwordConfirm"
                   validators={{
                     onChange: ({ value }) =>
-                      !value || value.length < 6
-                        ? 'Password must be at least 6 characters'
+                      !value || value.length < 8
+                        ? 'Password must be at least 8 characters'
                         : undefined,
                   }}
                 >

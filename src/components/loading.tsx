@@ -68,6 +68,7 @@ const Loading = () => {
         justifyContent: 'center',
         alignItems: 'center',
         background: 'linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%)',
+        zIndex: 9999,
       }}
     >
       {/* Centered loading circle */}
