@@ -442,7 +442,10 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
                   <MenuItem
                     onClick={() => {
                       setAnchorEl(null);
-                      navigate({ to: '/profile' });
+                      navigate({
+                        to: '/profile',
+                      });
+
                       toggleMobileMenu();
                     }}
                   >

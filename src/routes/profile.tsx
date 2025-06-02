@@ -25,14 +25,6 @@ export const Route = createFileRoute('/profile')({
       });
     }
   },
-  validateSearch: ({ from, section, page, limit }) => {
-    return {
-      from,
-      section: section || 'account', // Default to 'account' if not provided
-      page,
-      limit,
-    };
-  },
   loader: ({ context, location }) => {
     const searchParams = new URLSearchParams(location.search);
     const page = Number(searchParams.get('page'));
@@ -59,10 +51,10 @@ function ProfilePage() {
   const { me } = useGetMe();
 
   // Obtain search parameters from the router
-  const searchParams = useSearch({ from: '/profile' });
+  const searchParams = useSearch<any>({ from: '/profile' });
 
   // Get active section from search params
-  const activeSection = searchParams.section || ('account' as any);
+  const activeSection = searchParams.section || 'account';
 
   // Create pagination object from search params
   const pagination: PaginationAPI = {
