@@ -50,6 +50,18 @@ export const fetchPb = async <T extends Record<string, any>>(
   });
 };
 
+export const fetchFilterPb = async <T extends Record<string, any>>(
+  collection: string,
+  field: string,
+  value: string,
+): Promise<T[]> => {
+  return await secureFetch(collection, async () => {
+    return await pb
+      .collection(collection)
+      .getFullList<T>({ filter: `${field}="${value}"` });
+  });
+};
+
 // Generic function to fetch all documents from the collection
 export async function fetchAllPb<T extends Record<string, any>>(
   collectionName: string,

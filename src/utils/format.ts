@@ -22,6 +22,14 @@ export function formattedDate(isoDate?: string): string {
   }, [isoDate]);
 }
 
+export function formatDateDMY(dateStr: string | Date): string {
+  const date = new Date(dateStr);
+  const day = date.getDate();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear();
+  return `${day}-${month}-${year}`;
+}
+
 export const viewAvatar = (avatar?: string) => {
   const avatarUrl = avatar?.startsWith('http')
     ? avatar

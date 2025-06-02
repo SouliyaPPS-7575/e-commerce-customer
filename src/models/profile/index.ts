@@ -46,3 +46,34 @@ export interface EditProfileForm {
   password?: string;
   passwordConfirm?: string;
 }
+
+export interface OrderHistoryDetails {
+  collectionId: string;
+  collectionName: string;
+  id: string;
+  customer_id: string;
+  customer_name: string;
+  phone_number: string;
+  address_id: string;
+  address: string;
+  status: string;
+  reference_id: string;
+  remark: string;
+  created: string;
+  updated: string;
+}
+
+export interface OrderHistoryItems {
+  collectionId: string;
+  collectionName: string;
+  id: string;
+  order_id: string;
+  product_id: string;
+  quantity: number;
+  price_lak: number;
+  price_usd: number;
+  price_thb: number;
+  product_name: string;
+  created: string;
+  updated: string;
+}

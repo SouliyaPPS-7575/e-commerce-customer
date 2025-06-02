@@ -1,17 +1,26 @@
 import { createServerFn } from '@tanstack/react-start';
 import { getCookie } from '@tanstack/react-start/server';
-import { Districts, EditProfileForm, GetMe, Provinces } from '~/models/profile';
-import pb, {
-  createPb,
-  fetchAllPb,
-  updatePb,
-} from '~/services/pocketbaseService';
-import { handleError } from './errorHandler';
 import {
   CreateAddressesForm,
   EditAddressesForm,
   ViewAddress,
 } from '~/models/checkout';
+import {
+  Districts,
+  EditProfileForm,
+  GetMe,
+  OrderHistoryDetails,
+  OrderHistoryItems,
+  Provinces,
+} from '~/models/profile';
+import pb, {
+  createPb,
+  fetchAllPb,
+  fetchFilterPb,
+  updatePb,
+} from '~/services/pocketbaseService';
+import { handleError } from './errorHandler';
+import { PaginationAPI } from '~/models';
 
 export const createAdresses = createServerFn({
   method: 'POST',
@@ -156,6 +165,52 @@ export const uploadAvatar = createServerFn({ method: 'POST' })
       const customer_id = getCookie('customer_id') as string;
       // PocketBase will handle the FormData automatically
       return await pb.collection('customers').update(customer_id, data);
+    } catch (error) {
+      throw handleError(error);
+    }
+  });
+
+export const getOrderHistoryItems = createServerFn({
+  method: 'GET',
+})
+  .validator((d: { order_id: string }) => d)
+  .handler(async ({ data: { order_id } }) => {
+    try {
+      const res = await fetchFilterPb<OrderHistoryItems>(
+        'order_items',
+        'order_id',
+        order_id,
+      );
+      return { ...res[0] };
+    } catch (error) {
+      throw handleError(error);
+    }
+  });
+
+export const getOrderHistory = createServerFn({
+  method: 'GET',
+})
+  .validator((d: PaginationAPI) => d)
+  .handler(async ({ data: { page, limit } }) => {
+    try {
+      const customer_id = getCookie('customer_id') as string;
+      const order_id = await fetchFilterPb<OrderHistoryDetails>(
+        'orders',
+        'customer_id',
+        customer_id,
+      );
+
+      const orderIds = order_id.map((item) => item.id);
+
+      const filterString = orderIds.map(id => `order_id="${id}"`).join(' || ');
+
+      const orderItems = await pb
+        .collection('order_items')
+        .getList<OrderHistoryItems>(page, limit, {
+          filter: filterString,
+        });
+
+      return orderItems;
     } catch (error) {
       throw handleError(error);
     }

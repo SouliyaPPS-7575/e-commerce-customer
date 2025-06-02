@@ -1,4 +1,3 @@
-// src/contexts/CurrencyContext.tsx
 import React, {
   createContext,
   useContext,
