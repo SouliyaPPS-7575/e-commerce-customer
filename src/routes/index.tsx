@@ -4,24 +4,26 @@ import HeroSection from '~/containers/home/sections/HeroSection';
 import ProductsSection from '~/containers/home/sections/ProductsSection';
 import { bannersQueryOption } from '~/hooks/banner/useBanners';
 import { productsQueryOption } from '~/hooks/shop/useProducts';
+import { useContact, whatsappLinkQueryOption } from '~/hooks/useContact';
 import Navbar from '~/layout/navbar';
 
 export const Route = createFileRoute('/')({
   loader: async ({ context }) => {
     const products = context.queryClient.ensureQueryData(productsQueryOption());
     const banners = context.queryClient.ensureQueryData(bannersQueryOption());
-    return { products, banners };
+    const whatsappLink = context.queryClient.ensureQueryData(
+      whatsappLinkQueryOption(),
+    );
+    return { products, banners, whatsappLink };
   },
   component: Home,
 });
-
 
 function Home() {
   // States
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   const [currentPage, setCurrentPage] = useState(0);
-
 
   // Handle page change
   const goToPage = (pageNumber: number) => {
@@ -66,6 +68,7 @@ function Home() {
     ];
   }, []);
 
+  const { whatsappLink } = useContact();
   return (
     <>
       {/* <Navbar /> */}
@@ -99,7 +102,7 @@ function Home() {
 
       {/* Alternative Design with Custom WhatsApp SVG */}
       <a
-        href="https://wa.me/1234567890"
+        href={whatsappLink}
         target="_blank"
         rel="noopener noreferrer"
         className="fixed bottom-4 right-3 bg-gradient-to-r from-green-400 to-green-600 hover:from-green-500 hover:to-green-700 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-2xl hover:shadow-green-500/25 transition-all duration-300 transform hover:scale-105 z-50 group"
