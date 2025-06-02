@@ -10,6 +10,7 @@ import { queryClient } from '~/services/queryClient';
 import { useViewAddress } from '../checkout/useViewAddress';
 import { useDistricts } from './useDistricts';
 import { useProvinces } from './useProvinces';
+import { queryKeyViewAddress } from '.';
 
 export const useAddress = () => {
   const { t } = useTranslation();
@@ -21,7 +22,7 @@ export const useAddress = () => {
   const { mutate: createAddressMutate } = useMutation({
     mutationFn: createAdresses,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['viewAddress'] });
+      queryClient.invalidateQueries({ queryKey: queryKeyViewAddress });
       toast.success(t('successfully'));
     },
   });
@@ -29,7 +30,7 @@ export const useAddress = () => {
   const { mutate: editAdressMutate } = useMutation({
     mutationFn: editAdresses,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['viewAddress'] });
+      queryClient.invalidateQueries({ queryKey: queryKeyViewAddress });
       toast.success(t('successfully'));
     },
   });

@@ -17,11 +17,12 @@ import {
   getCountCartItems,
 } from '~/server/shop';
 import { queryClient } from '~/services/queryClient';
+import { queryKeyCountCartItems, queryKeyGetCartItems } from '.';
 import { useProducts } from './useProducts';
 
 export const getCartItemsQueryOption = () =>
   queryOptions({
-    queryKey: ['addCartItems'],
+    queryKey: queryKeyGetCartItems,
     queryFn: getCartItems,
     staleTime: 1,
   });
@@ -29,7 +30,7 @@ export const getCartItemsQueryOption = () =>
 // Mock data fetching with TanStack Query
 export const useCountCartItems = () => {
   return useQuery({
-    queryKey: ['countCartItems'],
+    queryKey: queryKeyCountCartItems,
     queryFn: getCountCartItems,
     initialData: 0,
     staleTime: 1,
@@ -41,7 +42,7 @@ export const useAddCart = () => {
   const { mutateAsync: addCart } = useMutation({
     mutationFn: createAddCart,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['countCartItems'] });
+      queryClient.invalidateQueries({ queryKey: queryKeyCountCartItems });
       toast.success(t('item_added_cart'));
     },
   });
@@ -52,7 +53,9 @@ export const useAddCart = () => {
 export function useCartPage() {
   const navigate = useNavigate();
 
-  const { data: cartItem } = useSuspenseQuery(getCartItemsQueryOption());
+  const { data: cartItem, refetch: refetchCartItems } = useSuspenseQuery(
+    getCartItemsQueryOption(),
+  );
   const { productsData } = useProducts();
 
   const enrichedCartItems = useMemo(() => {
@@ -81,7 +84,7 @@ export function useCartPage() {
   const { mutate: deleteMutation } = useMutation({
     mutationFn: deleteCartItem,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['countCartItems'] });
+      queryClient.invalidateQueries({ queryKey: queryKeyCountCartItems });
       queryClient.invalidateQueries(getCartItemsQueryOption());
     },
   });
@@ -89,7 +92,7 @@ export function useCartPage() {
   const { mutate: editMutation } = useMutation({
     mutationFn: editCartItem,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['countCartItems'] });
+      queryClient.invalidateQueries({ queryKey: queryKeyCountCartItems });
       queryClient.invalidateQueries(getCartItemsQueryOption());
     },
   });
@@ -178,6 +181,12 @@ export function useCartPage() {
     );
 
   const onClose = () => {
+    if (enrichedCartItems.length === 0) {
+      navigate({
+        to: '/shop/index/$category_id',
+        params: { category_id: 'all' },
+      });
+    }
     const originalMap = new Map(
       enrichedCartItems.map((item) => [item.id, item]),
     );
@@ -263,7 +272,7 @@ export function useCartPage() {
     selectedItemIds,
     localCartState,
     selectedItemStorage,
-    
+
     // Function
     handleQuantityChange,
     handleRemoveItem,
@@ -274,5 +283,6 @@ export function useCartPage() {
 
     onClose,
     handleCheckout,
+    refetchCartItems,
   };
 }

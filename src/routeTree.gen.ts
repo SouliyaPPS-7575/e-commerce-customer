@@ -27,6 +27,7 @@ import { Route as ShopAddCartImport } from './routes/shop/add-cart'
 import { Route as ShopIndexCategoryidImport } from './routes/shop/index.$category_id'
 import { Route as BlogViewIdImport } from './routes/blog/view.$id'
 import { Route as ShopViewProductIDCategoryIDImport } from './routes/shop/view.$productID.$categoryID'
+import { Route as ShopBuyCheckoutCartidProductidImport } from './routes/shop/buy-checkout.$cart_id.$product_id'
 
 // Create/Update Routes
 
@@ -124,6 +125,13 @@ const ShopViewProductIDCategoryIDRoute =
   ShopViewProductIDCategoryIDImport.update({
     id: '/shop/view/$productID/$categoryID',
     path: '/shop/view/$productID/$categoryID',
+    getParentRoute: () => rootRoute,
+  } as any)
+
+const ShopBuyCheckoutCartidProductidRoute =
+  ShopBuyCheckoutCartidProductidImport.update({
+    id: '/shop/buy-checkout/$cart_id/$product_id',
+    path: '/shop/buy-checkout/$cart_id/$product_id',
     getParentRoute: () => rootRoute,
   } as any)
 
@@ -236,6 +244,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ShopIndexCategoryidImport
       parentRoute: typeof rootRoute
     }
+    '/shop/buy-checkout/$cart_id/$product_id': {
+      id: '/shop/buy-checkout/$cart_id/$product_id'
+      path: '/shop/buy-checkout/$cart_id/$product_id'
+      fullPath: '/shop/buy-checkout/$cart_id/$product_id'
+      preLoaderRoute: typeof ShopBuyCheckoutCartidProductidImport
+      parentRoute: typeof rootRoute
+    }
     '/shop/view/$productID/$categoryID': {
       id: '/shop/view/$productID/$categoryID'
       path: '/shop/view/$productID/$categoryID'
@@ -264,6 +279,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactIndexRoute
   '/blog/view/$id': typeof BlogViewIdRoute
   '/shop/index/$category_id': typeof ShopIndexCategoryidRoute
+  '/shop/buy-checkout/$cart_id/$product_id': typeof ShopBuyCheckoutCartidProductidRoute
   '/shop/view/$productID/$categoryID': typeof ShopViewProductIDCategoryIDRoute
 }
 
@@ -283,6 +299,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactIndexRoute
   '/blog/view/$id': typeof BlogViewIdRoute
   '/shop/index/$category_id': typeof ShopIndexCategoryidRoute
+  '/shop/buy-checkout/$cart_id/$product_id': typeof ShopBuyCheckoutCartidProductidRoute
   '/shop/view/$productID/$categoryID': typeof ShopViewProductIDCategoryIDRoute
 }
 
@@ -303,6 +320,7 @@ export interface FileRoutesById {
   '/contact/': typeof ContactIndexRoute
   '/blog/view/$id': typeof BlogViewIdRoute
   '/shop/index/$category_id': typeof ShopIndexCategoryidRoute
+  '/shop/buy-checkout/$cart_id/$product_id': typeof ShopBuyCheckoutCartidProductidRoute
   '/shop/view/$productID/$categoryID': typeof ShopViewProductIDCategoryIDRoute
 }
 
@@ -324,6 +342,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/blog/view/$id'
     | '/shop/index/$category_id'
+    | '/shop/buy-checkout/$cart_id/$product_id'
     | '/shop/view/$productID/$categoryID'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -342,6 +361,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/blog/view/$id'
     | '/shop/index/$category_id'
+    | '/shop/buy-checkout/$cart_id/$product_id'
     | '/shop/view/$productID/$categoryID'
   id:
     | '__root__'
@@ -360,6 +380,7 @@ export interface FileRouteTypes {
     | '/contact/'
     | '/blog/view/$id'
     | '/shop/index/$category_id'
+    | '/shop/buy-checkout/$cart_id/$product_id'
     | '/shop/view/$productID/$categoryID'
   fileRoutesById: FileRoutesById
 }
@@ -380,6 +401,7 @@ export interface RootRouteChildren {
   ContactIndexRoute: typeof ContactIndexRoute
   BlogViewIdRoute: typeof BlogViewIdRoute
   ShopIndexCategoryidRoute: typeof ShopIndexCategoryidRoute
+  ShopBuyCheckoutCartidProductidRoute: typeof ShopBuyCheckoutCartidProductidRoute
   ShopViewProductIDCategoryIDRoute: typeof ShopViewProductIDCategoryIDRoute
 }
 
@@ -399,6 +421,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactIndexRoute: ContactIndexRoute,
   BlogViewIdRoute: BlogViewIdRoute,
   ShopIndexCategoryidRoute: ShopIndexCategoryidRoute,
+  ShopBuyCheckoutCartidProductidRoute: ShopBuyCheckoutCartidProductidRoute,
   ShopViewProductIDCategoryIDRoute: ShopViewProductIDCategoryIDRoute,
 }
 
@@ -427,6 +450,7 @@ export const routeTree = rootRoute
         "/contact/",
         "/blog/view/$id",
         "/shop/index/$category_id",
+        "/shop/buy-checkout/$cart_id/$product_id",
         "/shop/view/$productID/$categoryID"
       ]
     },
@@ -474,6 +498,9 @@ export const routeTree = rootRoute
     },
     "/shop/index/$category_id": {
       "filePath": "shop/index.$category_id.tsx"
+    },
+    "/shop/buy-checkout/$cart_id/$product_id": {
+      "filePath": "shop/buy-checkout.$cart_id.$product_id.tsx"
     },
     "/shop/view/$productID/$categoryID": {
       "filePath": "shop/view.$productID.$categoryID.tsx"

@@ -4,12 +4,11 @@ import {
   CartItem,
   CategoriesItem,
   CreateAddCart,
-  CreateAddCartRes,
   CurrencyItem,
   EditCartItem,
   ProductItem,
   ProductRankingItem,
-  RelateProductsItem,
+  RelateProductsItem
 } from '~/models/shop';
 import pb, {
   createPb,
@@ -88,7 +87,7 @@ export const getRelateProducts = createServerFn({
       const resultList = await pb
         .collection('relate_products')
         .getList<RelateProductsItem>(1, 50, {
-          filter: `product_id = "${product_id}"`,
+          filter: `product_id="${product_id}"`,
         });
       // Return just the first matched item (should only be one per product_id)
       return resultList.items.length > 0
@@ -114,9 +113,8 @@ export const createAddCart = createServerFn({ method: 'POST' })
   .validator((d: CreateAddCart) => d )
   .handler(async ({ data }) => {
     try {
-      const res = await createPb<CreateAddCart>('carts', data);
-      const addCart = res as unknown as CreateAddCartRes;
-      return { success: true, addCart };
+      const cart_id = await createPb<CreateAddCart>('carts', data);
+      return { success: true, cart_id };
     } catch (error) {
       throw handleError(error);
     }
@@ -130,7 +128,7 @@ export const getCartItems = createServerFn({
     if (!customer_id) return 0;
 
     const cartItems = await pb.collection<CartItem>('carts').getFullList({
-      filter: `customer_id = "${customer_id}"`,
+      filter: `customer_id="${customer_id}"`,
     });
 
     return cartItems;

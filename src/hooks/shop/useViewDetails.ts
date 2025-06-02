@@ -13,10 +13,11 @@ export const viewProductDetailsQueryOption = (productID: string) =>
 
 export const relateProductsQueryOption = (product_id: string) =>
   queryOptions({
-    queryKey: ['relateProducts'],
-    queryFn: () => getRelateProducts({
-      data: { product_id }
-    }),
+    queryKey: ['relateProducts', product_id],
+    queryFn: () =>
+      getRelateProducts({
+        data: { product_id },
+      }),
   });
 
 export const useViewDetails = () => {

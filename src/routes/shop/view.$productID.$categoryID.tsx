@@ -25,7 +25,7 @@ import { useTranslation } from 'react-i18next';
 import { useCurrencyContext } from '~/components/CurrencySelector/CurrencyProvider';
 import Footer from '~/containers/footer';
 import ProductImageGallery from '~/containers/shop/ProductImageGallery';
-import { useAddCart, useCartPage } from '~/hooks/shop/useAddCart';
+import { getCartItemsQueryOption, useAddCart, useCartPage } from '~/hooks/shop/useAddCart';
 import { useProducts } from '~/hooks/shop/useProducts';
 import {
   productsByCategoryQueryOption,
@@ -37,6 +37,7 @@ import {
   viewProductDetailsQueryOption,
 } from '~/hooks/shop/useViewDetails';
 import { localStorageData } from '~/server/cache';
+import { queryClient } from '~/services/queryClient';
 import { QuantityControl } from '~/styles/add-cart';
 import { formatCurrency } from '~/utils/format';
 
@@ -49,7 +50,6 @@ export const Route = createFileRoute('/shop/view/$productID/$categoryID')({
     const productsByCategory = context.queryClient.ensureQueryData(
       productsByCategoryQueryOption(categoryID),
     );
-
     const relateProducts = context.queryClient.ensureQueryData(
       relateProductsQueryOption(productID),
     );
@@ -95,9 +95,9 @@ function ProductDetailComponent() {
 
   const [quantity, setQuantity] = useState(1);
 
-  
   const handleQuantityChange = (newQuantity: number) => {
     if (checkSameAddedCartItem) {
+      queryClient.invalidateQueries(getCartItemsQueryOption());
       navigate({ to: '/shop/add-cart' });
       return;
     }
@@ -289,7 +289,9 @@ function ProductDetailComponent() {
                       {t('add_to_cart')}
                     </Button>
                   </Grid>
-                  {/* <Grid
+
+                  {/* Buy Now Button */}
+                  <Grid
                     size={{
                       xs: 12,
                       sm: 6,
@@ -314,24 +316,37 @@ function ProductDetailComponent() {
                         const customerId =
                           localStorageData('customer_id').getLocalStrage();
 
-                        if (
-                          localStorageData('selected_cart_items')
-                            .getLocalStrage()
-                            .includes(product.id)
-                        ) {
-                          navigate({ to: '/shop/checkout' });
-                          return;
-                        }
-
                         if (!customerId) {
                           navigate({ to: '/shop/login' });
                         } else {
+                          addCart(
+                            {
+                              data: {
+                                product_id: product.id,
+                                customer_id: customerId,
+                                status: 'pending',
+                                quantity,
+                              },
+                            },
+                            {
+                              onSuccess: ({ cart_id }) => {
+                                if (!cart_id) return;
+                                navigate({
+                                  to: '/shop/buy-checkout/$cart_id/$product_id',
+                                  params: {
+                                    cart_id,
+                                    product_id: product.id,
+                                  },
+                                });
+                              },
+                            },
+                          );
                         }
                       }}
                     >
                       {t('buy_now')}
                     </Button>
-                  </Grid> */}
+                  </Grid>
                 </Grid>
 
                 {/* Accordion Sections */}

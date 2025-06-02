@@ -40,7 +40,7 @@ export function OrderHistory({ pagination, onPageChange }: OrderHistoryProps) {
   }
 
   return (
-    <Box sx={{ p: 0 }}>
+    <Box sx={{ p: 0, mt: 1 }}>
       <Typography variant="h5" fontWeight="bold" gutterBottom>
         {t('order_history')}
       </Typography>

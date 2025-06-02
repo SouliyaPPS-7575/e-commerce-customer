@@ -15,7 +15,7 @@ import {
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
+import { createFileRoute, Link } from '@tanstack/react-router';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -27,7 +27,6 @@ import { getCartItemsQueryOption, useCartPage } from '~/hooks/shop/useAddCart';
 import {
   CartItemBox,
   CheckoutButton,
-  ContinueShoppingButton,
   QuantityControl,
   StyledDialog,
 } from '~/styles/add-cart';
@@ -44,8 +43,6 @@ export const Route = createFileRoute('/shop/add-cart')({
 
 function RouteComponent() {
   const { t } = useTranslation();
-
-  const navigate = useNavigate();
 
   const { displayCurrency, convert } = useCurrencyContext();
 
@@ -232,7 +229,7 @@ function RouteComponent() {
           {t('checkout')}
         </CheckoutButton>
 
-        <ContinueShoppingButton
+        {/* <ContinueShoppingButton
           onClick={() => {
             navigate({
               to: '/shop/index/$category_id',
@@ -242,7 +239,7 @@ function RouteComponent() {
           sx={{ mt: 2 }}
         >
           {t('continue_shopping')}
-        </ContinueShoppingButton>
+        </ContinueShoppingButton> */}
       </DialogActions>
     </StyledDialog>
   );
