@@ -66,7 +66,7 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
   const navigate = useNavigate();
 
   // Get cart items count using TanStack Query
-  const { data: countCartItems } = useCountCartItems();
+  const { countCartItems } = useCountCartItems();
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);

@@ -8,7 +8,7 @@ import {
   EditCartItem,
   ProductItem,
   ProductRankingItem,
-  RelateProductsItem
+  RelateProductsItem,
 } from '~/models/shop';
 import pb, {
   createPb,
@@ -108,9 +108,8 @@ export const getCurrency = createServerFn({
   }
 });
 
-
 export const createAddCart = createServerFn({ method: 'POST' })
-  .validator((d: CreateAddCart) => d )
+  .validator((d: CreateAddCart) => d)
   .handler(async ({ data }) => {
     try {
       const cart_id = await createPb<CreateAddCart>('carts', data);
@@ -125,10 +124,9 @@ export const getCartItems = createServerFn({
 }).handler(async () => {
   try {
     const customer_id = await getCookie('customer_id');
-    if (!customer_id) return 0;
 
-    const cartItems = await pb.collection<CartItem>('carts').getFullList({
-      filter: `customer_id="${customer_id}"`,
+    const cartItems = await pb.collection('carts').getFullList<CartItem>({
+      filter: `customer_id = "${customer_id}"`,
     });
 
     return cartItems;

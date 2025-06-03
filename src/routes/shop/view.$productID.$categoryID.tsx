@@ -25,7 +25,11 @@ import { useTranslation } from 'react-i18next';
 import { useCurrencyContext } from '~/components/CurrencySelector/CurrencyProvider';
 import Footer from '~/containers/footer';
 import ProductImageGallery from '~/containers/shop/ProductImageGallery';
-import { getCartItemsQueryOption, useAddCart, useCartPage } from '~/hooks/shop/useAddCart';
+import {
+  getCartItemsQueryOption,
+  useAddCart,
+  useCartPage,
+} from '~/hooks/shop/useAddCart';
 import { useProducts } from '~/hooks/shop/useProducts';
 import {
   productsByCategoryQueryOption,
@@ -106,9 +110,9 @@ function ProductDetailComponent() {
     setQuantity(Math.max(newQuantity, 1));
   };
 
-  const handleAddToCart = () => {
-    const customerId = localStorageData('customer_id').getLocalStrage();
+  const customerId = localStorageData('customer_id').getLocalStrage();
 
+  const handleAddToCart = () => {
     if (checkSameAddedCartItem && customerId) {
       navigate({ to: '/shop/add-cart' });
       return;
@@ -127,6 +131,47 @@ function ProductDetailComponent() {
         quantity,
       },
     });
+  };
+
+  const handleBuyNow = () => {
+    const customerId = localStorageData('customer_id').getLocalStrage();
+
+    if (checkSameAddedCartItem && customerId) {
+      navigate({ to: '/shop/add-cart' });
+      return;
+    }
+
+    if (!customerId) {
+      navigate({ to: '/shop/login' });
+      return;
+    }
+
+    if (!customerId) {
+      navigate({ to: '/shop/login' });
+    } else {
+      addCart(
+        {
+          data: {
+            product_id: product.id,
+            customer_id: customerId,
+            status: 'pending',
+            quantity,
+          },
+        },
+        {
+          onSuccess: ({ cart_id }) => {
+            if (!cart_id) return;
+            navigate({
+              to: '/shop/buy-checkout/$cart_id/$product_id',
+              params: {
+                cart_id,
+                product_id: product.id,
+              },
+            });
+          },
+        },
+      );
+    }
   };
 
   return (
@@ -312,37 +357,7 @@ function ProductDetailComponent() {
                           color: '#fff',
                         },
                       }}
-                      onClick={() => {
-                        const customerId =
-                          localStorageData('customer_id').getLocalStrage();
-
-                        if (!customerId) {
-                          navigate({ to: '/shop/login' });
-                        } else {
-                          addCart(
-                            {
-                              data: {
-                                product_id: product.id,
-                                customer_id: customerId,
-                                status: 'pending',
-                                quantity,
-                              },
-                            },
-                            {
-                              onSuccess: ({ cart_id }) => {
-                                if (!cart_id) return;
-                                navigate({
-                                  to: '/shop/buy-checkout/$cart_id/$product_id',
-                                  params: {
-                                    cart_id,
-                                    product_id: product.id,
-                                  },
-                                });
-                              },
-                            },
-                          );
-                        }
-                      }}
+                      onClick={handleBuyNow}
                     >
                       {t('buy_now')}
                     </Button>

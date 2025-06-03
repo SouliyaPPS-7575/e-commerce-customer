@@ -5,7 +5,7 @@ import {
   useSuspenseQuery,
 } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { localStorageData } from '~/server/cache';
@@ -27,14 +27,23 @@ export const getCartItemsQueryOption = () =>
     staleTime: 1,
   });
 
+export const getCountCartItemsQueryOption = () =>
+  queryOptions({
+    queryKey: queryKeyCountCartItems,
+    queryFn: getCountCartItems,
+    staleTime: 1,
+  });
+
 // Mock data fetching with TanStack Query
 export const useCountCartItems = () => {
-  return useQuery({
+  const { data: countCartItems, refetch: refetchCountCartItems } = useQuery({
     queryKey: queryKeyCountCartItems,
     queryFn: getCountCartItems,
     initialData: 0,
     staleTime: 1,
   });
+
+  return { countCartItems, refetchCountCartItems };
 };
 
 export const useAddCart = () => {
@@ -180,7 +189,7 @@ export function useCartPage() {
       0,
     );
 
-  const onClose = () => {
+  const onClose = useCallback(() => {
     if (enrichedCartItems.length === 0) {
       navigate({
         to: '/shop/index/$category_id',
@@ -224,7 +233,13 @@ export function useCartPage() {
     });
 
     history.back();
-  };
+  }, [
+    enrichedCartItems,
+    localCartState,
+    deleteMutation,
+    editMutation,
+    navigate,
+  ]);
 
   const handleCheckout = () => {
     const originalMap = new Map(

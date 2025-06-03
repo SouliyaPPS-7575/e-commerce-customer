@@ -5,6 +5,7 @@ export const productsQueryOption = () =>
   queryOptions({
     queryKey: ['products'],
     queryFn: getProducts,
+    staleTime: 1,
   });
 
 export const useProducts = () => {

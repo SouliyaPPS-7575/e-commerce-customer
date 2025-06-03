@@ -220,7 +220,7 @@ export default function ProductsSection() {
               >
                 {filteredProductsRanking.map((product) => (
                   <Box
-                    key={product.id}
+                    key={`${product.id}-${product.category_id}`}
                     sx={{
                       flex: '0 0 auto',
                       minWidth: {

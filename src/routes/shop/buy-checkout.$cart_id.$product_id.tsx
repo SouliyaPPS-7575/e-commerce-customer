@@ -14,7 +14,10 @@ import {
 } from '~/hooks/checkout/useBuyNowCartItem';
 import { useAddress } from '~/hooks/profile/useAddress';
 import { queryKeyCountCartItems } from '~/hooks/shop';
-import { getCartItemsQueryOption } from '~/hooks/shop/useAddCart';
+import {
+  getCartItemsQueryOption,
+  useCountCartItems,
+} from '~/hooks/shop/useAddCart';
 import { useDeleteCartItem } from '~/hooks/shop/useDeleteCartItem';
 import { viewProductDetailsQueryOption } from '~/hooks/shop/useViewDetails';
 import { OrderItems } from '~/models/checkout';
@@ -22,16 +25,26 @@ import { queryClient } from '~/services/queryClient';
 
 export const Route = createFileRoute('/shop/buy-checkout/$cart_id/$product_id')(
   {
-    loader: ({ context, params }) => {
+    loader: async ({ context, params }) => {
       const { cart_id, product_id } = params;
-      const cartItems = context.queryClient.ensureQueryData(
-        getBuyNowCartItemQueryOption(cart_id),
-      );
-      const viewProductDetails = context.queryClient.ensureQueryData(
-        viewProductDetailsQueryOption(product_id),
-      );
 
-      return { cartItems, viewProductDetails };
+      try {
+        const cartItems = await context.queryClient.ensureQueryData(
+          getBuyNowCartItemQueryOption(cart_id),
+        );
+
+        const viewProductDetails = await context.queryClient.ensureQueryData(
+          viewProductDetailsQueryOption(product_id),
+        );
+
+        if (!viewProductDetails) {
+          throw new Error('No product details');
+        }
+
+        return { cartItems, viewProductDetails };
+      } catch (error) {
+        console.error('Loader error:', error);
+      }
     },
     component: RouteComponent,
   },
@@ -80,6 +93,8 @@ function RouteComponent() {
 
   const { deleteCartItem } = useDeleteCartItem();
 
+  const { refetchCountCartItems } = useCountCartItems();
+
   const formCheckout = useForm({
     defaultValues: {
       remark: '',
@@ -95,6 +110,7 @@ function RouteComponent() {
         {
           onSuccess: () => {
             deleteCartItem({ data: { cart_id: cartItem?.id } });
+            refetchCountCartItems();
             queryClient.invalidateQueries(getCartItemsQueryOption());
             queryClient.invalidateQueries({ queryKey: queryKeyCountCartItems });
           },

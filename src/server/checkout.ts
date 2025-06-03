@@ -31,7 +31,8 @@ export const getCartItemBuyNow = createServerFn({
   .validator((d: { cart_id: string }) => d)
   .handler(async ({ data: { cart_id } }) => {
     try {
-      return await fetchPb<CartItem>('carts', cart_id);
+      const res = await fetchPb<CartItem>('carts', cart_id);
+      return res;
     } catch (error) {
       throw handleError(error);
     }

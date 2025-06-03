@@ -8,7 +8,7 @@ import { localStorageData } from '~/server/cache';
 import { createOrder } from '~/server/checkout';
 import { queryClient } from '~/services/queryClient';
 import { useDeleteCartItem } from '../shop/useDeleteCartItem';
-import { getCartItemsQueryOption } from '../shop/useAddCart';
+import { getCartItemsQueryOption, useCountCartItems } from '../shop/useAddCart';
 import { queryKeyCountCartItems } from '../shop';
 
 export function useCheckoutLogic(selectedItemIds?: string[]) {
@@ -41,6 +41,7 @@ export function useCheckoutLogic(selectedItemIds?: string[]) {
   });
 
   const { deleteCartItem } = useDeleteCartItem();
+  const { refetchCountCartItems } = useCountCartItems();
 
   const formCheckout = useForm({
     defaultValues: {
@@ -62,8 +63,11 @@ export function useCheckoutLogic(selectedItemIds?: string[]) {
               selectedItemIds?.forEach((id) => {
                 deleteCartItem({ data: { cart_id: id } });
               });
+              refetchCountCartItems();
               queryClient.invalidateQueries(getCartItemsQueryOption());
-              queryClient.invalidateQueries({ queryKey: queryKeyCountCartItems });
+              queryClient.invalidateQueries({
+                queryKey: queryKeyCountCartItems,
+              });
             },
             onError: (error) => reject(error),
           },

@@ -1,22 +1,57 @@
 import { Grid } from '@mui/material';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, redirect } from '@tanstack/react-router';
 import { toast } from 'sonner';
-import { viewAddressQueryOption } from '~/hooks/checkout/useViewAddress';
-import { useAddress } from '~/hooks/profile/useAddress';
-import { useCartPage } from '~/hooks/shop/useAddCart';
+import { BillingShippingSection } from '~/containers/checkout/billing-shipping-section';
 import { CheckoutPageLayout } from '~/containers/checkout/checkout-page-layout';
 import { OrderSummarySection } from '~/containers/checkout/order-summary-section';
-import { BillingShippingSection } from '~/containers/checkout/billing-shipping-section';
-import { useOrderCalculations } from '~/hooks/checkout/use-order-calculations';
 import { useCheckoutLogic } from '~/hooks/checkout/use-checkout-logic';
+import { useOrderCalculations } from '~/hooks/checkout/use-order-calculations';
+import { viewAddressQueryOption } from '~/hooks/checkout/useViewAddress';
+import { useAddress } from '~/hooks/profile/useAddress';
+import {
+  getCountCartItemsQueryOption,
+  useCartPage,
+} from '~/hooks/shop/useAddCart';
 import { OrderItems } from '~/models/checkout';
 
 export const Route = createFileRoute('/shop/checkout')({
+  beforeLoad: async ({ context }) => {
+    try {
+      const cartItems = await context.queryClient.ensureQueryData(
+        getCountCartItemsQueryOption(),
+      );
+
+      if (cartItems === 0) {
+        return redirect({
+          to: '/shop/index/$category_id',
+          params: { category_id: 'all' },
+        });
+      }
+    } catch (error) {
+      console.error('Loader error:', error);
+
+      // Optionally inspect error to check for 401/403/etc.
+      throw redirect({
+        to: '/shop/index/$category_id',
+        params: { category_id: 'all' },
+      });
+    }
+  },
   loader: async ({ context }) => {
-    const address = context.queryClient.ensureQueryData(
-      viewAddressQueryOption(),
-    );
-    return { address };
+    try {
+      const address = context.queryClient.ensureQueryData(
+        viewAddressQueryOption(),
+      );
+      return { address };
+    } catch (error) {
+      console.error('Loader error:', error);
+
+      // Optionally inspect error to check for 401/403/etc.
+      throw redirect({
+        to: '/shop/index/$category_id',
+        params: { category_id: 'all' },
+      });
+    }
   },
   component: RouteComponent,
 });
