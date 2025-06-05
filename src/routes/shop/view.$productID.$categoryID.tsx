@@ -20,7 +20,7 @@ import {
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { motion } from 'framer-motion';
 import { ShoppingCart } from 'lucide-react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCurrencyContext } from '~/components/CurrencySelector/CurrencyProvider';
 import Footer from '~/containers/footer';
@@ -91,11 +91,11 @@ function ProductDetailComponent() {
   );
 
   const { addCart } = useAddCart();
-  const { enrichedCartItems } = useCartPage();
+  const { localCartState } = useCartPage();
 
-  const checkSameAddedCartItem = enrichedCartItems.some(
-    (item) => item.product_id === product.id,
-  );
+  const checkSameAddedCartItem = useMemo(() => {
+    return localCartState.some((item) => item.product_id === product.id);
+  }, [localCartState, product.id]);
 
   const [quantity, setQuantity] = useState(1);
 

@@ -1,5 +1,6 @@
 import { ArrowForward } from '@mui/icons-material';
 import {
+  AccordionDetails,
   Box,
   Button,
   Card,
@@ -7,113 +8,60 @@ import {
   CardMedia,
   Container,
   Grid,
-  styled,
   Typography,
   useMediaQuery,
 } from '@mui/material';
 import { Link } from '@tanstack/react-router';
 import { motion } from 'framer-motion';
 import { t } from 'i18next';
+import { useState, useRef, useEffect } from 'react';
+import { useBlogs } from '~/hooks/blogs/useBlogs';
+import {
+  BlogCard,
+  BlogDate,
+  BlogExcerpt,
+  BlogTitle,
+  JournalSubtitle,
+  JournalTitle,
+} from '~/styles/blogs';
 import theme from '~/styles/theme';
-import { formattedDate } from '~/utils/format';
-
-// Mock stories data
-const stories = [
-  {
-    id: 1,
-    title: 'Recent Stories',
-    excerpt:
-      "Lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever",
-    image:
-      'https://i.ibb.co/BKZfkBx5/e13a2af44b3fd92e9a7c350eb2a8634f34d25dab.png',
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: 2,
-    title: 'Recent Stories',
-    excerpt:
-      "Lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever",
-    image:
-      'https://i.ibb.co/yc2DsWpN/504d33301cb8c8d22ee9613ccba278753be876bc.png',
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: 3,
-    title: 'Recent Stories',
-    excerpt:
-      "Lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever",
-    image:
-      'https://i.ibb.co/LhRtPgsq/bca5476fe24e81e0928194f5321cdf1d456b857f.png',
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: 4,
-    title: 'Recent Stories',
-    excerpt:
-      "Lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever",
-    image:
-      'https://i.ibb.co/d4RbgVSd/a78d3af5ac3de6c540f3bf9f40069915b3bb174c.png',
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: 5,
-    title: 'Recent Stories',
-    excerpt:
-      "Lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever",
-    image:
-      'https://i.ibb.co/C3VnhQRk/bcdd2a43df06c7fe6772a7c4136279e79b02c945.png',
-    createdAt: new Date().toISOString(),
-  },
-];
-
-// Styled components
-const JournalTitle = styled(Typography)(({ theme }) => ({
-  fontFamily: "'Times New Roman', serif",
-  fontSize: '2.5rem',
-  fontWeight: 400,
-  letterSpacing: '0.05em',
-  marginBottom: theme.spacing(1),
-}));
-
-const JournalSubtitle = styled(Typography)(({ theme }) => ({
-  fontSize: '1rem',
-  color: theme.palette.text.secondary,
-  marginBottom: theme.spacing(6),
-}));
-
-const BlogCard = styled(Card)(() => ({
-  boxShadow: 'none',
-  borderRadius: 0,
-  height: '100%',
-  display: 'flex',
-  flexDirection: 'column',
-  transition: 'transform 0.3s ease',
-  '&:hover': {
-    transform: 'translateY(-4px)',
-  },
-}));
-
-const BlogDate = styled(Typography)(({ theme }) => ({
-  fontSize: '0.875rem',
-  color: theme.palette.text.secondary,
-  marginBottom: theme.spacing(1),
-}));
-
-const BlogTitle = styled(Typography)(({ theme }) => ({
-  fontSize: '1rem',
-  fontWeight: 500,
-  marginBottom: theme.spacing(1),
-}));
-
-const BlogExcerpt = styled(Typography)(({ theme }) => ({
-  fontSize: '0.875rem',
-  color: theme.palette.text.secondary,
-}));
+import { cleanedDescription, formattedDate } from '~/utils/format';
 
 export default function BlogSection() {
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const { blogs } = useBlogs();
+
   // Separate featured and regular posts
-  const featuredPosts = stories.slice(0, 2);
+  const featuredPosts = blogs?.slice(0, 2);
+
+  const blogsLast = isMobile ? blogs : blogs?.slice(2);
+
+
+  const [activeSlide, setActiveSlide] = useState(0);
+
+  const handleSlideChange = (index: number) => {
+    setActiveSlide(index);
+  };
+
+  // Mobile scroll tracking for activeSlide
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    const handleScroll = () => {
+      const scrollLeft = container.scrollLeft;
+      const cardWidth = container.scrollWidth / blogsLast.length;
+      const index = Math.round(scrollLeft / cardWidth);
+      setActiveSlide(index);
+    };
+
+    container.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      container.removeEventListener('scroll', handleScroll);
+    };
+  }, [blogsLast.length]);
 
   return (
     <Box
@@ -133,7 +81,7 @@ export default function BlogSection() {
             transition={{ duration: 0.5 }}
             viewport={{ once: true }}
           >
-            <JournalTitle variant="h2">JOURNAL</JournalTitle>
+            <JournalTitle variant="h4">JOURNAL</JournalTitle>
             <JournalSubtitle variant="subtitle1">
               Explore our blog for stories, traditions, and styling ideas.
             </JournalSubtitle>
@@ -141,210 +89,298 @@ export default function BlogSection() {
         </Box>
 
         {/* Featured posts (larger, top row) */}
-        <Grid container spacing={3} sx={{ mb: 3 }}>
-          {featuredPosts.map((post, index) => (
-            <Grid
-              key={post.id}
-              size={{
-                xs: 12,
-                md: 6,
-              }}
-            >
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                viewport={{ once: true }}
+        {!isMobile && (
+          <Grid container spacing={3} sx={{ mb: 1 }}>
+            {featuredPosts?.map((post, index) => (
+              <Grid
+                key={post?.id}
+                // Updated to use the new size prop instead of xs/md
+                size={{
+                  xs: 12,
+                  md: 6,
+                }}
               >
-                <BlogCard sx={{ height: '100%' }}>
-                  <CardMedia
-                    component="img"
-                    image={post.image}
-                    alt={post.title}
-                    sx={{
-                      height: 300,
-                      width: '100%',
-                      objectFit: 'cover',
-                    }}
-                  />
-                  <CardContent sx={{ p: 2, pt: 3 }}>
-                    <BlogDate>{formattedDate(post.createdAt)}</BlogDate>
-                    <BlogTitle variant="h6" sx={{ fontWeight: 'bold' }}>
-                      {post.title}
-                    </BlogTitle>
-                    <BlogExcerpt>{post.excerpt}</BlogExcerpt>
-                  </CardContent>
-                </BlogCard>
-              </motion.div>
-            </Grid>
-          ))}
-        </Grid>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  viewport={{ once: true }}
+                >
+                  <Link
+                    to="/blog/view/$id"
+                    params={{ id: String(post?.id) }}
+                    style={{ textDecoration: 'none' }}
+                  >
+                    <BlogCard sx={{ height: '100%' }}>
+                      <CardMedia
+                        component="img"
+                        image={post?.image_url}
+                        alt={post?.title}
+                        sx={{
+                          height: 300,
+                          width: '100%',
+                          objectFit: 'cover',
+                        }}
+                      />
+                      <CardContent sx={{ p: 0, pt: 2 }}>
+                        <BlogDate>{formattedDate(post?.created)}</BlogDate>
+                        <BlogTitle variant="h6" sx={{ fontWeight: 'bold', mb: 0 }}>
+                          {post?.title}
+                        </BlogTitle>
+                        <BlogExcerpt>
+                          <AccordionDetails>
+                            <Box
+                              sx={{
+                                fontSize: '0.95rem',
+                                color: theme.palette.text.secondary,
+                                lineHeight: 1.7,
+                              }}
+                              dangerouslySetInnerHTML={{
+                                __html: cleanedDescription(post?.description),
+                              }}
+                            />
+                          </AccordionDetails>
+                        </BlogExcerpt>
+                      </CardContent>
+                    </BlogCard>
+                  </Link>
+                </motion.div>
+              </Grid>
+            ))}
+          </Grid>
+        )}
 
         {isMobile ? (
-          // Mobile: Horizontal scroll list
-          (<Box
-            sx={{
-              display: 'flex',
-              overflowX: 'auto',
-              scrollSnapType: 'x mandatory',
-              gap: 2,
-              pb: 2,
-              px: 1,
-            }}
-          >
-            {stories.map((story) => (
-              <motion.div
-                key={story.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4 }}
-                style={{ scrollSnapAlign: 'start', minWidth: '80%' }}
-              >
-                <Link
-                  to="/blog/view/$id"
-                  params={{ id: String(story.id) }}
-                  style={{ textDecoration: 'none' }}
+          <>
+            <Box
+              ref={scrollContainerRef}
+              sx={{
+                display: 'flex',
+                overflowX: 'auto',
+                scrollSnapType: 'x mandatory',
+                gap: 2,
+                pb: 2,
+                px: 1,
+              }}
+            >
+              {blogsLast?.map((story, idx) => (
+                <motion.div
+                  key={`${story.id}-${idx}`}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4 }}
+                  style={{ scrollSnapAlign: 'start', minWidth: '80%' }}
                 >
-                  <Card
-                    sx={{
-                      borderRadius: 2,
-                      overflow: 'hidden',
-                      boxShadow: 'none',
-                      border: '1px solid #eee',
-                      transition: 'all 0.3s ease',
-                      backgroundColor: 'transparent',
-                      '&:hover': {
-                        transform: 'translateY(-5px)',
-                        boxShadow: '0 12px 24px rgba(0, 0, 0, 0.1)',
-                      },
-                      cursor: 'pointer',
-                    }}
+                  <Link
+                    to="/blog/view/$id"
+                    params={{ id: String(story?.id) }}
+                    style={{ textDecoration: 'none' }}
                   >
-                    <CardMedia
-                      component="img"
-                      image={story.image}
-                      alt={story.title}
-                      sx={{ height: 200, width: '100%', objectFit: 'cover' }}
-                    />
-                    <CardContent>
-                      <BlogDate>{formattedDate(story.createdAt)}</BlogDate>
-                      <Typography
-                        variant="h6"
-                        gutterBottom
-                        sx={{ fontWeight: 'bold' }}
-                      >
-                        {story.title}
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        sx={{ mb: 2 }}
-                      >
-                        {story.excerpt}
-                      </Typography>
-                      <Link to="/blog" style={{ textDecoration: 'none' }}>
+                    <Card
+                      key={story.id}
+                      component={motion.div}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, delay: idx * 0.1 }}
+                      sx={{
+                        minWidth: '85%',
+                        scrollSnapAlign: 'center',
+                        borderRadius: 2,
+                        boxShadow: 'none',
+                        overflow: 'hidden',
+                        bgcolor: 'transparent',
+                        textAlign: 'center',
+                      }}
+                      onClick={() => handleSlideChange(idx)}
+                    >
+                      <CardMedia
+                        component="img"
+                        image={story?.image_url}
+                        alt={story?.title}
+                        sx={{ height: 200, width: '100%', objectFit: 'cover' }}
+                      />
+                      <CardContent>
+                        <BlogDate>{formattedDate(story?.created)}</BlogDate>
                         <Typography
-                          variant="body2"
+                          variant="h6"
+                          gutterBottom
                           sx={{
-                            color: '#b06b40',
-                            fontWeight: 500,
-                            '&:hover': {
-                              textDecoration: 'underline',
-                            },
+                            fontWeight: 'bold',
+                            display: '-webkit-box',
+                            WebkitLineClamp: 3,
+                            WebkitBoxOrient: 'vertical',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
                           }}
                         >
-                          Read more
+                          {story?.title}
                         </Typography>
-                      </Link>
-                    </CardContent>
-                  </Card>
-                </Link>
-              </motion.div>
-            ))}
-          </Box>)
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          sx={{ mt: -2 }}
+                        >
+                          <BlogExcerpt>
+                            <AccordionDetails>
+                              <Box
+                                sx={{
+                                  fontSize: '0.95rem',
+                                  color: theme.palette.text.secondary,
+                                  lineHeight: 1.7,
+                                }}
+                                dangerouslySetInnerHTML={{
+                                  __html: cleanedDescription(
+                                    story?.description,
+                                  ),
+                                }}
+                              />
+                            </AccordionDetails>
+                          </BlogExcerpt>
+                        </Typography>
+                        <Link to="/blog" style={{ textDecoration: 'none' }}>
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              color: '#b06b40',
+                              fontWeight: 500,
+                              '&:hover': {
+                                textDecoration: 'underline',
+                              },
+                            }}
+                          >
+                            Read more
+                          </Typography>
+                        </Link>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                </motion.div>
+              ))}
+            </Box>
+            {/* Pagination dots */}
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                gap: 1,
+                mt: 1,
+                mb: 5,
+              }}
+            >
+              {blogs.map((_, index) => (
+                <Box
+                  key={index}
+                  sx={{
+                    width: 10,
+                    height: 10,
+                    borderRadius: '50%',
+                    bgcolor: index === activeSlide ? '#d4af37' : '#d0d0d0',
+                    transition: 'all 0.3s ease',
+                  }}
+                  onClick={() => handleSlideChange(index)}
+                />
+              ))}
+            </Box>
+          </>
         ) : (
           // Desktop: Horizontal scroll list
-          (<Box
-            sx={{
-              display: 'flex',
-              overflowX: 'auto',
-              scrollSnapType: 'x mandatory',
-              gap: 2,
-              pb: 2,
-              px: 1,
-            }}
-          >
-            {stories.map((story) => (
-              <motion.div
-                key={story.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4 }}
-                style={{ scrollSnapAlign: 'start', minWidth: '30%' }}
-              >
-                <Link
-                  to="/blog/view/$id"
-                  params={{ id: String(story.id) }}
-                  style={{ textDecoration: 'none' }}
+          (<>
+            <Box
+              sx={{
+                display: 'flex',
+                overflowX: 'auto',
+                scrollSnapType: 'x mandatory',
+                gap: 2,
+                pb: 2,
+                px: 1,
+              }}
+            >
+              {blogsLast?.map((story, idx) => (
+                <motion.div
+                  key={`${story.id}-${idx}`}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4 }}
+                  style={{ scrollSnapAlign: 'start', minWidth: '30%' }}
                 >
-                  <Card
-                    sx={{
-                      borderRadius: 2,
-                      overflow: 'hidden',
-                      boxShadow: 'none',
-                      border: '1px solid #eee',
-                      transition: 'all 0.3s ease',
-                      '&:hover': {
-                        transform: 'translateY(-5px)',
-                        boxShadow: '0 12px 24px rgba(0, 0, 0, 0.1)',
-                      },
-                      cursor: 'pointer',
-                    }}
+                  <Link
+                    to="/blog/view/$id"
+                    params={{ id: String(story?.id) }}
+                    style={{ textDecoration: 'none' }}
                   >
-                    <CardMedia
-                      component="img"
-                      image={story.image}
-                      alt={story.title}
-                      sx={{ height: 200, width: '100%', objectFit: 'cover' }}
-                    />
-                    <CardContent>
-                      <BlogDate>{formattedDate(story.createdAt)}</BlogDate>
-                      <Typography
-                        variant="h6"
-                        gutterBottom
-                        sx={{ fontWeight: 'bold' }}
-                      >
-                        {story.title}
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        sx={{ mb: 2 }}
-                      >
-                        {story.excerpt}
-                      </Typography>
-                      <Link to="/blog" style={{ textDecoration: 'none' }}>
+                    <Card
+                      sx={{
+                        borderRadius: 2,
+                        overflow: 'hidden',
+                        boxShadow: 'none',
+                        border: '1px solid #eee',
+                        transition: 'all 0.3s ease',
+                        '&:hover': {
+                          transform: 'translateY(-5px)',
+                          boxShadow: '0 12px 24px rgba(0, 0, 0, 0.1)',
+                        },
+                        cursor: 'pointer',
+                      }}
+                    >
+                      <CardMedia
+                        component="img"
+                        image={story?.image_url}
+                        alt={story?.title}
+                        sx={{ height: 200, width: '100%', objectFit: 'cover' }}
+                      />
+                      <CardContent>
+                        <BlogDate>{formattedDate(story?.created)}</BlogDate>
+                        <Typography
+                          variant="h6"
+                          gutterBottom
+                          sx={{ fontWeight: 'bold' }}
+                        >
+                          {story?.title}
+                        </Typography>
                         <Typography
                           variant="body2"
-                          sx={{
-                            color: '#b06b40',
-                            fontWeight: 500,
-                            '&:hover': {
-                              textDecoration: 'underline',
-                            },
-                          }}
+                          color="text.secondary"
+                          sx={{ mt: -1 }}
                         >
-                          Read more
+                          <BlogExcerpt>
+                            <AccordionDetails>
+                              <Box
+                                sx={{
+                                  fontSize: '0.95rem',
+                                  color: theme.palette.text.secondary,
+                                }}
+                                dangerouslySetInnerHTML={{
+                                  __html: cleanedDescription(
+                                    story?.description,
+                                  ),
+                                }}
+                              />
+                            </AccordionDetails>
+                          </BlogExcerpt>
                         </Typography>
-                      </Link>
-                    </CardContent>
-                  </Card>
-                </Link>
-              </motion.div>
-            ))}
-          </Box>)
+                        <Link to="/blog" style={{ textDecoration: 'none' }}>
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              color: '#b06b40',
+                              fontWeight: 500,
+                              '&:hover': {
+                                textDecoration: 'underline',
+                              },
+                            }}
+                          >
+                            Read more
+                          </Typography>
+                        </Link>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                </motion.div>
+              ))}
+            </Box>
+          </>)
         )}
 
         <Box

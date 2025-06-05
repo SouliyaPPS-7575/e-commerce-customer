@@ -3,6 +3,7 @@ import { useMemo, useRef, useState } from 'react';
 import HeroSection from '~/containers/home/sections/HeroSection';
 import ProductsSection from '~/containers/home/sections/ProductsSection';
 import { bannersQueryOption } from '~/hooks/banner/useBanners';
+import { blogsQueryOption } from '~/hooks/blogs/useBlogs';
 import { productsQueryOption } from '~/hooks/shop/useProducts';
 import { useContact, whatsappLinkQueryOption } from '~/hooks/useContact';
 import Navbar from '~/layout/navbar';
@@ -14,7 +15,9 @@ export const Route = createFileRoute('/')({
     const whatsappLink = context.queryClient.ensureQueryData(
       whatsappLinkQueryOption(),
     );
-    return { products, banners, whatsappLink };
+    const blogs = context.queryClient.ensureQueryData(blogsQueryOption());
+
+    return { products, banners, whatsappLink, blogs };
   },
   component: Home,
 });
@@ -69,6 +72,7 @@ function Home() {
   }, []);
 
   const { whatsappLink } = useContact();
+  
   return (
     <>
       {/* <Navbar /> */}

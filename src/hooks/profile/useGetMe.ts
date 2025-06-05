@@ -5,7 +5,7 @@ export const getMeQueryOption = () =>
   queryOptions({
     queryKey: ['getMe'],
     queryFn: getMe,
-    staleTime: 1,
+    staleTime: 0,
   });
 
 export const useGetMe = () => {

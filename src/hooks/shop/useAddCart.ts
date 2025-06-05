@@ -24,14 +24,14 @@ export const getCartItemsQueryOption = () =>
   queryOptions({
     queryKey: queryKeyGetCartItems,
     queryFn: getCartItems,
-    staleTime: 1,
+    staleTime: 0,
   });
 
 export const getCountCartItemsQueryOption = () =>
   queryOptions({
     queryKey: queryKeyCountCartItems,
     queryFn: getCountCartItems,
-    staleTime: 1,
+    staleTime: 0,
   });
 
 // Mock data fetching with TanStack Query
@@ -40,7 +40,7 @@ export const useCountCartItems = () => {
     queryKey: queryKeyCountCartItems,
     queryFn: getCountCartItems,
     initialData: 0,
-    staleTime: 1,
+    staleTime: 0,
   });
 
   return { countCartItems, refetchCountCartItems };
@@ -157,6 +157,7 @@ export function useCartPage() {
 
   const handleRemoveItem = (id: string) => {
     setLocalCartState((prev) => prev.filter((item) => item.id !== id));
+    deleteMutation({ data: { id } });
   };
 
   const toggleSelectItem = (id: string) => {
@@ -232,7 +233,10 @@ export function useCartPage() {
       }
     });
 
-    history.back();
+    navigate({
+      to: '/shop/index/$category_id',
+      params: { category_id: 'all' },
+    });
   }, [
     enrichedCartItems,
     localCartState,

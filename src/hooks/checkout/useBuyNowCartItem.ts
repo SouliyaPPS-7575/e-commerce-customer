@@ -8,6 +8,7 @@ export const getBuyNowCartItemQueryOption = (cart_id: string) =>
       getCartItemBuyNow({
         data: { cart_id },
       }),
+    staleTime: 0,
   });
 
 export const useBuyNowCartItem = (cart_id: string) => {

@@ -1,183 +1,76 @@
-import type React from 'react';
-
-import { ArrowBack, ArrowForward } from '@mui/icons-material';
 import {
+  AccordionDetails,
   Box,
-  Button,
   Card,
   CardContent,
   CardMedia,
   Container,
-  Divider,
   Grid,
-  IconButton,
-  Tab,
-  Tabs,
   Typography,
 } from '@mui/material';
+import { motion } from 'framer-motion';
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { useState } from 'react';
+import HeroSection from '~/containers/blogs/HeroSection';
+import LatestStories from '~/containers/blogs/LatestStories';
 import Footer from '~/containers/footer';
+import { blogsQueryOption, useBlogs } from '~/hooks/blogs/useBlogs';
+import { BlogExcerpt } from '~/styles/blogs';
+import theme from '~/styles/theme';
+import { cleanedDescription, formattedDate } from '~/utils/format';
 
 export const Route = createFileRoute('/blog/')({
+  loader: async ({ context }) => {
+    const blogs = context.queryClient.ensureQueryData(blogsQueryOption());
+    return { blogs };
+  },
   component: BlogComponent,
 });
 
-interface BlogPost {
-  id: number;
-  image: string;
-  date: string;
-  title: string;
-  description: string;
-}
-
 function BlogComponent() {
-  const [tabValue, setTabValue] = useState(0);
+  const { blogs: blogPosts } = useBlogs();
 
-  const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
-    setTabValue(newValue);
-  };
-
-  const blogPosts: BlogPost[] = [
-    {
-      id: 1,
-      image:
-        'https://i.ibb.co/WpphJQLy/40c813602b61003644235a44b089be83dd842d23.png',
-      date: 'April 25',
-      title: 'Lorem Ipsum is simply dummy text of the printing',
-      description:
-        'Lorem Ipsum is simply dummy text of the printing and typesetting industry...',
-    },
-    {
-      id: 2,
-      image:
-        'https://i.ibb.co/dsmPrfdw/077a52a250b52801fc931245f9f88c29b434a1ff.png',
-      date: 'April 25',
-      title: 'Lorem Ipsum is simply dummy text of the printing',
-      description:
-        'Lorem Ipsum is simply dummy text of the printing and typesetting industry...',
-    },
-    {
-      id: 3,
-      image:
-        'https://i.ibb.co/27JnPL5t/67844ba1469f8cc84cce815ace14e4804fb94b7c.png',
-      date: 'April 25',
-      title: 'Lorem Ipsum is simply dummy text of the printing',
-      description:
-        'Lorem Ipsum is simply dummy text of the printing and typesetting industry...',
-    },
-    {
-      id: 4,
-      image:
-        'https://i.ibb.co/4RCVTWSZ/e13a2af44b3fd92e9a7c350eb2a8634f34d25dab.png',
-      date: 'April 25',
-      title: 'Lorem Ipsum is simply dummy text of the printing',
-      description:
-        'Lorem Ipsum is simply dummy text of the printing and typesetting industry...',
-    },
-    {
-      id: 5,
-      image:
-        'https://i.ibb.co/fzz0vksJ/371ba15d32f7ae9494972dfa5b3477c2ac8b0ce3.png',
-      date: 'April 25',
-      title: 'Lorem Ipsum is simply dummy text of the printing',
-      description:
-        'Lorem Ipsum is simply dummy text of the printing and typesetting industry...',
-    },
-    {
-      id: 6,
-      image:
-        'https://i.ibb.co/dsmPrfdw/077a52a250b52801fc931245f9f88c29b434a1ff.png',
-      date: 'April 25',
-      title: 'Lorem Ipsum is simply dummy text of the printing',
-      description:
-        'Lorem Ipsum is simply dummy text of the printing and typesetting industry...',
-    },
-  ];
+  const startBlogSecondItem = blogPosts?.slice(1, blogPosts.length);
 
   return (
-    <Box
-      sx={{
-        bgcolor: '#FBF8F4',
-        minHeight: '100vh',
-      }}
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.6 }}
     >
+      <Box
+        sx={{
+          bgcolor: '#FBF8F4',
+          minHeight: '100vh',
+        }}
+      >
+      {/* Hero Section */}
+      <HeroSection
+        title={'Lao silk'}
+        subtitle={
+          'Timeless Elegance, Woven by Tradition – Discover the Luxury of Handcrafted Lao Silk.'
+        }
+        imageUrl={
+          'https://i.ibb.co/PZqV2kDg/5b20080976d0fff9ad004eedf6bc1becc637bc5c.png'
+        }
+      />
+
       <Container maxWidth="lg">
-        <br />
-        <br />
-        <br />
-
-        <Box sx={{ mb: 6, textAlign: 'left' }}>
-          <Typography
-            variant="h1"
-            component="h1"
-            sx={{
-              fontFamily: 'serif',
-              fontWeight: 700,
-              color: '#333',
-              mb: 2,
-              fontSize: { xs: '2.5rem', md: '3.5rem' },
-            }}
-          >
-            Lorem Ipsum
-          </Typography>
-          <Typography
-            variant="subtitle1"
-            sx={{
-              color: '#6b6b47',
-              fontWeight: 400,
-              fontSize: { xs: '1rem', md: '1.2rem' },
-            }}
-          >
-            <Box component="span" sx={{ color: '#6b6b47', fontWeight: 500 }}>
-              Lorem Ipsum
-            </Box>{' '}
-            is simply dummy text
-          </Typography>
-        </Box>
-
-        <Divider sx={{ mb: 3 }} />
-
-        <Box sx={{ mb: 4 }}>
-          <Tabs
-            value={tabValue}
-            onChange={handleTabChange}
-            TabIndicatorProps={{
-              style: {
-                display: 'none',
-              },
-            }}
-            sx={{
-              '& .MuiTab-root': {
-                textTransform: 'none',
-                fontWeight: 500,
-                color: '#555',
-                fontSize: '1rem',
-                mr: 3,
-                p: 0,
-                minWidth: 'auto',
-              },
-              '& .Mui-selected': {
-                color: '#000',
-                fontWeight: 600,
-              },
-            }}
-          >
-            <Tab label="All blogs" />
-            <Tab label="Featured" />
-            <Tab label="Company" />
-          </Tabs>
-        </Box>
+        {/* Latest Stories Section */}
+        <LatestStories stories={blogPosts} />
 
         <Grid container spacing={3} sx={{ mb: 2, mt: -1 }}>
-          {blogPosts.map((post) => (
+          {startBlogSecondItem?.map((post) => (
             <Grid
               key={post.id}
+              component={motion.div}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.1 }}
               size={{
                 xs: 12,
-                sm: 6,
-              }}
-            >
+                sm: 6
+              }}>
               <Link
                 to="/blog/view/$id"
                 params={{ id: String(post.id) }}
@@ -200,8 +93,8 @@ function BlogComponent() {
                       height: 300,
                       objectFit: 'cover',
                     }}
-                    image={post.image}
-                    alt={post.title}
+                    image={post?.image_url}
+                    alt={post?.title}
                   />
                   <CardContent sx={{ p: 2 }}>
                     <Typography
@@ -213,7 +106,7 @@ function BlogComponent() {
                         color: '#888',
                       }}
                     >
-                      {post.date}
+                      {formattedDate(post?.created)}
                     </Typography>
                     <Typography
                       variant="h6"
@@ -225,7 +118,7 @@ function BlogComponent() {
                         lineHeight: 1.3,
                       }}
                     >
-                      {post.title}
+                      {post?.title}
                     </Typography>
                     <Typography
                       variant="body2"
@@ -235,7 +128,20 @@ function BlogComponent() {
                         color: '#666',
                       }}
                     >
-                      {post.description}
+                      <BlogExcerpt>
+                        <AccordionDetails>
+                          <Box
+                            sx={{
+                              fontSize: '0.95rem',
+                              color: theme.palette.text.secondary,
+                              lineHeight: 1.7,
+                            }}
+                            dangerouslySetInnerHTML={{
+                              __html: cleanedDescription(post?.description),
+                            }}
+                          />
+                        </AccordionDetails>
+                      </BlogExcerpt>
                     </Typography>
                   </CardContent>
                 </Card>
@@ -243,65 +149,10 @@ function BlogComponent() {
             </Grid>
           ))}
         </Grid>
-
-        {/* Pagination */}
-        <Box sx={{ display: 'flex', justifyContent: 'center', my: 6 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <IconButton
-              sx={{
-                bgcolor: '#f0f0f0',
-                borderRadius: '50%',
-                width: 40,
-                height: 40,
-                '&:hover': {
-                  bgcolor: '#e0e0e0',
-                },
-              }}
-            >
-              <ArrowBack fontSize="small" />
-            </IconButton>
-
-            {[1, 2, '...', 5, 6].map((page, index) => (
-              <Button
-                key={index}
-                sx={{
-                  minWidth: 40,
-                  height: 40,
-                  borderRadius: '50%',
-                  p: 0,
-                  bgcolor: page === 1 ? '#f0f0f0' : 'transparent',
-                  color: '#333',
-                  fontWeight: page === 1 ? 600 : 400,
-                  '&:hover': {
-                    bgcolor: page === 1 ? '#e0e0e0' : '#f0f0f0',
-                    color: '#f0f0f0',
-                  },
-                }}
-              >
-                {page}
-              </Button>
-            ))}
-
-            <IconButton
-              sx={{
-                bgcolor: '#f0f0f0',
-                borderRadius: '50%',
-                width: 40,
-                height: 40,
-                '&:hover': {
-                  bgcolor: '#e0e0e0',
-                },
-              }}
-            >
-              <ArrowForward fontSize="small" />
-            </IconButton>
-          </Box>
-        </Box>
-
-        <Divider sx={{ my: 4 }} />
       </Container>
 
       <Footer />
-    </Box>
+      </Box>
+    </motion.div>
   );
 }

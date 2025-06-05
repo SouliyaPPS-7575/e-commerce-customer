@@ -274,7 +274,11 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
               {/* Shopping cart */}
               {(!!localStorageData('token').getLocalStrage() ||
                 !!localStorageData('customer_id').getLocalStrage()) && (
-                <Link to="/shop/add-cart" style={{ textDecoration: 'none' }}>
+                <Link
+                  to="/shop/add-cart"
+                  style={{ textDecoration: 'none' }}
+                  search={{ close: true }}
+                >
                   <IconButton color="inherit">
                     <Badge
                       badgeContent={countCartItems}

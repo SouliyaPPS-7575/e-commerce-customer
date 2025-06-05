@@ -6,7 +6,7 @@ export const viewAddressQueryOption = () =>
   queryOptions({
     queryKey: queryKeyViewAddress,
     queryFn: getViewAddresses,
-    staleTime: 1,
+    staleTime: 0,
   });
 
 export const useViewAddress = () => {

@@ -6,7 +6,7 @@ export const orderHistoryQueryOption = (pagination: PaginationAPI) =>
   queryOptions({
     queryKey: ['orderHistory', pagination],
     queryFn: () => getOrderHistory({ data: pagination }),
-    staleTime: 1,
+    staleTime: 0,
   });
 
 export const useOrderHistory = (pagination: PaginationAPI) => {

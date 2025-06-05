@@ -7,7 +7,7 @@ export const getWhatsappLink = createServerFn({
   method: 'GET',
 }).handler(async () => {
   try {
-    const res = await fetchAllPb<WhatsappLink>('whatsapp');
+    const res = await fetchAllPb<WhatsappLink>('contacts');
     return res[0]?.link;
   } catch (error) {
     throw handleError(error);

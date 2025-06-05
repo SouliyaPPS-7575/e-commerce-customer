@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { localStorageData } from '~/server/cache';
 
 export const formatCurrency = (value: number, locale = 'en-US') => {
@@ -10,17 +9,14 @@ export const formatCurrency = (value: number, locale = 'en-US') => {
   }).format(value);
 };
 
-export function formattedDate(isoDate?: string): string {
-  return useMemo(() => {
-    if (!isoDate) return '';
-    const date = new Date(isoDate);
-    return date.toLocaleDateString('en-GB', {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric',
-    });
-  }, [isoDate]);
-}
+export const formattedDate = (date: string) => {
+  const options: Intl.DateTimeFormatOptions = {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  };
+  return new Date(date).toLocaleDateString('en-GB', options);
+};
 
 export function formatDateDMY(dateStr: string | Date): string {
   const date = new Date(dateStr);
@@ -35,4 +31,20 @@ export const viewAvatar = (avatar?: string) => {
     ? avatar
     : `${process.env.BASE_URL}/api/files/_pb_users_auth_/${localStorageData('customer_id').getLocalStrage()}/${avatar}?token=${localStorageData('token').getLocalStrage()}`;
   return avatarUrl;
+};
+
+export const cleanedDescription = (description: string, maxLines = 5) => {
+  const cleaned = description
+    ?.replace(/\r\n/g, '<div style="height: 7px"></div>')
+    ?.replace(/<h1>/g, '<h1 style="font-weight: bold;">')
+    ?.replace(/<\/h1>/g, '</h1>')
+    ?.replace(/<h2>/g, '<h1 style="font-weight: bold;">');
+
+  // Create a temporary DOM element to parse the HTML and extract text content
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = cleaned || '';
+  const textContent = tempDiv.textContent || '';
+
+  const lines = textContent.split('\n').slice(0, maxLines).join('\n');
+  return `<div style="display: -webkit-box; -webkit-line-clamp: ${maxLines}; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; padding: 0; margin: 0;">${lines}</div>`;
 };

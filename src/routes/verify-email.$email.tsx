@@ -43,7 +43,7 @@ function VerifyEmailPage() {
         filter: `email="${email}"`,
       })) as VerifyEmail[];
     },
-    staleTime: 1,
+    staleTime: 0,
   });
 
   useEffect(() => {

@@ -8,7 +8,7 @@ const createQueryClient = () => {
     defaultOptions: {
       queries: {
         retry: 1, // Retry failed queries 1 time
-        staleTime: 1, // Keep the data fresh for 5 seconds (adjust based on use case)
+        staleTime: 0, // Keep the data fresh for 5 seconds (adjust based on use case)
         refetchOnWindowFocus: true, // Refetch data when window gets focus
         throwOnError(error) {
           if (error instanceof Error) {
