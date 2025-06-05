@@ -85,5 +85,9 @@
   "no_orders_found": "No orders found.",
   "____________comment_Blogs_page____________": "Blogs Page",
   "recent_stories": "Recent Stories",
-  "latest_stories":"Latest Stories"
+  "latest_stories": "Latest Stories",
+  "____________comment_Search_page____________": "Search Page",
+  "no_results_found": "No results found.",
+  "products": "Products",
+  "categories": "Categories"
 }

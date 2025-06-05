@@ -12,16 +12,12 @@ import {
   Badge,
   Box,
   Container,
-  Dialog,
-  DialogContent,
-  DialogTitle,
   Divider,
   Drawer,
   IconButton,
   List,
   Menu,
   MenuItem,
-  Paper,
   Toolbar,
   Typography,
   useMediaQuery,
@@ -31,13 +27,13 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import CurrencySelector from '~/components/CurrencySelector/CurrencySelector';
 import LanguageSelection from '~/components/LanguageSelection';
+import { SearchDialog } from '~/components/SearchDialog';
 import { useCountCartItems } from '~/hooks/shop/useAddCart';
 import { useAuthToken } from '~/hooks/useAuthToken';
 import { type NavItem, navItems } from '~/layout/navItems';
 import { NavbarProps } from '~/models/shop';
 import { getToken } from '~/server/auth';
 import { localStorageData } from '~/server/cache';
-import { StyledInputBase } from '~/styles/navbar';
 import theme from '~/styles/theme';
 
 const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
@@ -474,60 +470,7 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
       </AppBar>
 
       {/* Search dialog */}
-      <Dialog
-        open={searchOpen}
-        onClose={() => setSearchOpen(false)}
-        fullWidth
-        maxWidth="sm"
-      >
-        <DialogTitle>
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}
-          >
-            <Typography variant="h6">{t('search')}</Typography>
-            <IconButton onClick={() => setSearchOpen(false)}>
-              <CloseIcon />
-            </IconButton>
-          </Box>
-        </DialogTitle>
-        <DialogContent>
-          <Paper
-            elevation={3}
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              borderRadius: 2,
-              px: 2,
-              py: 0.5,
-              bgcolor: 'background.default',
-              transition: 'box-shadow 0.3s ease-in-out',
-              boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.05)',
-            }}
-          >
-            <SearchRounded sx={{ color: 'text.secondary', mr: 1 }} />
-            <StyledInputBase
-              placeholder={t('please_enter_search_text')}
-              autoFocus
-              fullWidth
-              inputProps={{ 'aria-label': 'search' }}
-              sx={{
-                flex: 1,
-              }}
-            />
-            <IconButton
-              size="small"
-              sx={{ visibility: 'hidden' }} // Change to visible when input is not empty (optional)
-              // onClick={clearInputFunction}  // Add handler to clear input
-            >
-              <CloseIcon fontSize="small" />
-            </IconButton>
-          </Paper>
-        </DialogContent>
-      </Dialog>
+      <SearchDialog searchOpen={searchOpen} setSearchOpen={setSearchOpen} />
     </>
   );
 };

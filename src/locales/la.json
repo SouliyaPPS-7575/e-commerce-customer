@@ -85,5 +85,9 @@
   "no_orders_found": "ບໍ່ພົບການສັ່ງຊື້.",
   "____________comment_Blogs_page____________": "Blogs Page",
   "recent_stories": "ເລື່ອງທີ່ຜ່ານມາ",
-  "latest_stories": "ເລື່ອງລ້າສຸດ"
+  "latest_stories": "ເລື່ອງລ້າສຸດ",
+  "____________comment_Search_page____________": "Search Page",
+  "no_results_found": "ບໍ່ພົບຜົນການຊອກຫາ.",
+  "products": "ສິນຄ້າ",
+  "categories": "ປະເພດສິນຄ້າ"
 }
