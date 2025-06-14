@@ -1,6 +1,7 @@
 import { Box, CardContent, Divider, Stack, Typography } from '@mui/material';
 import { StyledCard, PlaceOrderButton } from '~/styles/checkout';
 import { OrderItemRow } from './order-item-row';
+import { useTranslation } from 'react-i18next';
 
 interface OrderSummarySectionProps {
   orderItems: any[];
@@ -29,6 +30,8 @@ export function OrderSummarySection({
   formAddress,
   formCheckout,
 }: OrderSummarySectionProps) {
+  const { t } = useTranslation();
+
   return (
     <StyledCard>
       <CardContent sx={{ p: 3 }}>
@@ -72,7 +75,7 @@ export function OrderSummarySection({
         {/* Order Summary */}
         <Stack spacing={1} sx={{ mb: 3 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-            <Typography variant="body2">Subtotal</Typography>
+            <Typography variant="body2">{t('subtotal')}</Typography>
             <Typography variant="body2" fontWeight={500}>
               {formatCurrency(convert(subtotal)) || 0} {displayCurrency}
             </Typography>
@@ -86,7 +89,7 @@ export function OrderSummarySection({
           <Divider />
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Typography variant="body1" fontWeight={500}>
-              Total
+              {t('total')}
             </Typography>
             <Typography variant="body1" fontWeight={500}>
               {formatCurrency(convert(total)) || 0} {displayCurrency}
@@ -118,7 +121,7 @@ export function OrderSummarySection({
           onClick={onPlaceOrder}
           disabled={isSubmitting || !formAddress || !formCheckout}
         >
-          {isSubmitting ? 'Processing...' : 'Place Order'}
+          {isSubmitting ? `${t('processing')}...` : `${t('place_order')}`}
         </PlaceOrderButton>
       </CardContent>
     </StyledCard>

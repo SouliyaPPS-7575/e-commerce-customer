@@ -3,7 +3,7 @@ import { getViewDetailBlog } from '~/server/blogs';
 
 export const getViewBlogQueryOption = (blog_id: string) =>
   queryOptions({
-    queryKey: ['viewBlog'],
+    queryKey: ['viewBlog', blog_id],
     queryFn: () =>
       getViewDetailBlog({
         data: { blog_id },

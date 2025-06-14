@@ -1,6 +1,6 @@
 import { createServerFn } from '@tanstack/react-start';
-import { BlogDetails, BlogsItem } from '~/models/blogs';
-import { fetchAllPb, fetchPb } from '~/services/pocketbaseService';
+import { BlogDetails, BlogsItem, EditCountBlogForm } from '~/models/blogs';
+import { fetchAllPb, fetchPb, updatePb } from '~/services/pocketbaseService';
 import { handleError } from './errorHandler';
 
 export const getAllBlogs = createServerFn({
@@ -24,3 +24,35 @@ export const getViewDetailBlog = createServerFn({
       throw handleError(error);
     }
   });
+
+export const editCountBlogServer = createServerFn({
+  method: 'POST',
+})
+  .validator((d: { blog_id: string; formData: EditCountBlogForm }) => d)
+  .handler(async ({ data }) => {
+    try {
+      const updatedBlog = await updatePb<EditCountBlogForm>(
+        'blogs',
+        data.blog_id,
+        data.formData,
+      );
+      return updatedBlog;
+    } catch (error) {
+      throw handleError(error);
+    }
+  });
+
+export const getRecentBlogs = createServerFn({
+  method: 'GET',
+}).handler(async () => {
+  try {
+    const recent = await fetchAllPb<BlogsItem>('blogs');
+
+    // Sort blogs by count in descending order (most to least)
+    const recentStories = recent.sort((a, b) => b.count - a.count);
+
+    return recentStories;
+  } catch (error) {
+    throw handleError(error);
+  }
+});

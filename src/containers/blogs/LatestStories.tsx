@@ -1,6 +1,7 @@
 import { Box, Card, CardMedia, Grid, Typography } from '@mui/material';
 import { Link } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
+import { useEditCountBlog } from '~/hooks/blogs/useEditCountBlog';
 import { BlogsItem } from '~/models/blogs';
 
 interface LatestStoriesProps {
@@ -9,6 +10,8 @@ interface LatestStoriesProps {
 
 const LatestStories = ({ stories }: LatestStoriesProps) => {
   const { t } = useTranslation();
+
+  const { editCountBlog } = useEditCountBlog();
 
   if (stories.length === 0) {
     return null;
@@ -39,6 +42,17 @@ const LatestStories = ({ stories }: LatestStoriesProps) => {
                 sx={{
                   display: 'flex',
                   flexDirection: { xs: 'column', md: 'row' },
+                }}
+                onClick={() => {
+                  editCountBlog({
+                    data: {
+                      blog_id: stories[0]?.id,
+                      formData: {
+                        ...stories[0],
+                        count: stories[0]?.count + 1,
+                      },
+                    },
+                  });
                 }}
               >
                 <CardMedia

@@ -143,7 +143,7 @@ export default function LaoSinhSection() {
                   },
                 }}
               >
-                Discover now
+                {t('discover_now')}
               </Button>
             </Link>
           </Box>

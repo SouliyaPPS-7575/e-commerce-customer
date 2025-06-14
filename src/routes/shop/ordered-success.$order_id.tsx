@@ -1,6 +1,7 @@
 import { Button, Card, CardContent } from '@mui/material';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { CheckCircle } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useCurrencyContext } from '~/components/CurrencySelector/CurrencyProvider';
 import {
   getOrderItemQueryOption,
@@ -22,6 +23,7 @@ export const Route = createFileRoute('/shop/ordered-success/$order_id')({
 });
 
 export default function RouteComponent() {
+  const { t } = useTranslation();
   const order_id = Route.useParams().order_id;
   const { orderItem } = useOrderItem(order_id);
   const { productsData } = useProducts();
@@ -60,7 +62,7 @@ export default function RouteComponent() {
             <CheckCircle className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-2xl font-medium text-gray-900">
-            Thank you for ordering!
+            {t('thank_you_ordering')}
           </h1>
         </div>
 
@@ -68,7 +70,7 @@ export default function RouteComponent() {
         <Card className="bg-white shadow-sm border-0">
           <CardContent className="p-6">
             <h2 className="text-lg font-medium text-gray-900 mb-6">
-              Order summary
+              {t('order_summary')}
             </h2>
 
             <div className="space-y-4">
@@ -91,13 +93,13 @@ export default function RouteComponent() {
                     <p className="font-medium text-gray-900">
                       {currency === 'USD' &&
                         item?.price_usd &&
-                        `${item.price_usd * item.quantity} $`}
+                        `${item?.price_usd * item.quantity} $`}
                       {currency === 'THB' &&
                         item?.price_thb &&
-                        `${item.price_thb * item.quantity} ฿`}
+                        `${item?.price_thb * item.quantity} ฿`}
                       {currency === 'LAK' &&
                         item?.price_lak &&
-                        `${item.price_lak * item.quantity} ₭`}
+                        `${item?.price_lak * item.quantity} ₭`}
                     </p>
                   </div>
                 </div>
@@ -106,7 +108,7 @@ export default function RouteComponent() {
               <div className="border-t pt-4 mt-6">
                 <div className="flex justify-between items-center">
                   <span className="text-lg font-medium text-gray-900">
-                    Total
+                    {t('total')}
                   </span>
                   <span className="text-lg font-medium text-gray-900">
                     {currency === 'USD' && `${totalAmount.toFixed(2)} $`}
@@ -126,14 +128,14 @@ export default function RouteComponent() {
               variant="outlined"
               sx={{
                 color: '#000',
-                ":hover": {
+                ':hover': {
                   color: '#f0f0f0',
-                }
+                },
               }}
               fullWidth
               className="w-full flex-1"
             >
-              View Order
+              {t('view_order')}
             </Button>
           </Link>
 
@@ -143,7 +145,7 @@ export default function RouteComponent() {
               fullWidth
               className="bg-[#c4b896] hover:bg-[#b5a985] text-white border-0"
             >
-              Continue Shopping
+              {t('continue_shopping')}
             </Button>
           </Link>
         </div>

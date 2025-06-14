@@ -16,6 +16,7 @@ import { motion } from 'framer-motion';
 import { t } from 'i18next';
 import { useState, useRef, useEffect } from 'react';
 import { useBlogs } from '~/hooks/blogs/useBlogs';
+import { useEditCountBlog } from '~/hooks/blogs/useEditCountBlog';
 import {
   BlogCard,
   BlogDate,
@@ -36,7 +37,6 @@ export default function BlogSection() {
   const featuredPosts = blogs?.slice(0, 2);
 
   const blogsLast = isMobile ? blogs : blogs?.slice(2);
-
 
   const [activeSlide, setActiveSlide] = useState(0);
 
@@ -62,6 +62,8 @@ export default function BlogSection() {
       container.removeEventListener('scroll', handleScroll);
     };
   }, [blogsLast.length]);
+
+  const { editCountBlog } = useEditCountBlog();
 
   return (
     <Box
@@ -111,7 +113,20 @@ export default function BlogSection() {
                     params={{ id: String(post?.id) }}
                     style={{ textDecoration: 'none' }}
                   >
-                    <BlogCard sx={{ height: '100%' }}>
+                    <BlogCard
+                      sx={{ height: '100%' }}
+                      onClick={() => {
+                        editCountBlog({
+                          data: {
+                            blog_id: post.id,
+                            formData: {
+                              ...post,
+                              count: post?.count + 1,
+                            },
+                          },
+                        });
+                      }}
+                    >
                       <CardMedia
                         component="img"
                         image={post?.image_url}
@@ -122,9 +137,12 @@ export default function BlogSection() {
                           objectFit: 'cover',
                         }}
                       />
-                      <CardContent sx={{ p: 0, pt: 2 }}>
+                      <CardContent sx={{ p: 2, pt: 2 }}>
                         <BlogDate>{formattedDate(post?.created)}</BlogDate>
-                        <BlogTitle variant="h6" sx={{ fontWeight: 'bold', mb: 0 }}>
+                        <BlogTitle
+                          variant="h6"
+                          sx={{ fontWeight: 'bold', mb: 0 }}
+                        >
                           {post?.title}
                         </BlogTitle>
                         <BlogExcerpt>
@@ -192,7 +210,18 @@ export default function BlogSection() {
                         bgcolor: 'transparent',
                         textAlign: 'center',
                       }}
-                      onClick={() => handleSlideChange(idx)}
+                      onClick={() => {
+                        handleSlideChange(idx);
+                        editCountBlog({
+                          data: {
+                            blog_id: story.id,
+                            formData: {
+                              ...story,
+                              count: story?.count + 1,
+                            },
+                          },
+                        });
+                      }}
                     >
                       <CardMedia
                         component="img"
@@ -285,7 +314,7 @@ export default function BlogSection() {
           </>
         ) : (
           // Desktop: Horizontal scroll list
-          (<>
+          <>
             <Box
               sx={{
                 display: 'flex',
@@ -322,6 +351,17 @@ export default function BlogSection() {
                           boxShadow: '0 12px 24px rgba(0, 0, 0, 0.1)',
                         },
                         cursor: 'pointer',
+                      }}
+                      onClick={() => {
+                        editCountBlog({
+                          data: {
+                            blog_id: story.id,
+                            formData: {
+                              ...story,
+                              count: story?.count + 1,
+                            },
+                          },
+                        });
                       }}
                     >
                       <CardMedia
@@ -380,7 +420,7 @@ export default function BlogSection() {
                 </motion.div>
               ))}
             </Box>
-          </>)
+          </>
         )}
 
         <Box

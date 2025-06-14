@@ -1,5 +1,6 @@
 import { CardContent, Stack, TextField, Typography } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
+import { useTranslation } from 'react-i18next';
 import { StyledCard } from '~/styles/checkout';
 
 interface BillingShippingSectionProps {
@@ -15,11 +16,12 @@ export function BillingShippingSection({
   provinces,
   districts,
 }: BillingShippingSectionProps) {
+  const { t } = useTranslation();
   return (
     <StyledCard>
       <CardContent sx={{ p: 3 }}>
         <Typography variant="h6" sx={{ mb: 3, fontWeight: 400 }}>
-          Billing & Shipping
+          {t('billing')} & {t('shipping')}
         </Typography>
 
         <Stack spacing={3}>
