@@ -1,0 +1,36 @@
+.responsive-img {
+  width: 50%;
+  height: auto;
+  cursor: pointer;
+  max-width: 30%;
+}
+
+@media (max-width: 768px) {
+  .responsive-img {
+    max-width: 50%;
+  }
+}
+
+.responsive-text-container {
+  max-width: 100%;
+  margin: auto;
+  padding: 10px;
+}
+
+@media (min-width: 768px) {
+  .responsive-text-container {
+    max-width: 50%;
+    margin-left: 0; /* align left */
+    margin-right: auto;
+  }
+}
+
+.responsive-img-text {
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .responsive-img-text {
+    width: 70%;
+  }
+}

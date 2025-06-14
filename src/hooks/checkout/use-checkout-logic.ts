@@ -7,9 +7,13 @@ import { toast } from 'sonner';
 import { localStorageData } from '~/server/cache';
 import { createOrder } from '~/server/checkout';
 import { queryClient } from '~/services/queryClient';
-import { useDeleteCartItem } from '../shop/useDeleteCartItem';
-import { getCartItemsQueryOption, useCountCartItems } from '../shop/useAddCart';
 import { queryKeyCountCartItems } from '../shop';
+import {
+  getCartItemsQueryOption,
+  getCountCartItemsQueryOption,
+  useCountCartItems,
+} from '../shop/useAddCart';
+import { useDeleteCartItem } from '../shop/useDeleteCartItem';
 
 export function useCheckoutLogic(selectedItemIds?: string[]) {
   const { t } = useTranslation();
@@ -22,15 +26,36 @@ export function useCheckoutLogic(selectedItemIds?: string[]) {
 
   const { mutate: createOrderMutate } = useMutation({
     mutationFn: createOrder,
-    onSuccess: () => {
+    onSuccess: ({ res }) => {
       toast.success(t('successfully'));
 
       if (currentPath === '/shop/checkout') {
-        queryClient.invalidateQueries(getCartItemsQueryOption());
-        navigate({ to: '/shop/add-cart' });
+        // Clear local storage for selected cart items
+        queryClient.invalidateQueries({
+          queryKey: getCartItemsQueryOption().queryKey,
+          exact: true,
+        });
+        queryClient.invalidateQueries({
+          queryKey: getCountCartItemsQueryOption().queryKey,
+          exact: true,
+        });
+        navigate({
+          to: '/shop/ordered-success/$order_id',
+          params: { order_id: res.order_id },
+        });
       } else {
-        queryClient.invalidateQueries(getCartItemsQueryOption());
-        history.back();
+        queryClient.invalidateQueries({
+          queryKey: getCartItemsQueryOption().queryKey,
+          exact: true,
+        });
+        queryClient.invalidateQueries({
+          queryKey: getCountCartItemsQueryOption().queryKey,
+          exact: true,
+        });
+        navigate({
+          to: '/shop/ordered-success/$order_id',
+          params: { order_id: res.order_id },
+        });
       }
 
       setIsSubmitting(false);

@@ -30,7 +30,7 @@ export function OrderItemRow({
         </Typography>
       </Box>
       <Typography variant="body2" fontWeight={500}>
-        {formatCurrency(convert(item.price)) || 0} {displayCurrency}
+        {formatCurrency(convert(item.price * item.quantity)) || 0} {displayCurrency}
       </Typography>
     </Box>
   );

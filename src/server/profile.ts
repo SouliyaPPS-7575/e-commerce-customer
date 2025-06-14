@@ -194,15 +194,22 @@ export const getOrderHistory = createServerFn({
   .handler(async ({ data: { page, limit } }) => {
     try {
       const customer_id = getCookie('customer_id') as string;
-      const order_id = await fetchFilterPb<OrderHistoryDetails>(
+      const orders = await fetchFilterPb<OrderHistoryDetails>(
         'orders',
         'customer_id',
         customer_id,
       );
 
-      const orderIds = order_id.map((item) => item.id);
+      const orderIds = orders.map((item) => item.id);
 
-      const filterString = orderIds.map(id => `order_id="${id}"`).join(' || ');
+      // Create a map of order_id to status for quick lookup
+      const orderStatusMap = new Map(
+        orders.map((order) => [order.id, order.status]),
+      );
+
+      const filterString = orderIds
+        .map((id) => `order_id="${id}"`)
+        .join(' || ');
 
       const orderItems = await pb
         .collection('order_items')
@@ -210,7 +217,16 @@ export const getOrderHistory = createServerFn({
           filter: filterString,
         });
 
-      return orderItems;
+      // Add status field to each order item
+      const orderItemsWithStatus = {
+        ...orderItems,
+        items: orderItems.items.map((item) => ({
+          ...item,
+          status: orderStatusMap.get(item.order_id) || '',
+        })),
+      };
+
+      return orderItemsWithStatus;
     } catch (error) {
       throw handleError(error);
     }

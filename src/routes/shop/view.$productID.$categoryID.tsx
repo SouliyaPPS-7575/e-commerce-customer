@@ -20,7 +20,7 @@ import {
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { motion } from 'framer-motion';
 import { ShoppingCart } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCurrencyContext } from '~/components/CurrencySelector/CurrencyProvider';
 import Footer from '~/containers/footer';
@@ -44,6 +44,7 @@ import { localStorageData } from '~/server/cache';
 import { queryClient } from '~/services/queryClient';
 import { QuantityControl } from '~/styles/add-cart';
 import { formatCurrency } from '~/utils/format';
+import '@/styles/products.css';
 
 export const Route = createFileRoute('/shop/view/$productID/$categoryID')({
   loader: async ({ context, params }) => {
@@ -82,6 +83,25 @@ function ProductDetailComponent() {
     .replace(/<\/h1>/g, '</h1>')
     .replace(/<h2>/g, '<h1 style="font-weight: bold;">');
 
+  const cleanedDetails = `
+    <div style="width: 100%; max-width: 100%; margin: auto;">
+      <div style="@media(min-width: 768px){ max-width: 50%; margin: auto; }">
+        ${product.details
+          .replace(/\r\n/g, '<div style="height: 7px"></div>')
+          .replace(/<h1>/g, '<h1 style="font-weight: bold;">')
+          .replace(/<\/h1>/g, '</h1>')
+          .replace(/<h2>/g, '<h1 style="font-weight: bold;">')
+          .replace(
+            /<img(.*?)src="(.*?)"(.*?)\/?>/g,
+            `<div style="display: flex; align-items: flex-start; gap: 5px; margin: 10px 0px;">
+              <img class="responsive-img" onclick="window.open('$2', '_blank')" src="$2" $1 $3 />
+              <div style="flex: 1;">`,
+          )
+          .replace(/<\/p>/g, '</div></p>')}
+      </div>
+    </div>
+  `;
+
   // const { filteredProductsRanking } = useProductsSection();
 
   const { productsData } = useProducts();
@@ -91,21 +111,11 @@ function ProductDetailComponent() {
   );
 
   const { addCart } = useAddCart();
-  const { localCartState } = useCartPage();
-
-  const checkSameAddedCartItem = useMemo(() => {
-    return localCartState.some((item) => item.product_id === product.id);
-  }, [localCartState, product.id]);
+  const { enrichedCartItems, editMutation } = useCartPage();
 
   const [quantity, setQuantity] = useState(1);
 
   const handleQuantityChange = (newQuantity: number) => {
-    if (checkSameAddedCartItem) {
-      queryClient.invalidateQueries(getCartItemsQueryOption());
-      navigate({ to: '/shop/add-cart' });
-      return;
-    }
-
     if (newQuantity < 1) return;
     setQuantity(Math.max(newQuantity, 1));
   };
@@ -113,47 +123,62 @@ function ProductDetailComponent() {
   const customerId = localStorageData('customer_id').getLocalStrage();
 
   const handleAddToCart = () => {
-    if (checkSameAddedCartItem && customerId) {
-      navigate({ to: '/shop/add-cart' });
-      return;
-    }
-
     if (!customerId) {
       navigate({ to: '/shop/login' });
       return;
-    }
+    } else {
+      if (enrichedCartItems.some((item) => item.product_id === product.id)) {
+        // If the product is already in the cart, update the quantity
+        const existingItem = enrichedCartItems.find(
+          (item) => item.product_id === product.id,
+        );
 
-    addCart({
-      data: {
-        product_id: product.id,
-        customer_id: customerId,
-        status: 'pending',
-        quantity,
-      },
-    });
+        if (existingItem) {
+          // Update the existing cart item with the new quantity
+          queryClient.invalidateQueries(getCartItemsQueryOption());
+          editMutation({
+            data: {
+              id: existingItem.id,
+              formData: {
+                customer_id: localStorageData('customer_id').getLocalStrage(),
+                product_id: product?.id,
+                quantity: existingItem.quantity + quantity,
+                status: 'pending',
+              },
+            },
+          });
+          navigate({ to: '/shop/add-cart' });
+          return;
+        }
+      } else if (customerId) {
+        addCart(
+          {
+            data: {
+              product_id: product.id,
+              customer_id: localStorageData('customer_id').getLocalStrage(),
+              status: 'pending',
+              quantity,
+            },
+          },
+          {
+            onSuccess: () => {
+              queryClient.invalidateQueries(getCartItemsQueryOption());
+            },
+          },
+        );
+      }
+    }
   };
 
   const handleBuyNow = () => {
-    const customerId = localStorageData('customer_id').getLocalStrage();
-
-    if (checkSameAddedCartItem && customerId) {
-      navigate({ to: '/shop/add-cart' });
-      return;
-    }
-
     if (!customerId) {
       navigate({ to: '/shop/login' });
-      return;
-    }
-
-    if (!customerId) {
-      navigate({ to: '/shop/login' });
-    } else {
+    } else if (customerId) {
       addCart(
         {
           data: {
             product_id: product.id,
-            customer_id: customerId,
+            customer_id: localStorageData('customer_id').getLocalStrage(),
             status: 'pending',
             quantity,
           },
@@ -295,7 +320,11 @@ function ProductDetailComponent() {
                 </Box>
 
                 <br />
-                <Typography variant="body2" fontWeight="bold">
+                <Typography
+                  variant="body2"
+                  fontWeight="bold"
+                  sx={{ color: '#7A8A56' }}
+                >
                   &nbsp;{'In Stock'}
                 </Typography>
                 <br />
@@ -365,12 +394,12 @@ function ProductDetailComponent() {
                 </Grid>
 
                 {/* Accordion Sections */}
-                <Divider sx={{ my: 1 }} />
+                {/* Description */}
                 <AccordionDetails>
                   <Box
                     sx={{
                       mb: -3,
-                      mt: -1,
+                      mt: 0,
                       fontSize: '0.95rem',
                       color: theme.palette.text.secondary,
                       lineHeight: 1.7,
@@ -381,6 +410,22 @@ function ProductDetailComponent() {
               </Box>
             </Grid>
           </Grid>
+
+          <Divider sx={{ my: 2 }} />
+
+          {/* Details */}
+          <AccordionDetails>
+            <Box
+              sx={{
+                mb: -3,
+                mt: -1,
+                fontSize: '0.95rem',
+                color: theme.palette.text.secondary,
+                lineHeight: 1.7,
+              }}
+              dangerouslySetInnerHTML={{ __html: cleanedDetails }}
+            />
+          </AccordionDetails>
 
           <Divider sx={{ my: 1, mt: 2 }} />
 

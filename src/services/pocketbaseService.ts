@@ -3,6 +3,7 @@ import PocketBase from 'pocketbase';
 // Initialize PocketBase instance
 const pb = new PocketBase(process.env.BASE_URL); // Replace with your PocketBase URL
 pb.autoCancellation(false);
+export const batch = pb.createBatch();
 
 export default pb;
 

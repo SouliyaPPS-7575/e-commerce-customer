@@ -8,6 +8,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
+import { CartItem } from '~/models/shop';
 import { localStorageData } from '~/server/cache';
 import {
   createAddCart,
@@ -59,6 +60,11 @@ export const useAddCart = () => {
   return { addCart };
 };
 
+export type LocalCartItem = CartItem & {
+  quantity: number; // This is redundant if `EnrichedCartItem` already has `quantity`
+  price: number; // Ensure price is always a number
+};
+
 export function useCartPage() {
   const navigate = useNavigate();
 
@@ -107,7 +113,7 @@ export function useCartPage() {
   });
 
   // --- Patch: local cart state and handlers ---
-  const [localCartState, setLocalCartState] = useState(
+  const [localCartState, setLocalCartState] = useState<any[]>(
     () =>
       enrichedCartItems?.map((item) => ({
         ...item,
@@ -291,6 +297,7 @@ export function useCartPage() {
     selectedItemIds,
     localCartState,
     selectedItemStorage,
+    setLocalCartState,
 
     // Function
     handleQuantityChange,

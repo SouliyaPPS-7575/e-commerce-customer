@@ -25,6 +25,7 @@ import { Route as ShopLoginImport } from './routes/shop/login'
 import { Route as ShopCheckoutImport } from './routes/shop/checkout'
 import { Route as ShopAddCartImport } from './routes/shop/add-cart'
 import { Route as ShopIndexCategoryidImport } from './routes/shop/index.$category_id'
+import { Route as ShopOrderedSuccessOrderidImport } from './routes/shop/ordered-success.$order_id'
 import { Route as BlogViewIdImport } from './routes/blog/view.$id'
 import { Route as ShopViewProductIDCategoryIDImport } from './routes/shop/view.$productID.$categoryID'
 import { Route as ShopBuyCheckoutCartidProductidImport } from './routes/shop/buy-checkout.$cart_id.$product_id'
@@ -112,6 +113,12 @@ const ShopAddCartRoute = ShopAddCartImport.update({
 const ShopIndexCategoryidRoute = ShopIndexCategoryidImport.update({
   id: '/shop/index/$category_id',
   path: '/shop/index/$category_id',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ShopOrderedSuccessOrderidRoute = ShopOrderedSuccessOrderidImport.update({
+  id: '/shop/ordered-success/$order_id',
+  path: '/shop/ordered-success/$order_id',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -237,6 +244,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogViewIdImport
       parentRoute: typeof rootRoute
     }
+    '/shop/ordered-success/$order_id': {
+      id: '/shop/ordered-success/$order_id'
+      path: '/shop/ordered-success/$order_id'
+      fullPath: '/shop/ordered-success/$order_id'
+      preLoaderRoute: typeof ShopOrderedSuccessOrderidImport
+      parentRoute: typeof rootRoute
+    }
     '/shop/index/$category_id': {
       id: '/shop/index/$category_id'
       path: '/shop/index/$category_id'
@@ -278,6 +292,7 @@ export interface FileRoutesByFullPath {
   '/blog': typeof BlogIndexRoute
   '/contact': typeof ContactIndexRoute
   '/blog/view/$id': typeof BlogViewIdRoute
+  '/shop/ordered-success/$order_id': typeof ShopOrderedSuccessOrderidRoute
   '/shop/index/$category_id': typeof ShopIndexCategoryidRoute
   '/shop/buy-checkout/$cart_id/$product_id': typeof ShopBuyCheckoutCartidProductidRoute
   '/shop/view/$productID/$categoryID': typeof ShopViewProductIDCategoryIDRoute
@@ -298,6 +313,7 @@ export interface FileRoutesByTo {
   '/blog': typeof BlogIndexRoute
   '/contact': typeof ContactIndexRoute
   '/blog/view/$id': typeof BlogViewIdRoute
+  '/shop/ordered-success/$order_id': typeof ShopOrderedSuccessOrderidRoute
   '/shop/index/$category_id': typeof ShopIndexCategoryidRoute
   '/shop/buy-checkout/$cart_id/$product_id': typeof ShopBuyCheckoutCartidProductidRoute
   '/shop/view/$productID/$categoryID': typeof ShopViewProductIDCategoryIDRoute
@@ -319,6 +335,7 @@ export interface FileRoutesById {
   '/blog/': typeof BlogIndexRoute
   '/contact/': typeof ContactIndexRoute
   '/blog/view/$id': typeof BlogViewIdRoute
+  '/shop/ordered-success/$order_id': typeof ShopOrderedSuccessOrderidRoute
   '/shop/index/$category_id': typeof ShopIndexCategoryidRoute
   '/shop/buy-checkout/$cart_id/$product_id': typeof ShopBuyCheckoutCartidProductidRoute
   '/shop/view/$productID/$categoryID': typeof ShopViewProductIDCategoryIDRoute
@@ -341,6 +358,7 @@ export interface FileRouteTypes {
     | '/blog'
     | '/contact'
     | '/blog/view/$id'
+    | '/shop/ordered-success/$order_id'
     | '/shop/index/$category_id'
     | '/shop/buy-checkout/$cart_id/$product_id'
     | '/shop/view/$productID/$categoryID'
@@ -360,6 +378,7 @@ export interface FileRouteTypes {
     | '/blog'
     | '/contact'
     | '/blog/view/$id'
+    | '/shop/ordered-success/$order_id'
     | '/shop/index/$category_id'
     | '/shop/buy-checkout/$cart_id/$product_id'
     | '/shop/view/$productID/$categoryID'
@@ -379,6 +398,7 @@ export interface FileRouteTypes {
     | '/blog/'
     | '/contact/'
     | '/blog/view/$id'
+    | '/shop/ordered-success/$order_id'
     | '/shop/index/$category_id'
     | '/shop/buy-checkout/$cart_id/$product_id'
     | '/shop/view/$productID/$categoryID'
@@ -400,6 +420,7 @@ export interface RootRouteChildren {
   BlogIndexRoute: typeof BlogIndexRoute
   ContactIndexRoute: typeof ContactIndexRoute
   BlogViewIdRoute: typeof BlogViewIdRoute
+  ShopOrderedSuccessOrderidRoute: typeof ShopOrderedSuccessOrderidRoute
   ShopIndexCategoryidRoute: typeof ShopIndexCategoryidRoute
   ShopBuyCheckoutCartidProductidRoute: typeof ShopBuyCheckoutCartidProductidRoute
   ShopViewProductIDCategoryIDRoute: typeof ShopViewProductIDCategoryIDRoute
@@ -420,6 +441,7 @@ const rootRouteChildren: RootRouteChildren = {
   BlogIndexRoute: BlogIndexRoute,
   ContactIndexRoute: ContactIndexRoute,
   BlogViewIdRoute: BlogViewIdRoute,
+  ShopOrderedSuccessOrderidRoute: ShopOrderedSuccessOrderidRoute,
   ShopIndexCategoryidRoute: ShopIndexCategoryidRoute,
   ShopBuyCheckoutCartidProductidRoute: ShopBuyCheckoutCartidProductidRoute,
   ShopViewProductIDCategoryIDRoute: ShopViewProductIDCategoryIDRoute,
@@ -449,6 +471,7 @@ export const routeTree = rootRoute
         "/blog/",
         "/contact/",
         "/blog/view/$id",
+        "/shop/ordered-success/$order_id",
         "/shop/index/$category_id",
         "/shop/buy-checkout/$cart_id/$product_id",
         "/shop/view/$productID/$categoryID"
@@ -495,6 +518,9 @@ export const routeTree = rootRoute
     },
     "/blog/view/$id": {
       "filePath": "blog/view.$id.tsx"
+    },
+    "/shop/ordered-success/$order_id": {
+      "filePath": "shop/ordered-success.$order_id.tsx"
     },
     "/shop/index/$category_id": {
       "filePath": "shop/index.$category_id.tsx"

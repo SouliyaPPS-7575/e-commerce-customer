@@ -1,6 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { useMemo, useRef, useState } from 'react';
+import Footer from '~/containers/footer';
+import BlogSection from '~/containers/home/sections/BlogSection';
 import HeroSection from '~/containers/home/sections/HeroSection';
+import LaoSinhSection from '~/containers/home/sections/LaoSinh';
 import ProductsSection from '~/containers/home/sections/ProductsSection';
 import { bannersQueryOption } from '~/hooks/banner/useBanners';
 import { blogsQueryOption } from '~/hooks/blogs/useBlogs';
@@ -68,11 +71,14 @@ function Home() {
         handleScroll={handleScroll}
       />,
       <ProductsSection key="products" />,
+      <LaoSinhSection key="LaoSinhSection" />,
+      <BlogSection key="blog" />,
+      <Footer key={'footer'} />,
     ];
   }, []);
 
   const { whatsappLink } = useContact();
-  
+
   return (
     <>
       {/* <Navbar /> */}

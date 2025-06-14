@@ -48,3 +48,8 @@ export interface OrderItems {
   updated: string;
 }
 [];
+
+export interface CheckoutResponse {
+  message: string
+  order_id: string
+}

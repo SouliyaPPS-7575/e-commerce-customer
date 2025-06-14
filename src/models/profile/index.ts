@@ -76,4 +76,5 @@ export interface OrderHistoryItems {
   product_name: string;
   created: string;
   updated: string;
+  status: string;
 }

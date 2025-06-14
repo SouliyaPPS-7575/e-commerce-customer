@@ -50,13 +50,16 @@ export function OrderHistory({ pagination, onPageChange }: OrderHistoryProps) {
           <TableHead>
             <TableRow>
               <TableCell sx={{ fontWeight: 'bold', color: 'text.primary' }}>
-                Product
+                {t('products')}
               </TableCell>
               <TableCell sx={{ fontWeight: 'bold', color: 'text.primary' }}>
-                Date
+                {t('date')}
               </TableCell>
               <TableCell sx={{ fontWeight: 'bold', color: 'text.primary' }}>
-                Price
+                {t('status')}
+              </TableCell>
+              <TableCell sx={{ fontWeight: 'bold', color: 'text.primary' }}>
+                {t('total')}
               </TableCell>
             </TableRow>
           </TableHead>
@@ -80,6 +83,33 @@ export function OrderHistory({ pagination, onPageChange }: OrderHistoryProps) {
                 <TableCell
                   sx={{
                     fontWeight: 'bold',
+                    color:
+                      order?.status === 'completed'
+                        ? 'success.main'
+                        : 'warning.main',
+                  }}
+                >
+                  <Grid size={{ xs: 6, sm: 6 }}>
+                    <Typography
+                      variant="body1"
+                      sx={{
+                        fontWeight: 'bold',
+                        color:
+                          order?.status === 'completed'
+                            ? 'success.main'
+                            : 'warning.main',
+                        textTransform: 'capitalize',
+                        textAlign: 'left',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      {t(`${order?.status}`)}
+                    </Typography>
+                  </Grid>
+                </TableCell>
+                <TableCell
+                  sx={{
+                    fontWeight: 'bold',
                     color: 'text.primary',
                   }}
                 >
@@ -93,13 +123,13 @@ export function OrderHistory({ pagination, onPageChange }: OrderHistoryProps) {
                     >
                       {currency === 'USD' &&
                         order?.price_usd &&
-                        `${order.price_usd} $`}
+                        `${order?.price_usd * order?.quantity} $`}
                       {currency === 'THB' &&
                         order?.price_thb &&
-                        `${order.price_thb} ฿`}
+                        `${order?.price_thb * order?.quantity} ฿`}
                       {currency === 'LAK' &&
                         order?.price_lak &&
-                        `${order.price_lak} ₭`}
+                        `${order?.price_lak * order?.quantity} ₭`}
                     </Typography>
                   </Grid>
                 </TableCell>

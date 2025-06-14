@@ -17,6 +17,7 @@ export interface ProductItem {
   id: string;
   name: string;
   description: string;
+  details: string;
   price: number;
   category_id: string;
   image_url: string[];

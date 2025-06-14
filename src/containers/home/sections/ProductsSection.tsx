@@ -7,6 +7,7 @@ import {
   CardMedia,
   Container,
   Grid,
+  IconButton,
   Typography,
   useMediaQuery,
   useTheme,
@@ -15,11 +16,9 @@ import { Link } from '@tanstack/react-router';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useCurrencyContext } from '~/components/CurrencySelector/CurrencyProvider';
-import Footer from '~/containers/footer';
+import { useCategories } from '~/hooks/shop/useCategories';
 import { useProductsSection } from '~/hooks/shop/useProductsSection';
 import { formatCurrency } from '~/utils/format';
-import BlogSection from './BlogSection';
-import { useCategories } from '~/hooks/shop/useCategories';
 
 export default function ProductsSection() {
   const { t } = useTranslation();
@@ -121,7 +120,7 @@ export default function ProductsSection() {
       <Box
         sx={{
           minHeight: '100vh',
-          py: 6,
+          py: 4,
           width: '100%',
           display: 'flex',
           alignItems: 'center',
@@ -141,8 +140,8 @@ export default function ProductsSection() {
             }}
           >
             <Typography
-              variant="h5"
-              component="h3"
+              variant="h6"
+              component="h4"
               sx={{
                 fontFamily: "'Canela', serif",
                 fontWeight: 500,
@@ -182,7 +181,7 @@ export default function ProductsSection() {
           >
             {/* Product Carousel */}
             <Box sx={{ position: 'relative', mt: 4 }}>
-              <Button
+              <IconButton
                 onClick={handlePrevSlide}
                 sx={{
                   position: 'absolute',
@@ -193,16 +192,17 @@ export default function ProductsSection() {
                   width: 40,
                   height: 40,
                   borderRadius: '50%',
-                  background: 'linear-gradient(45deg,#de9c69 10%, #C98B6B 90%)',
-                  color: '#fff',
+                  backgroundColor: 'white',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                  color: '#333333',
                   zIndex: 2,
                   '&:hover': {
-                    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                    backgroundColor: '#f5f5f5',
                   },
                 }}
               >
                 <ChevronLeft />
-              </Button>
+              </IconButton>
 
               <Box
                 id="product-carousel"
@@ -328,7 +328,7 @@ export default function ProductsSection() {
                 ))}
               </Box>
 
-              <Button
+              <IconButton
                 onClick={handleNextSlide}
                 sx={{
                   position: 'absolute',
@@ -339,16 +339,17 @@ export default function ProductsSection() {
                   width: 40,
                   height: 40,
                   borderRadius: '50%',
-                  background: 'linear-gradient(45deg,#de9c69 10%, #C98B6B 90%)',
-                  color: '#fff',
+                  backgroundColor: 'white',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                  color: '#333333',
                   zIndex: 2,
                   '&:hover': {
-                    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                    backgroundColor: '#f5f5f5',
                   },
                 }}
               >
                 <ChevronRight />
-              </Button>
+              </IconButton>
             </Box>
           </motion.div>
 
@@ -383,10 +384,8 @@ export default function ProductsSection() {
               </Button>
             </Link>
           </Box>
-          <BlogSection key="blog" />
         </Container>
       </Box>
-      <Footer key={'footer'} />
     </>
   );
 }
