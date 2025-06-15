@@ -18,7 +18,9 @@ import { getMeQueryOption } from '~/hooks/profile/useGetMe';
 import type { EditProfileForm } from '~/models/profile';
 import { editProfile } from '~/server/profile';
 import { queryClient } from '~/services/queryClient';
-
+import '~/styles/phone-input-styles.css';
+import 'react-phone-input-2/lib/material.css';
+  
 interface AccountDetailsFormProps {
   user: {
     username?: string;
@@ -153,6 +155,7 @@ export function AccountDetailsForm({
               {(field) => (
                 <Box className="phone-field-container">
                   <PhoneInput
+                    disabled={!isEditing}
                     country={'la'}
                     enableAreaCodes
                     autocompleteSearch
@@ -160,7 +163,6 @@ export function AccountDetailsForm({
                     placeholder={t('phone_number')}
                     searchPlaceholder={t('phone_number')}
                     value={field.state.value ?? ''}
-                    disabled={!isEditing}
                     onChange={(val: string) => {
                       const formatted = val.startsWith('+') ? val : '+' + val;
                       field.handleChange(formatted);
