@@ -13,14 +13,14 @@ import { useMutation } from '@tanstack/react-query';
 import type React from 'react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import type { PhoneInputProps } from 'react-phone-input-2';
+import 'react-phone-input-2/lib/material.css';
 import { toast } from 'sonner';
 import { getMeQueryOption } from '~/hooks/profile/useGetMe';
 import type { EditProfileForm } from '~/models/profile';
 import { editProfile } from '~/server/profile';
 import { queryClient } from '~/services/queryClient';
 import '~/styles/phone-input-styles.css';
-import 'react-phone-input-2/lib/material.css';
-  
 interface AccountDetailsFormProps {
   user: {
     username?: string;
@@ -40,6 +40,17 @@ export function AccountDetailsForm({
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const [PhoneInput, setPhoneInput] =
+    useState<React.FC<PhoneInputProps> | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      import('react-phone-input-2').then((module) => {
+        setPhoneInput(() => module.default);
+      });
+    }
+  }, []);
 
   const { mutate: editProfileMutate } = useMutation({
     mutationFn: editProfile,
@@ -107,18 +118,6 @@ export function AccountDetailsForm({
     }
   };
 
-  const [PhoneInput, setPhoneInput] = useState<
-    (typeof import('react-phone-input-2'))['default'] | null
-  >(null);
-
-  useEffect(() => {
-    import('react-phone-input-2').then((module) => {
-      setPhoneInput(() => module.default);
-    });
-  }, []);
-
-  if (!PhoneInput) return null;
-
   return (
     <Box sx={{ p: 0, mt: 0 }}>
       <form onSubmit={handleSubmit}>
@@ -154,20 +153,22 @@ export function AccountDetailsForm({
             <form.Field name="phone_number">
               {(field) => (
                 <Box className="phone-field-container">
-                  <PhoneInput
-                    disabled={!isEditing}
-                    country={'la'}
-                    enableAreaCodes
-                    autocompleteSearch
-                    enableSearch
-                    placeholder={t('phone_number')}
-                    searchPlaceholder={t('phone_number')}
-                    value={field.state.value ?? ''}
-                    onChange={(val: string) => {
-                      const formatted = val.startsWith('+') ? val : '+' + val;
-                      field.handleChange(formatted);
-                    }}
-                  />
+                  {PhoneInput && (
+                    <PhoneInput
+                      disabled={!isEditing}
+                      country={'la'}
+                      enableAreaCodes
+                      autocompleteSearch
+                      enableSearch
+                      placeholder={t('phone_number')}
+                      searchPlaceholder={t('phone_number')}
+                      value={field.state.value ?? ''}
+                      onChange={(val: string) => {
+                        const formatted = val.startsWith('+') ? val : '+' + val;
+                        field.handleChange(formatted);
+                      }}
+                    />
+                  )}
                 </Box>
               )}
             </form.Field>

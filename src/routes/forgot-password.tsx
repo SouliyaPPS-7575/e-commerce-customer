@@ -142,10 +142,6 @@ function RouteComponent() {
                   mt: 3,
                   mb: 2,
                   py: 1.5,
-                  bgcolor: '#64b5f6',
-                  '&:hover': {
-                    bgcolor: '#42a5f5',
-                  },
                   borderRadius: 1,
                   textTransform: 'none',
                   fontSize: '1rem',

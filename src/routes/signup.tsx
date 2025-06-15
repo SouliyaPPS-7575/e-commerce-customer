@@ -100,8 +100,6 @@ function RouteComponent() {
     });
   }, []);
 
-  if (!PhoneInput) return null;
-
   return (
     <Box
       sx={{
@@ -196,21 +194,23 @@ function RouteComponent() {
                   <form.Field name="phone_number">
                     {(field) => (
                       <Box className="phone-field-container">
-                        <PhoneInput
-                          country={'la'}
-                          enableAreaCodes
-                          autocompleteSearch
-                          enableSearch
-                          placeholder={t('phone_number')}
-                          searchPlaceholder={t('phone_number')}
-                          value={field.state.value ?? ''}
-                          onChange={(val: string) => {
-                            const formatted = val.startsWith('+')
-                              ? val
-                              : '+' + val;
-                            field.handleChange(formatted);
-                          }}
-                        />
+                        {PhoneInput && (
+                          <PhoneInput
+                            country={'la'}
+                            enableAreaCodes
+                            autocompleteSearch
+                            enableSearch
+                            placeholder={t('phone_number')}
+                            searchPlaceholder={t('phone_number')}
+                            value={field.state.value ?? ''}
+                            onChange={(val: string) => {
+                              const formatted = val.startsWith('+')
+                                ? val
+                                : '+' + val;
+                              field.handleChange(formatted);
+                            }}
+                          />
+                        )}
                       </Box>
                     )}
                   </form.Field>
