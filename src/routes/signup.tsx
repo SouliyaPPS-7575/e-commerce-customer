@@ -15,10 +15,9 @@ import { useForm } from '@tanstack/react-form';
 import { useMutation } from '@tanstack/react-query';
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { Lock, Mail } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
-import ClientOnlyPhoneInput from '~/components/ClientOnlyPhoneInput';
 import LanguageSelection from '~/components/LanguageSelection';
 import { SignupForm } from '~/models/auth';
 import { signupServer, verifyEmailServer } from '~/server/auth';
@@ -90,6 +89,19 @@ function RouteComponent() {
       toast.success(t('send_email_verifications'));
     },
   });
+
+  const [PhoneInput, setPhoneInput] = useState<
+    (typeof import('react-phone-input-2'))['default'] | null
+  >(null);
+
+  useEffect(() => {
+    import('react-phone-input-2').then((module) => {
+      setPhoneInput(() => module.default);
+    });
+  }, []);
+
+  if (!PhoneInput) return null;
+
   return (
     <Box
       sx={{
@@ -184,12 +196,20 @@ function RouteComponent() {
                   <form.Field name="phone_number">
                     {(field) => (
                       <Box className="phone-field-container">
-                        <ClientOnlyPhoneInput
-                          value={field.state.value ?? ''}
-                          onChange={(phone: string) =>
-                            field.handleChange(phone)
-                          }
+                        <PhoneInput
+                          country={'la'}
+                          enableAreaCodes
+                          autocompleteSearch
+                          enableSearch
                           placeholder={t('phone_number')}
+                          searchPlaceholder={t('phone_number')}
+                          value={field.state.value ?? ''}
+                          onChange={(val: string) => {
+                            const formatted = val.startsWith('+')
+                              ? val
+                              : '+' + val;
+                            field.handleChange(formatted);
+                          }}
                         />
                       </Box>
                     )}

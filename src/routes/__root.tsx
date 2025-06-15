@@ -24,6 +24,8 @@ import appCss from '~/styles/app.css?url';
 import MuiProvider from '~/styles/ThemeProvider';
 import { seo } from '~/utils/seo';
 import { isDevelopment } from '~/utils/url';
+import '~/styles/phone-input-styles.css';
+import 'react-phone-input-2/lib/material.css';
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
