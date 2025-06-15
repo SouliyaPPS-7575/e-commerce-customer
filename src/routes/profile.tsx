@@ -21,7 +21,6 @@ import {
 } from '@tanstack/react-router';
 import { t } from 'i18next';
 import { useEffect, useState } from 'react';
-import { PhoneInputProps } from 'react-phone-input-2';
 import { toast } from 'sonner';
 import { AddressForm } from '~/containers/profile/address-form';
 import { OrderHistory } from '~/containers/profile/order-history';
@@ -34,6 +33,8 @@ import { EditProfileForm } from '~/models/profile';
 import { getToken } from '~/server/auth';
 import { editProfile } from '~/server/profile';
 import { queryClient } from '~/services/queryClient';
+import '~/styles/phone-input-styles.css';
+import 'react-phone-input-2/lib/material.css';
 
 export const Route = createFileRoute('/profile')({
   beforeLoad: async () => {
@@ -182,15 +183,14 @@ function ProfilePage() {
     }
   };
 
-  const [PhoneInput, setPhoneInput] =
-    useState<React.FC<PhoneInputProps> | null>(null);
+  const [PhoneInput, setPhoneInput] = useState<
+    (typeof import('react-phone-input-2'))['default'] | null
+  >(null);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      import('react-phone-input-2').then((module) => {
-        setPhoneInput(() => module.default);
-      });
-    }
+    import('react-phone-input-2').then((module) => {
+      setPhoneInput(() => module.default);
+    });
   }, []);
 
   return (
@@ -262,7 +262,6 @@ function ProfilePage() {
                             <Box className="phone-field-container">
                               {PhoneInput && (
                                 <PhoneInput
-                                  disabled={!isEditingAccount}
                                   country={'la'}
                                   enableAreaCodes
                                   autocompleteSearch
