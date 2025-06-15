@@ -15,31 +15,82 @@ export default function ClientOnlyPhoneInput({
   placeholder,
   disabled,
 }: ClientOnlyPhoneInputProps) {
-  const [PhoneInput, setPhoneInput] = useState<
-    (typeof import('react-phone-input-2'))['default'] | null
-  >(null);
+  const [PhoneInput, setPhoneInput] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    import('react-phone-input-2').then((module) => {
-      setPhoneInput(() => module.default);
-    });
+    let isMounted = true;
+
+    const loadPhoneInput = async () => {
+      try {
+        const module = await import('react-phone-input-2');
+        if (isMounted) {
+          setPhoneInput(() => module.default);
+          setIsLoading(false);
+        }
+      } catch (error) {
+        console.error('Failed to load phone input:', error);
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    loadPhoneInput();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
-  if (!PhoneInput) return null;
+  // Show loading state while component is loading
+  if (isLoading) {
+    return (
+      <div className="w-full h-12 bg-gray-100 animate-pulse rounded border" />
+    );
+  }
+
+  // If failed to load, show fallback input
+  if (!PhoneInput) {
+    return (
+      <input
+        type="tel"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder || 'Enter phone number'}
+        disabled={disabled}
+        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+    );
+  }
 
   return (
     <PhoneInput
       country={'la'}
-      enableAreaCodes
-      autocompleteSearch
-      enableSearch
-      placeholder={placeholder}
-      searchPlaceholder={placeholder}
+      enableAreaCodes={true}
+      autocompleteSearch={true}
+      enableSearch={true}
+      placeholder={placeholder || 'Enter phone number'}
+      searchPlaceholder="Search countries"
       value={value}
       disabled={disabled}
       onChange={(val: string) => {
         const formatted = val.startsWith('+') ? val : '+' + val;
         onChange(formatted);
+      }}
+      inputStyle={{
+        width: '100%',
+        height: '48px',
+        fontSize: '16px',
+        paddingLeft: '48px',
+      }}
+      buttonStyle={{
+        backgroundColor: 'transparent',
+        border: 'none',
+        paddingLeft: '2px',
+      }}
+      dropdownStyle={{
+        zIndex: 9999,
       }}
     />
   );
