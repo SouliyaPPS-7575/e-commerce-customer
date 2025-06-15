@@ -12,10 +12,9 @@ import {
 } from '@mui/material';
 import { useForm } from '@tanstack/react-form';
 import { useMutation } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
-import ClientOnlyPhoneInput from '~/components/ClientOnlyPhoneInput';
 import { getMeQueryOption } from '~/hooks/profile/useGetMe';
 import type { EditProfileForm } from '~/models/profile';
 import { editProfile } from '~/server/profile';
@@ -107,6 +106,18 @@ export function AccountDetailsForm({
     }
   };
 
+  const [PhoneInput, setPhoneInput] = useState<
+    (typeof import('react-phone-input-2'))['default'] | null
+  >(null);
+
+  useEffect(() => {
+    import('react-phone-input-2').then((module) => {
+      setPhoneInput(() => module.default);
+    });
+  }, []);
+
+  if (!PhoneInput) return null;
+
   return (
     <Box sx={{ p: 0, mt: 0 }}>
       <form onSubmit={handleSubmit}>
@@ -141,11 +152,19 @@ export function AccountDetailsForm({
             </Typography>
             <form.Field name="phone_number">
               {(field) => (
-                <ClientOnlyPhoneInput
-                  value={field.state.value ?? ''}
-                  onChange={(phone: string) => field.handleChange(phone)}
+                <PhoneInput
+                  country={'la'}
+                  enableAreaCodes
+                  autocompleteSearch
+                  enableSearch
                   placeholder={t('phone_number')}
+                  searchPlaceholder={t('phone_number')}
+                  value={field.state.value ?? ''}
                   disabled={!isEditing}
+                  onChange={(val: string) => {
+                    const formatted = val.startsWith('+') ? val : '+' + val;
+                    field.handleChange(formatted);
+                  }}
                 />
               )}
             </form.Field>
