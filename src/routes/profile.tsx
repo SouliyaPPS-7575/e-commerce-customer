@@ -37,6 +37,7 @@ import '~/styles/phone-input-styles.css';
 import 'react-phone-input-2/lib/material.css';
 
 export const Route = createFileRoute('/profile')({
+  ssr: false,
   beforeLoad: async () => {
     const { token } = await getToken();
     if (!token) {
@@ -262,6 +263,7 @@ function ProfilePage() {
                             <Box className="phone-field-container">
                               {PhoneInput && (
                                 <PhoneInput
+                                  disabled={!isEditingAccount}
                                   country={'la'}
                                   enableAreaCodes
                                   autocompleteSearch
