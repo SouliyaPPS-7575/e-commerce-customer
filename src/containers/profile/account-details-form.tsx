@@ -41,17 +41,6 @@ export function AccountDetailsForm({
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const [PhoneInput, setPhoneInput] =
-    useState<React.FC<PhoneInputProps> | null>(null);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      import('react-phone-input-2').then((module) => {
-        setPhoneInput(() => module.default);
-      });
-    }
-  }, []);
-
   const { mutate: editProfileMutate } = useMutation({
     mutationFn: editProfile,
     onSuccess: () => {
@@ -118,6 +107,17 @@ export function AccountDetailsForm({
     }
   };
 
+  const [PhoneInput, setPhoneInput] =
+    useState<React.FC<PhoneInputProps> | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      import('react-phone-input-2').then((module) => {
+        setPhoneInput(() => module.default);
+      });
+    }
+  }, []);
+
   return (
     <Box sx={{ p: 0, mt: 0 }}>
       <form onSubmit={handleSubmit}>
@@ -155,7 +155,6 @@ export function AccountDetailsForm({
                 <Box className="phone-field-container">
                   {PhoneInput && (
                     <PhoneInput
-                      disabled={!isEditing}
                       country={'la'}
                       enableAreaCodes
                       autocompleteSearch
