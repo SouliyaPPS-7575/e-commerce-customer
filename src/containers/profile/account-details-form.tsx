@@ -1,5 +1,3 @@
-import type React from 'react';
-
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import {
   Box,
@@ -12,6 +10,7 @@ import {
 } from '@mui/material';
 import { useForm } from '@tanstack/react-form';
 import { useMutation } from '@tanstack/react-query';
+import type React from 'react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
@@ -152,20 +151,22 @@ export function AccountDetailsForm({
             </Typography>
             <form.Field name="phone_number">
               {(field) => (
-                <PhoneInput
-                  country={'la'}
-                  enableAreaCodes
-                  autocompleteSearch
-                  enableSearch
-                  placeholder={t('phone_number')}
-                  searchPlaceholder={t('phone_number')}
-                  value={field.state.value ?? ''}
-                  disabled={!isEditing}
-                  onChange={(val: string) => {
-                    const formatted = val.startsWith('+') ? val : '+' + val;
-                    field.handleChange(formatted);
-                  }}
-                />
+                <Box className="phone-field-container">
+                  <PhoneInput
+                    country={'la'}
+                    enableAreaCodes
+                    autocompleteSearch
+                    enableSearch
+                    placeholder={t('phone_number')}
+                    searchPlaceholder={t('phone_number')}
+                    value={field.state.value ?? ''}
+                    disabled={!isEditing}
+                    onChange={(val: string) => {
+                      const formatted = val.startsWith('+') ? val : '+' + val;
+                      field.handleChange(formatted);
+                    }}
+                  />
+                </Box>
               )}
             </form.Field>
           </Grid>
