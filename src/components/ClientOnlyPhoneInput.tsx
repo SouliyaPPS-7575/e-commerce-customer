@@ -19,28 +19,20 @@ export default function ClientOnlyPhoneInput({
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    let isMounted = true;
-
-    const loadPhoneInput = async () => {
-      try {
-        const module = await import('react-phone-input-2');
-        if (isMounted) {
+    if (typeof window !== 'undefined') {
+      import('react-phone-input-2')
+        .then((module) => {
           setPhoneInput(() => module.default);
+        })
+        .catch((error) => {
+          console.error('Failed to load phone input:', error);
+        })
+        .finally(() => {
           setIsLoading(false);
-        }
-      } catch (error) {
-        console.error('Failed to load phone input:', error);
-        if (isMounted) {
-          setIsLoading(false);
-        }
-      }
-    };
-
-    loadPhoneInput();
-
-    return () => {
-      isMounted = false;
-    };
+        });
+    } else {
+      setIsLoading(false);
+    }
   }, []);
 
   // Show loading state while component is loading
