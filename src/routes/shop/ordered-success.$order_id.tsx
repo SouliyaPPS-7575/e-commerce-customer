@@ -9,6 +9,7 @@ import {
 } from '~/hooks/orders/useOrderItem';
 import { productsQueryOption, useProducts } from '~/hooks/shop/useProducts';
 import { OrderItemRes } from '~/models/orders';
+import { formatCurrency } from '~/utils/format';
 
 export const Route = createFileRoute('/shop/ordered-success/$order_id')({
   loader: async ({ context, params }) => {
@@ -93,13 +94,13 @@ export default function RouteComponent() {
                     <p className="font-medium text-gray-900">
                       {currency === 'USD' &&
                         item?.price_usd &&
-                        `${item?.price_usd * item.quantity} $`}
+                        `${formatCurrency(item?.price_usd * item.quantity)} $`}
                       {currency === 'THB' &&
                         item?.price_thb &&
-                        `${item?.price_thb * item.quantity} ฿`}
+                        `${formatCurrency(item?.price_thb * item.quantity)} ฿`}
                       {currency === 'LAK' &&
                         item?.price_lak &&
-                        `${item?.price_lak * item.quantity} ₭`}
+                        `${formatCurrency(item?.price_lak * item.quantity)} ₭`}
                     </p>
                   </div>
                 </div>

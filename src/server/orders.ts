@@ -6,6 +6,24 @@ import pb, { fetchFilterPb } from '~/services/pocketbaseService';
 import { handleError } from './errorHandler';
 import { OrderProductItem, ProductItem } from '~/models/shop';
 
+export const getOrderItems = createServerFn({
+  method: 'GET',
+})
+  .validator((d: { order_id: string }) => d)
+  .handler(async ({ data: { order_id } }) => {
+    try {
+      const orderItems = await fetchFilterPb<OrderHistoryItems>(
+        'order_items',
+        'order_id',
+        order_id,
+      );
+
+      return orderItems;
+    } catch (error) {
+      throw handleError(error);
+    }
+  });
+
 export const getOrderHistoryItems = createServerFn({
   method: 'GET',
 })
