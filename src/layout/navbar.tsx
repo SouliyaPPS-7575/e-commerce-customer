@@ -349,7 +349,7 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
                     <MenuItem
                       onClick={() => {
                         setAnchorEl(null);
-                        navigate({ to: '/profile' });
+                        navigate({ to: '/profiles' });
                       }}
                       sx={{
                         color: '#4A5568',
@@ -443,7 +443,7 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
                     onClick={() => {
                       setAnchorEl(null);
                       navigate({
-                        to: '/profile',
+                        to: '/profiles',
                       });
 
                       toggleMobileMenu();

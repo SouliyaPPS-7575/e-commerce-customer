@@ -13,7 +13,6 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as SignupImport } from './routes/signup'
 import { Route as ProfilesImport } from './routes/profiles'
-import { Route as ProfileImport } from './routes/profile'
 import { Route as LogoutImport } from './routes/logout'
 import { Route as LoginImport } from './routes/login'
 import { Route as ForgotPasswordImport } from './routes/forgot-password'
@@ -42,12 +41,6 @@ const SignupRoute = SignupImport.update({
 const ProfilesRoute = ProfilesImport.update({
   id: '/profiles',
   path: '/profiles',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const ProfileRoute = ProfileImport.update({
-  id: '/profile',
-  path: '/profile',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -181,13 +174,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LogoutImport
       parentRoute: typeof rootRoute
     }
-    '/profile': {
-      id: '/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof ProfileImport
-      parentRoute: typeof rootRoute
-    }
     '/profiles': {
       id: '/profiles'
       path: '/profiles'
@@ -296,7 +282,6 @@ export interface FileRoutesByFullPath {
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
-  '/profile': typeof ProfileRoute
   '/profiles': typeof ProfilesRoute
   '/signup': typeof SignupRoute
   '/shop/add-cart': typeof ShopAddCartRoute
@@ -318,7 +303,6 @@ export interface FileRoutesByTo {
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
-  '/profile': typeof ProfileRoute
   '/profiles': typeof ProfilesRoute
   '/signup': typeof SignupRoute
   '/shop/add-cart': typeof ShopAddCartRoute
@@ -341,7 +325,6 @@ export interface FileRoutesById {
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
-  '/profile': typeof ProfileRoute
   '/profiles': typeof ProfilesRoute
   '/signup': typeof SignupRoute
   '/shop/add-cart': typeof ShopAddCartRoute
@@ -365,7 +348,6 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/login'
     | '/logout'
-    | '/profile'
     | '/profiles'
     | '/signup'
     | '/shop/add-cart'
@@ -386,7 +368,6 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/login'
     | '/logout'
-    | '/profile'
     | '/profiles'
     | '/signup'
     | '/shop/add-cart'
@@ -407,7 +388,6 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/login'
     | '/logout'
-    | '/profile'
     | '/profiles'
     | '/signup'
     | '/shop/add-cart'
@@ -430,7 +410,6 @@ export interface RootRouteChildren {
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   LoginRoute: typeof LoginRoute
   LogoutRoute: typeof LogoutRoute
-  ProfileRoute: typeof ProfileRoute
   ProfilesRoute: typeof ProfilesRoute
   SignupRoute: typeof SignupRoute
   ShopAddCartRoute: typeof ShopAddCartRoute
@@ -452,7 +431,6 @@ const rootRouteChildren: RootRouteChildren = {
   ForgotPasswordRoute: ForgotPasswordRoute,
   LoginRoute: LoginRoute,
   LogoutRoute: LogoutRoute,
-  ProfileRoute: ProfileRoute,
   ProfilesRoute: ProfilesRoute,
   SignupRoute: SignupRoute,
   ShopAddCartRoute: ShopAddCartRoute,
@@ -483,7 +461,6 @@ export const routeTree = rootRoute
         "/forgot-password",
         "/login",
         "/logout",
-        "/profile",
         "/profiles",
         "/signup",
         "/shop/add-cart",
@@ -511,9 +488,6 @@ export const routeTree = rootRoute
     },
     "/logout": {
       "filePath": "logout.tsx"
-    },
-    "/profile": {
-      "filePath": "profile.tsx"
     },
     "/profiles": {
       "filePath": "profiles.tsx"

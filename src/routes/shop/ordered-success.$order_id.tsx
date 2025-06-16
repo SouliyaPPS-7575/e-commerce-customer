@@ -123,7 +123,7 @@ export default function RouteComponent() {
 
         {/* Action Buttons */}
         <div className="flex gap-3 justify-center">
-          <Link to="/profile" search={{ section: 'orders' }}>
+          <Link to="/profiles" search={{ section: 'orders' }}>
             <Button
               variant="outlined"
               sx={{

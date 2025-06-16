@@ -26,6 +26,7 @@ import { AddressForm } from '~/containers/profile/address-form';
 import { OrderHistory } from '~/containers/profile/order-history';
 import { ProfileSidebar } from '~/containers/profile/profile-sidebar';
 import { getMeQueryOption, useGetMe } from '~/hooks/profile/useGetMe';
+import { orderHistoryQueryOption } from '~/hooks/profile/useOrderHistory';
 import { PaginationAPI } from '~/models';
 import { EditProfileForm } from '~/models/profile';
 import { getToken } from '~/server/auth';
@@ -40,6 +41,20 @@ export const Route = createFileRoute('/profiles')({
         to: '/login',
       });
     }
+  },
+  loader: ({ context, location }) => {
+    const searchParams = new URLSearchParams(location.search);
+    const page = Number(searchParams.get('page'));
+    const limit = Number(searchParams.get('limit'));
+
+    const me = context.queryClient.ensureQueryData(getMeQueryOption());
+    const orderHistory = context.queryClient.ensureQueryData(
+      orderHistoryQueryOption({
+        page,
+        limit,
+      }),
+    );
+    return { me, orderHistory };
   },
   component: RouteComponent,
 });
