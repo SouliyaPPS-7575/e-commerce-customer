@@ -206,13 +206,13 @@ function ProfilePage() {
       <Container maxWidth="lg">
         <Grid container spacing={4}>
           {/* Left Sidebar */}
-          <Grid size={{ xs: 12, md: 3 }}>
+          {/* <Grid size={{ xs: 12, md: 3 }}>
             <ProfileSidebar
               user={me}
               activeSection={activeSection}
               onSectionChange={handleSectionChange}
             />
-          </Grid>
+          </Grid> */}
 
           {/* Main Content */}
           <Grid size={{ xs: 12, md: 9 }} sx={{ p: 1, mt: -2 }}>
@@ -480,12 +480,12 @@ function ProfilePage() {
             </>
             {/* )} */}
 
-            {activeSection === 'orders' && (
+            {/* {activeSection === 'orders' && (
               <OrderHistory
                 pagination={pagination}
                 onPageChange={handlePageChange}
               />
-            )}
+            )} */}
           </Grid>
         </Grid>
       </Container>
