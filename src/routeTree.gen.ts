@@ -12,6 +12,7 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as SignupImport } from './routes/signup'
+import { Route as ProfilesImport } from './routes/profiles'
 import { Route as ProfileImport } from './routes/profile'
 import { Route as LogoutImport } from './routes/logout'
 import { Route as LoginImport } from './routes/login'
@@ -35,6 +36,12 @@ import { Route as ShopBuyCheckoutCartidProductidImport } from './routes/shop/buy
 const SignupRoute = SignupImport.update({
   id: '/signup',
   path: '/signup',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ProfilesRoute = ProfilesImport.update({
+  id: '/profiles',
+  path: '/profiles',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -181,6 +188,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfileImport
       parentRoute: typeof rootRoute
     }
+    '/profiles': {
+      id: '/profiles'
+      path: '/profiles'
+      fullPath: '/profiles'
+      preLoaderRoute: typeof ProfilesImport
+      parentRoute: typeof rootRoute
+    }
     '/signup': {
       id: '/signup'
       path: '/signup'
@@ -283,6 +297,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
   '/profile': typeof ProfileRoute
+  '/profiles': typeof ProfilesRoute
   '/signup': typeof SignupRoute
   '/shop/add-cart': typeof ShopAddCartRoute
   '/shop/checkout': typeof ShopCheckoutRoute
@@ -304,6 +319,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
   '/profile': typeof ProfileRoute
+  '/profiles': typeof ProfilesRoute
   '/signup': typeof SignupRoute
   '/shop/add-cart': typeof ShopAddCartRoute
   '/shop/checkout': typeof ShopCheckoutRoute
@@ -326,6 +342,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
   '/profile': typeof ProfileRoute
+  '/profiles': typeof ProfilesRoute
   '/signup': typeof SignupRoute
   '/shop/add-cart': typeof ShopAddCartRoute
   '/shop/checkout': typeof ShopCheckoutRoute
@@ -349,6 +366,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/logout'
     | '/profile'
+    | '/profiles'
     | '/signup'
     | '/shop/add-cart'
     | '/shop/checkout'
@@ -369,6 +387,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/logout'
     | '/profile'
+    | '/profiles'
     | '/signup'
     | '/shop/add-cart'
     | '/shop/checkout'
@@ -389,6 +408,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/logout'
     | '/profile'
+    | '/profiles'
     | '/signup'
     | '/shop/add-cart'
     | '/shop/checkout'
@@ -411,6 +431,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   LogoutRoute: typeof LogoutRoute
   ProfileRoute: typeof ProfileRoute
+  ProfilesRoute: typeof ProfilesRoute
   SignupRoute: typeof SignupRoute
   ShopAddCartRoute: typeof ShopAddCartRoute
   ShopCheckoutRoute: typeof ShopCheckoutRoute
@@ -432,6 +453,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   LogoutRoute: LogoutRoute,
   ProfileRoute: ProfileRoute,
+  ProfilesRoute: ProfilesRoute,
   SignupRoute: SignupRoute,
   ShopAddCartRoute: ShopAddCartRoute,
   ShopCheckoutRoute: ShopCheckoutRoute,
@@ -462,6 +484,7 @@ export const routeTree = rootRoute
         "/login",
         "/logout",
         "/profile",
+        "/profiles",
         "/signup",
         "/shop/add-cart",
         "/shop/checkout",
@@ -491,6 +514,9 @@ export const routeTree = rootRoute
     },
     "/profile": {
       "filePath": "profile.tsx"
+    },
+    "/profiles": {
+      "filePath": "profiles.tsx"
     },
     "/signup": {
       "filePath": "signup.tsx"
