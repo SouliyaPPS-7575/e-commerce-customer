@@ -26,6 +26,7 @@ import { AddressForm } from '~/containers/profile/address-form';
 import { OrderHistory } from '~/containers/profile/order-history';
 import { ProfileSidebar } from '~/containers/profile/profile-sidebar';
 
+import 'react-phone-input-2/lib/material.css';
 import { getMeQueryOption, useGetMe } from '~/hooks/profile/useGetMe';
 import { orderHistoryQueryOption } from '~/hooks/profile/useOrderHistory';
 import type { PaginationAPI } from '~/models';
@@ -34,10 +35,8 @@ import { getToken } from '~/server/auth';
 import { editProfile } from '~/server/profile';
 import { queryClient } from '~/services/queryClient';
 import '~/styles/phone-input-styles.css';
-import 'react-phone-input-2/lib/material.css';
 
 export const Route = createFileRoute('/profile')({
-  ssr: false,
   beforeLoad: async () => {
     const { token } = await getToken();
     if (!token) {
@@ -68,6 +67,18 @@ function ProfilePage() {
   const navigate = useNavigate();
   const [isEditingAccount, setIsEditingAccount] = useState(false);
   const [isEditingAddress, setIsEditingAddress] = useState(false);
+
+  // Lazy load PhoneInput component
+  // This is done to avoid loading the component on the server side
+  const [PhoneInput, setPhoneInput] = useState<
+    (typeof import('react-phone-input-2'))['default'] | null
+  >(null);
+
+  useEffect(() => {
+    import('react-phone-input-2').then((module) => {
+      setPhoneInput(() => module.default);
+    });
+  }, []);
 
   const { me } = useGetMe();
 
@@ -184,17 +195,6 @@ function ProfilePage() {
     }
   };
 
-  // PhoneInput
-  const [PhoneInput, setPhoneInput] = useState<
-    (typeof import('react-phone-input-2'))['default'] | null
-  >(null);
-
-  useEffect(() => {
-    import('react-phone-input-2').then((module) => {
-      setPhoneInput(() => module.default);
-    });
-  }, []);
-
   return (
     <Box
       sx={{
@@ -259,10 +259,13 @@ function ProfilePage() {
                         >
                           {t('phone_number')}
                         </Typography>
-                        <form.Field name="phone_number">
-                          {(field) => (
-                            <Box className="phone-field-container">
-                              {PhoneInput && (
+                        {PhoneInput && (
+                          <form.Field name="phone_number">
+                            {(field) => (
+                              <Box
+                                className="phone-field-container"
+                                sx={{ minHeight: '56px' }}
+                              >
                                 <PhoneInput
                                   disabled={!isEditingAccount}
                                   country={'la'}
@@ -278,11 +281,19 @@ function ProfilePage() {
                                       : '+' + val;
                                     field.handleChange(formatted);
                                   }}
+                                  inputStyle={{
+                                    width: '100%',
+                                    height: '56px',
+                                  }}
+                                  containerStyle={{
+                                    width: '100%',
+                                    zIndex: 999,
+                                  }}
                                 />
-                              )}
-                            </Box>
-                          )}
-                        </form.Field>
+                              </Box>
+                            )}
+                          </form.Field>
+                        )}
                       </Grid>
 
                       {/* Old Password */}
