@@ -216,269 +216,269 @@ function ProfilePage() {
 
           {/* Main Content */}
           <Grid size={{ xs: 12, md: 9 }} sx={{ p: 1, mt: -2 }}>
-            {activeSection === 'account' && (
-              <>
-                <Box sx={{ p: 0, mt: 0 }}>
-                  <form onSubmit={handleSubmit}>
-                    <Typography variant="h5" fontWeight="bold" gutterBottom>
-                      {t('account_details')}
-                    </Typography>
+            {/* {activeSection === 'account' && ( */}
+            <>
+              <Box sx={{ p: 0, mt: 0 }}>
+                <form onSubmit={handleSubmit}>
+                  <Typography variant="h5" fontWeight="bold" gutterBottom>
+                    {t('account_details')}
+                  </Typography>
 
-                    <Grid container spacing={3} sx={{ mt: 2 }}>
-                      {/* Name */}
-                      <Grid size={{ xs: 12, sm: 6 }}>
-                        <Typography
-                          variant="body2"
-                          color="text.secondary"
-                          gutterBottom
-                        >
-                          {t('full_name')}
-                        </Typography>
-                        <form.Field name="name">
-                          {(field) => (
-                            <TextField
-                              fullWidth
-                              value={field.state.value ?? ''}
-                              onChange={(e) =>
-                                field.handleChange(e.target.value)
-                              }
-                              variant="outlined"
-                              size="medium"
-                              disabled={!isEditingAccount}
-                            />
-                          )}
-                        </form.Field>
-                      </Grid>
-
-                      {/* Phone number */}
-                      <Grid size={{ xs: 12, sm: 6 }}>
-                        <Typography
-                          variant="body2"
-                          color="text.secondary"
-                          gutterBottom
-                        >
-                          {t('phone_number')}
-                        </Typography>
-                        <form.Field name="phone_number">
-                          {(field) => (
-                            <Box
-                              className="phone-field-container"
-                              sx={{ minHeight: '56px' }}
-                            >
-                              {PhoneInput && (
-                                <PhoneInput
-                                  country={'la'}
-                                  enableAreaCodes
-                                  autocompleteSearch
-                                  enableSearch
-                                  value={field.state.value ?? ''}
-                                  onChange={(val: string) => {
-                                    const formatted = val.startsWith('+')
-                                      ? val
-                                      : '+' + val;
-                                    field.handleChange(formatted);
-                                  }}
-                                />
-                              )}
-                            </Box>
-                          )}
-                        </form.Field>
-                      </Grid>
-
-                      {/* Old Password */}
-                      <Grid size={{ xs: 12, sm: 6 }}>
-                        <Typography
-                          variant="body2"
-                          color="text.secondary"
-                          gutterBottom
-                        >
-                          {t('old_password')}
-                        </Typography>
-                        <form.Field
-                          name="oldPassword"
-                          validators={{
-                            onChange: ({ value }) =>
-                              value && value.length < 8
-                                ? 'Password must be at least 8 characters'
-                                : undefined,
-                          }}
-                        >
-                          {(field) => (
-                            <TextField
-                              fullWidth
-                              type={showOldPassword ? 'text' : 'password'}
-                              value={field.state.value ?? ''}
-                              onChange={(e) =>
-                                field.handleChange(e.target.value)
-                              }
-                              variant="outlined"
-                              size="medium"
-                              disabled={!isEditingAccount}
-                              InputProps={{
-                                endAdornment: (
-                                  <InputAdornment position="end">
-                                    <IconButton
-                                      onClick={() =>
-                                        setShowOldPassword(!showOldPassword)
-                                      }
-                                      edge="end"
-                                      size="small"
-                                      disabled={!isEditingAccount}
-                                    >
-                                      {showOldPassword ? (
-                                        <VisibilityOff />
-                                      ) : (
-                                        <Visibility />
-                                      )}
-                                    </IconButton>
-                                  </InputAdornment>
-                                ),
-                              }}
-                            />
-                          )}
-                        </form.Field>
-                      </Grid>
-
-                      {/* Password */}
-                      <Grid size={{ xs: 12, sm: 6 }}>
-                        <Typography
-                          variant="body2"
-                          color="text.secondary"
-                          gutterBottom
-                        >
-                          {t('password')}
-                        </Typography>
-                        <form.Field
-                          name="password"
-                          validators={{
-                            onChange: ({ value }) =>
-                              value && value.length < 8
-                                ? 'Password must be at least 8 characters'
-                                : undefined,
-                          }}
-                        >
-                          {(field) => (
-                            <TextField
-                              fullWidth
-                              type={showPassword ? 'text' : 'password'}
-                              value={field.state.value ?? ''}
-                              onChange={(e) =>
-                                field.handleChange(e.target.value)
-                              }
-                              variant="outlined"
-                              size="medium"
-                              disabled={!isEditingAccount}
-                              InputProps={{
-                                endAdornment: (
-                                  <InputAdornment position="end">
-                                    <IconButton
-                                      onClick={() =>
-                                        setShowPassword(!showPassword)
-                                      }
-                                      edge="end"
-                                      size="small"
-                                      disabled={!isEditingAccount}
-                                    >
-                                      {showPassword ? (
-                                        <VisibilityOff />
-                                      ) : (
-                                        <Visibility />
-                                      )}
-                                    </IconButton>
-                                  </InputAdornment>
-                                ),
-                              }}
-                            />
-                          )}
-                        </form.Field>
-                      </Grid>
-
-                      {/* Confirm Password */}
-                      <Grid size={{ xs: 12, sm: 6 }}>
-                        <Typography
-                          variant="body2"
-                          color="text.secondary"
-                          gutterBottom
-                        >
-                          {t('confirm_password')}
-                        </Typography>
-                        <form.Field
-                          name="passwordConfirm"
-                          validators={{
-                            onChange: ({ value }) =>
-                              value && value.length < 8
-                                ? 'Password must be at least 8 characters'
-                                : undefined,
-                          }}
-                        >
-                          {(field) => (
-                            <TextField
-                              fullWidth
-                              type={showConfirmPassword ? 'text' : 'password'}
-                              value={field.state.value ?? ''}
-                              onChange={(e) =>
-                                field.handleChange(e.target.value)
-                              }
-                              variant="outlined"
-                              size="medium"
-                              disabled={!isEditingAccount}
-                              InputProps={{
-                                endAdornment: (
-                                  <InputAdornment position="end">
-                                    <IconButton
-                                      onClick={() =>
-                                        setShowConfirmPassword(
-                                          !showConfirmPassword,
-                                        )
-                                      }
-                                      edge="end"
-                                      size="small"
-                                      disabled={!isEditingAccount}
-                                    >
-                                      {showConfirmPassword ? (
-                                        <VisibilityOff />
-                                      ) : (
-                                        <Visibility />
-                                      )}
-                                    </IconButton>
-                                  </InputAdornment>
-                                ),
-                              }}
-                            />
-                          )}
-                        </form.Field>
-                      </Grid>
+                  <Grid container spacing={3} sx={{ mt: 2 }}>
+                    {/* Name */}
+                    <Grid size={{ xs: 12, sm: 6 }}>
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        gutterBottom
+                      >
+                        {t('full_name')}
+                      </Typography>
+                      <form.Field name="name">
+                        {(field) => (
+                          <TextField
+                            fullWidth
+                            value={field.state.value ?? ''}
+                            onChange={(e) => field.handleChange(e.target.value)}
+                            variant="outlined"
+                            size="medium"
+                            disabled={!isEditingAccount}
+                          />
+                        )}
+                      </form.Field>
                     </Grid>
 
-                    <Button
-                      type="submit"
-                      variant="contained"
-                      sx={{
-                        mt: 3,
-                        color: 'white',
-                        px: 3,
-                        py: 1,
-                        borderRadius: 1,
-                        textTransform: 'none',
-                        fontSize: '16px',
-                        '&:hover': {
-                          bgcolor: '#c4b590',
-                        },
-                      }}
-                    >
-                      {isEditingAccount ? 'Save' : 'Edit Profile'}
-                    </Button>
-                  </form>
-                </Box>
+                    {/* Phone number */}
+                    <Grid size={{ xs: 12, sm: 6 }}>
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        gutterBottom
+                      >
+                        {t('phone_number')}
+                      </Typography>
+                      <form.Field name="phone_number">
+                        {(field) => (
+                          <Box
+                            className="phone-field-container"
+                            sx={{ minHeight: '56px' }}
+                          >
+                            {PhoneInput && (
+                              <PhoneInput
+                                disabled={!isEditingAccount}
+                                country="la"
+                                enableAreaCodes
+                                autocompleteSearch
+                                enableSearch
+                                value={field.state.value ?? ''}
+                                onChange={(val: string) => {
+                                  const formatted = val.startsWith('+')
+                                    ? val
+                                    : '+' + val;
+                                  field.handleChange(formatted);
+                                }}
+                                inputProps={{
+                                  name: 'phone',
+                                  required: true,
+                                  autoFocus: true,
+                                }}
+                                containerStyle={{ width: '100%' }}
+                                inputStyle={{ width: '100%' }}
+                              />
+                            )}
+                          </Box>
+                        )}
+                      </form.Field>
+                    </Grid>
 
-                <Divider sx={{ my: 3, mt: 4 }} />
+                    {/* Old Password */}
+                    <Grid size={{ xs: 12, sm: 6 }}>
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        gutterBottom
+                      >
+                        {t('old_password')}
+                      </Typography>
+                      <form.Field
+                        name="oldPassword"
+                        validators={{
+                          onChange: ({ value }) =>
+                            value && value.length < 8
+                              ? 'Password must be at least 8 characters'
+                              : undefined,
+                        }}
+                      >
+                        {(field) => (
+                          <TextField
+                            fullWidth
+                            type={showOldPassword ? 'text' : 'password'}
+                            value={field.state.value ?? ''}
+                            onChange={(e) => field.handleChange(e.target.value)}
+                            variant="outlined"
+                            size="medium"
+                            disabled={!isEditingAccount}
+                            InputProps={{
+                              endAdornment: (
+                                <InputAdornment position="end">
+                                  <IconButton
+                                    onClick={() =>
+                                      setShowOldPassword(!showOldPassword)
+                                    }
+                                    edge="end"
+                                    size="small"
+                                    disabled={!isEditingAccount}
+                                  >
+                                    {showOldPassword ? (
+                                      <VisibilityOff />
+                                    ) : (
+                                      <Visibility />
+                                    )}
+                                  </IconButton>
+                                </InputAdornment>
+                              ),
+                            }}
+                          />
+                        )}
+                      </form.Field>
+                    </Grid>
 
-                <AddressForm
-                  isEditing={isEditingAddress}
-                  onEditToggle={() => setIsEditingAddress(!isEditingAddress)}
-                />
-              </>
-            )}
+                    {/* Password */}
+                    <Grid size={{ xs: 12, sm: 6 }}>
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        gutterBottom
+                      >
+                        {t('password')}
+                      </Typography>
+                      <form.Field
+                        name="password"
+                        validators={{
+                          onChange: ({ value }) =>
+                            value && value.length < 8
+                              ? 'Password must be at least 8 characters'
+                              : undefined,
+                        }}
+                      >
+                        {(field) => (
+                          <TextField
+                            fullWidth
+                            type={showPassword ? 'text' : 'password'}
+                            value={field.state.value ?? ''}
+                            onChange={(e) => field.handleChange(e.target.value)}
+                            variant="outlined"
+                            size="medium"
+                            disabled={!isEditingAccount}
+                            InputProps={{
+                              endAdornment: (
+                                <InputAdornment position="end">
+                                  <IconButton
+                                    onClick={() =>
+                                      setShowPassword(!showPassword)
+                                    }
+                                    edge="end"
+                                    size="small"
+                                    disabled={!isEditingAccount}
+                                  >
+                                    {showPassword ? (
+                                      <VisibilityOff />
+                                    ) : (
+                                      <Visibility />
+                                    )}
+                                  </IconButton>
+                                </InputAdornment>
+                              ),
+                            }}
+                          />
+                        )}
+                      </form.Field>
+                    </Grid>
+
+                    {/* Confirm Password */}
+                    <Grid size={{ xs: 12, sm: 6 }}>
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        gutterBottom
+                      >
+                        {t('confirm_password')}
+                      </Typography>
+                      <form.Field
+                        name="passwordConfirm"
+                        validators={{
+                          onChange: ({ value }) =>
+                            value && value.length < 8
+                              ? 'Password must be at least 8 characters'
+                              : undefined,
+                        }}
+                      >
+                        {(field) => (
+                          <TextField
+                            fullWidth
+                            type={showConfirmPassword ? 'text' : 'password'}
+                            value={field.state.value ?? ''}
+                            onChange={(e) => field.handleChange(e.target.value)}
+                            variant="outlined"
+                            size="medium"
+                            disabled={!isEditingAccount}
+                            InputProps={{
+                              endAdornment: (
+                                <InputAdornment position="end">
+                                  <IconButton
+                                    onClick={() =>
+                                      setShowConfirmPassword(
+                                        !showConfirmPassword,
+                                      )
+                                    }
+                                    edge="end"
+                                    size="small"
+                                    disabled={!isEditingAccount}
+                                  >
+                                    {showConfirmPassword ? (
+                                      <VisibilityOff />
+                                    ) : (
+                                      <Visibility />
+                                    )}
+                                  </IconButton>
+                                </InputAdornment>
+                              ),
+                            }}
+                          />
+                        )}
+                      </form.Field>
+                    </Grid>
+                  </Grid>
+
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    sx={{
+                      mt: 3,
+                      color: 'white',
+                      px: 3,
+                      py: 1,
+                      borderRadius: 1,
+                      textTransform: 'none',
+                      fontSize: '16px',
+                      '&:hover': {
+                        bgcolor: '#c4b590',
+                      },
+                    }}
+                  >
+                    {isEditingAccount ? 'Save' : 'Edit Profile'}
+                  </Button>
+                </form>
+              </Box>
+
+              <Divider sx={{ my: 3, mt: 4 }} />
+
+              <AddressForm
+                isEditing={isEditingAddress}
+                onEditToggle={() => setIsEditingAddress(!isEditingAddress)}
+              />
+            </>
+            {/* )} */}
 
             {activeSection === 'orders' && (
               <OrderHistory
