@@ -15,21 +15,16 @@ import { useForm } from '@tanstack/react-form';
 import { useMutation } from '@tanstack/react-query';
 import {
   createFileRoute,
-  redirect,
-  useNavigate,
-  useSearch,
+  redirect
 } from '@tanstack/react-router';
 import { t } from 'i18next';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { AddressForm } from '~/containers/profile/address-form';
-import { OrderHistory } from '~/containers/profile/order-history';
-import { ProfileSidebar } from '~/containers/profile/profile-sidebar';
 
 import 'react-phone-input-2/lib/material.css';
 import { getMeQueryOption, useGetMe } from '~/hooks/profile/useGetMe';
 import { orderHistoryQueryOption } from '~/hooks/profile/useOrderHistory';
-import type { PaginationAPI } from '~/models';
 import { EditProfileForm } from '~/models/profile';
 import { getToken } from '~/server/auth';
 import { editProfile } from '~/server/profile';
@@ -64,7 +59,7 @@ export const Route = createFileRoute('/profile')({
 
 function ProfilePage() {
   const theme = useTheme();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [isEditingAccount, setIsEditingAccount] = useState(false);
   const [isEditingAddress, setIsEditingAddress] = useState(false);
 
@@ -83,41 +78,41 @@ function ProfilePage() {
   const { me } = useGetMe();
 
   // Obtain search parameters from the router
-  const searchParams = useSearch<any>({ from: '/profile' });
+  // const searchParams = useSearch<any>({ from: '/profile' });
 
-  // Get active section from search params
-  const activeSection = searchParams.section || 'account';
+  // // Get active section from search params
+  // const activeSection = searchParams.section || 'account';
 
-  // Create pagination object from search params
-  const pagination: PaginationAPI = {
-    page: Number(searchParams.page) || 1,
-    limit: Number(searchParams.limit) || 10,
-  };
+  // // Create pagination object from search params
+  // const pagination: PaginationAPI = {
+  //   page: Number(searchParams.page) || 1,
+  //   limit: Number(searchParams.limit) || 10,
+  // };
 
-  // Function to handle section change
-  const handleSectionChange = (section: string) => {
-    navigate({
-      to: '/profile',
-      search: {
-        ...searchParams,
-        section,
-        // Reset pagination when changing sections
-        page: section === 'orders' ? searchParams.page || 1 : undefined,
-        limit: section === 'orders' ? searchParams.limit || 10 : undefined,
-      },
-    });
-  };
+  // // Function to handle section change
+  // const handleSectionChange = (section: string) => {
+  //   navigate({
+  //     to: '/profile',
+  //     search: {
+  //       ...searchParams,
+  //       section,
+  //       // Reset pagination when changing sections
+  //       page: section === 'orders' ? searchParams.page || 1 : undefined,
+  //       limit: section === 'orders' ? searchParams.limit || 10 : undefined,
+  //     },
+  //   });
+  // };
 
-  // Function to update pagination in URL
-  const handlePageChange = (page: number) => {
-    navigate({
-      to: '/profile',
-      search: {
-        ...searchParams,
-        page,
-      },
-    });
-  };
+  // // Function to update pagination in URL
+  // const handlePageChange = (page: number) => {
+  //   navigate({
+  //     to: '/profile',
+  //     search: {
+  //       ...searchParams,
+  //       page,
+  //     },
+  //   });
+  // };
 
   const onEditToggle = () => {
     setIsEditingAccount(!isEditingAccount);
