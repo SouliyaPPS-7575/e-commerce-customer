@@ -25,6 +25,22 @@ export interface ProductItem {
   updated: string;
 }
 
+export interface OrderProductItem {
+  collectionId: string;
+  collectionName: string;
+  id: string;
+  name: string;
+  description: string;
+  details: string;
+  price: number;
+  category_id: string;
+  image_url: string[];
+  created: string;
+  updated: string;
+  quantity: number;
+  status: string;
+}
+
 export interface ProductRankingItem {
   collectionId: string;
   collectionName: string;
