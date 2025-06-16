@@ -190,7 +190,7 @@ function RouteComponent() {
                 </form.Field>
 
                 {/* Phone Number Field with Material-UI styling */}
-                <Box sx={{ my: 2 }}>
+                {/* <Box sx={{ my: 2 }}> */}
                   <form.Field name="phone_number">
                     {(field) => (
                       <Box className="phone-field-container">
@@ -214,7 +214,7 @@ function RouteComponent() {
                       </Box>
                     )}
                   </form.Field>
-                </Box>
+                {/* </Box> */}
 
                 {/* Email Field */}
                 <form.Field

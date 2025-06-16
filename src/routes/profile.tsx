@@ -259,21 +259,18 @@ function ProfilePage() {
                         >
                           {t('phone_number')}
                         </Typography>
-                        {PhoneInput && (
-                          <form.Field name="phone_number">
-                            {(field) => (
-                              <Box
-                                className="phone-field-container"
-                                sx={{ minHeight: '56px' }}
-                              >
+                        <form.Field name="phone_number">
+                          {(field) => (
+                            <Box
+                              className="phone-field-container"
+                              sx={{ minHeight: '56px' }}
+                            >
+                              {PhoneInput && (
                                 <PhoneInput
-                                  disabled={!isEditingAccount}
                                   country={'la'}
                                   enableAreaCodes
                                   autocompleteSearch
                                   enableSearch
-                                  placeholder={t('phone_number')}
-                                  searchPlaceholder={t('phone_number')}
                                   value={field.state.value ?? ''}
                                   onChange={(val: string) => {
                                     const formatted = val.startsWith('+')
@@ -281,19 +278,11 @@ function ProfilePage() {
                                       : '+' + val;
                                     field.handleChange(formatted);
                                   }}
-                                  inputStyle={{
-                                    width: '100%',
-                                    height: '56px',
-                                  }}
-                                  containerStyle={{
-                                    width: '100%',
-                                    zIndex: 999,
-                                  }}
                                 />
-                              </Box>
-                            )}
-                          </form.Field>
-                        )}
+                              )}
+                            </Box>
+                          )}
+                        </form.Field>
                       </Grid>
 
                       {/* Old Password */}
