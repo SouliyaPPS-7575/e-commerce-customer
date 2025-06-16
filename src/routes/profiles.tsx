@@ -15,6 +15,7 @@ import { useForm } from '@tanstack/react-form';
 import { useMutation } from '@tanstack/react-query';
 import {
   createFileRoute,
+  redirect,
   useNavigate,
   useSearch,
 } from '@tanstack/react-router';
@@ -27,10 +28,19 @@ import { ProfileSidebar } from '~/containers/profile/profile-sidebar';
 import { getMeQueryOption, useGetMe } from '~/hooks/profile/useGetMe';
 import { PaginationAPI } from '~/models';
 import { EditProfileForm } from '~/models/profile';
+import { getToken } from '~/server/auth';
 import { editProfile } from '~/server/profile';
 import { queryClient } from '~/services/queryClient';
 
 export const Route = createFileRoute('/profiles')({
+  beforeLoad: async () => {
+    const { token } = await getToken();
+    if (!token) {
+      return redirect({
+        to: '/login',
+      });
+    }
+  },
   component: RouteComponent,
 });
 

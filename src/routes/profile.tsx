@@ -28,7 +28,6 @@ import { ProfileSidebar } from '~/containers/profile/profile-sidebar';
 
 import 'react-phone-input-2/lib/material.css';
 import { getMeQueryOption, useGetMe } from '~/hooks/profile/useGetMe';
-import { orderHistoryQueryOption } from '~/hooks/profile/useOrderHistory';
 import type { PaginationAPI } from '~/models';
 import { EditProfileForm } from '~/models/profile';
 import { getToken } from '~/server/auth';
@@ -45,20 +44,20 @@ export const Route = createFileRoute('/profile')({
       });
     }
   },
-  loader: ({ context, location }) => {
-    const searchParams = new URLSearchParams(location.search);
-    const page = Number(searchParams.get('page'));
-    const limit = Number(searchParams.get('limit'));
+  // loader: ({ context, location }) => {
+  //   const searchParams = new URLSearchParams(location.search);
+  //   const page = Number(searchParams.get('page'));
+  //   const limit = Number(searchParams.get('limit'));
 
-    const me = context.queryClient.ensureQueryData(getMeQueryOption());
-    const orderHistory = context.queryClient.ensureQueryData(
-      orderHistoryQueryOption({
-        page,
-        limit,
-      }),
-    );
-    return { me, orderHistory };
-  },
+  //   const me = context.queryClient.ensureQueryData(getMeQueryOption());
+  //   const orderHistory = context.queryClient.ensureQueryData(
+  //     orderHistoryQueryOption({
+  //       page,
+  //       limit,
+  //     }),
+  //   );
+  //   return { me, orderHistory };
+  // },
   component: ProfilePage,
 });
 
