@@ -15,8 +15,9 @@ import { useForm } from '@tanstack/react-form';
 import { useMutation } from '@tanstack/react-query';
 import {
   createFileRoute,
+  redirect,
   useNavigate,
-  useSearch
+  useSearch,
 } from '@tanstack/react-router';
 import { t } from 'i18next';
 import { useEffect, useState } from 'react';
@@ -30,19 +31,20 @@ import { getMeQueryOption, useGetMe } from '~/hooks/profile/useGetMe';
 import { orderHistoryQueryOption } from '~/hooks/profile/useOrderHistory';
 import type { PaginationAPI } from '~/models';
 import { EditProfileForm } from '~/models/profile';
+import { getToken } from '~/server/auth';
 import { editProfile } from '~/server/profile';
 import { queryClient } from '~/services/queryClient';
 import '~/styles/phone-input-styles.css';
 
 export const Route = createFileRoute('/profile')({
-  // beforeLoad: async () => {
-  //   const { token } = await getToken();
-  //   if (!token) {
-  //     return redirect({
-  //       to: '/login',
-  //     });
-  //   }
-  // },
+  beforeLoad: async () => {
+    const { token } = await getToken();
+    if (!token) {
+      return redirect({
+        to: '/login',
+      });
+    }
+  },
   loader: ({ context, location }) => {
     const searchParams = new URLSearchParams(location.search);
     const page = Number(searchParams.get('page'));
@@ -65,18 +67,6 @@ function ProfilePage() {
   const navigate = useNavigate();
   const [isEditingAccount, setIsEditingAccount] = useState(false);
   const [isEditingAddress, setIsEditingAddress] = useState(false);
-
-  // Lazy load PhoneInput component
-  // This is done to avoid loading the component on the server side
-  const [PhoneInput, setPhoneInput] = useState<
-    (typeof import('react-phone-input-2'))['default'] | null
-  >(null);
-
-  useEffect(() => {
-    import('react-phone-input-2').then((module) => {
-      setPhoneInput(() => module.default);
-    });
-  }, []);
 
   const { me } = useGetMe();
 
@@ -193,6 +183,17 @@ function ProfilePage() {
     }
   };
 
+  // This is done to avoid loading the component on the server side
+  const [PhoneInput, setPhoneInput] = useState<
+    (typeof import('react-phone-input-2'))['default'] | null
+  >(null);
+
+  useEffect(() => {
+    import('react-phone-input-2').then((module) => {
+      setPhoneInput(() => module.default);
+    });
+  }, []);
+
   return (
     <Box
       sx={{
@@ -258,32 +259,32 @@ function ProfilePage() {
                           {t('phone_number')}
                         </Typography>
                         <form.Field name="phone_number">
-                          {() => (
-                            <Box className="phone-field-container">
+                          {(field) => (
+                            <>
                               {PhoneInput && (
                                 <PhoneInput
-                                  // disabled={!isEditingAccount}
+                                  disabled={!isEditingAccount}
                                   country="la"
                                   enableAreaCodes
                                   autocompleteSearch
                                   enableSearch
-                                  // value={field.state.value ?? ''}
-                                  // onChange={(val: string) => {
-                                  //   const formatted = val.startsWith('+')
-                                  //     ? val
-                                  //     : '+' + val;
-                                  //   field.handleChange(formatted);
-                                  // }}
-                                  // inputProps={{
-                                  //   name: 'phone',
-                                  //   required: true,
-                                  //   autoFocus: true,
-                                  // }}
-                                  // containerStyle={{ width: '100%' }}
-                                  // inputStyle={{ width: '100%' }}
+                                  value={field.state.value ?? ''}
+                                  onChange={(val: string) => {
+                                    const formatted = val.startsWith('+')
+                                      ? val
+                                      : '+' + val;
+                                    field.handleChange(formatted);
+                                  }}
+                                  inputProps={{
+                                    name: 'phone',
+                                    required: true,
+                                    autoFocus: true,
+                                  }}
+                                  containerStyle={{ width: '100%' }}
+                                  inputStyle={{ width: '100%' }}
                                 />
                               )}
-                            </Box>
+                            </>
                           )}
                         </form.Field>
                       </Grid>
