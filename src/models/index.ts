@@ -1,4 +1,6 @@
-export interface PaginationAPI {
+
+export interface SearchParamsAPI {
      page: number;
      limit: number;
+     status?: string;
 }

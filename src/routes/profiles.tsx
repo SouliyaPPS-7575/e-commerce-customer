@@ -30,7 +30,7 @@ import {
   orderHistoryItemQueryOption,
   orderHistoryQueryOption,
 } from '~/hooks/profile/useOrderHistory';
-import { PaginationAPI } from '~/models';
+import { SearchParamsAPI } from '~/models';
 import { EditProfileForm } from '~/models/profile';
 import { getToken } from '~/server/auth';
 import { editProfile } from '~/server/profile';
@@ -81,9 +81,10 @@ function RouteComponent() {
   const activeSection = searchParams.section || 'account';
 
   // Create pagination object from search params
-  const pagination: PaginationAPI = {
+  const pagination: SearchParamsAPI = {
     page: Number(searchParams.page) || 1,
     limit: Number(searchParams.limit) || 10,
+    status: searchParams.status || '',
   };
 
   // Function to handle section change
@@ -490,7 +491,7 @@ function RouteComponent() {
               )}
               {activeSection === 'orders' && (
                 <OrderHistory
-                  pagination={pagination}
+                  searchParams={pagination}
                   onPageChange={handlePageChange}
                 />
               )}

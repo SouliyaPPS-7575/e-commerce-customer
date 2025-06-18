@@ -1,10 +1,10 @@
 import { createServerFn } from '@tanstack/react-start';
 import { getCookie } from '@tanstack/react-start/server';
-import { PaginationAPI } from '~/models';
-import { OrderHistoryDetails, OrderHistoryItems } from '~/models/profile';
+import { SearchParamsAPI } from '~/models';
+import { OrderHistoryItemRes, OrderHistoryItems } from '~/models/profile';
+import { OrderProductItem, ProductItem } from '~/models/shop';
 import pb, { fetchFilterPb } from '~/services/pocketbaseService';
 import { handleError } from './errorHandler';
-import { OrderProductItem, ProductItem } from '~/models/shop';
 
 export const getOrderItems = createServerFn({
   method: 'GET',
@@ -74,16 +74,27 @@ export const getOrderHistoryItems = createServerFn({
 export const getOrderHistory = createServerFn({
   method: 'GET',
 })
-  .validator((d: PaginationAPI) => d)
-  .handler(async ({ data: { page, limit } }) => {
+  .validator((d: SearchParamsAPI) => d)
+  .handler(async ({ data: { page, limit, status } }) => {
     try {
-      const customer_id = getCookie('customer_id') as string;
+      const url = '/cust/order-list';
 
-      const orders = await pb
-        .collection('orders')
-        .getList<OrderHistoryDetails>(page, limit, {
-          filter: `customer_id="${customer_id}"`,
-        });
+      const queryParams = new URLSearchParams({
+        page: page.toString(),
+        limit: limit.toString(),
+        ...(status && { status }),
+      });
+
+      const orders = await pb.send<OrderHistoryItemRes>(
+        `${url}?${queryParams}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${getCookie('token')}`,
+          },
+        },
+      );
 
       return orders;
     } catch (error) {

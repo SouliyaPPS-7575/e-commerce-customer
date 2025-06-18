@@ -45,7 +45,16 @@ export function BillingShippingSection({
                   formAddress.setFieldValue('district_id', '');
                 }}
                 renderInput={(params) => (
-                  <TextField {...params} label="Province" size="small" />
+                  <TextField
+                    {...params}
+                    label="Province"
+                    size="small"
+                    required
+                    error={Boolean(field.state.meta.touched && field.state.meta.error)}
+                    helperText={
+                      field.state.meta.touched ? field.state.meta.error : ''
+                    }
+                  />
                 )}
               />
             )}
@@ -74,6 +83,11 @@ export function BillingShippingSection({
                     {...params}
                     label="District"
                     size="small"
+                    required
+                    error={Boolean(field.state.meta.touched && field.state.meta.error)}
+                    helperText={
+                      field.state.meta.touched ? field.state.meta.error : ''
+                    }
                     placeholder={
                       !formAddress.state.values.province_id
                         ? 'Please select a province first'
@@ -96,6 +110,9 @@ export function BillingShippingSection({
                 value={field.state.value}
                 onChange={(e) => field.handleChange(e.target.value)}
                 size="small"
+                required
+                error={Boolean(field.state.meta.touched && field.state.meta.error)}
+                helperText={field.state.meta.touched ? field.state.meta.error : ''}
               />
             )}
           />
@@ -111,6 +128,9 @@ export function BillingShippingSection({
                 value={field.state.value}
                 onChange={(e) => field.handleChange(e.target.value)}
                 size="small"
+                required
+                error={Boolean(field.state.meta.touched && field.state.meta.error)}
+                helperText={field.state.meta.touched ? field.state.meta.error : ''}
               />
             )}
           />
@@ -128,6 +148,9 @@ export function BillingShippingSection({
                 value={field.state.value}
                 onChange={(e) => field.handleChange(e.target.value)}
                 size="small"
+                required
+                error={Boolean(field.state.meta.touched && field.state.meta.error)}
+                helperText={field.state.meta.touched ? field.state.meta.error : ''}
               />
             )}
           />

@@ -314,7 +314,7 @@ export default function BlogSection() {
           </>
         ) : (
           // Desktop: Horizontal scroll list
-          <>
+          (<>
             <Box
               sx={{
                 display: 'flex',
@@ -420,7 +420,7 @@ export default function BlogSection() {
                 </motion.div>
               ))}
             </Box>
-          </>
+          </>)
         )}
 
         <Box

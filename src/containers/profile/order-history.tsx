@@ -7,6 +7,8 @@ import {
   Collapse,
   Grid,
   IconButton,
+  MenuItem,
+  Select,
   Table,
   TableBody,
   TableCell,
@@ -16,21 +18,26 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import { useNavigate, useSearch } from '@tanstack/react-router';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { Link, useNavigate, useSearch } from '@tanstack/react-router';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCurrencyContext } from '~/components/CurrencySelector/CurrencyProvider';
 import { CustomPagination } from '~/components/CustomPagination';
 import { useOrderHistory } from '~/hooks/profile/useOrderHistory';
-import type { PaginationAPI } from '~/models';
+import type { SearchParamsAPI } from '~/models';
+import { ProductImage } from '~/styles/checkout';
 import { formatCurrency, formatDateDMY } from '~/utils/format';
 
 interface OrderHistoryProps {
-  pagination: PaginationAPI;
+  searchParams: SearchParamsAPI;
   onPageChange: (page: number) => void;
 }
 
-export function OrderHistory({ pagination, onPageChange }: OrderHistoryProps) {
+export function OrderHistory({
+  searchParams,
+  onPageChange,
+}: OrderHistoryProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -39,10 +46,10 @@ export function OrderHistory({ pagination, onPageChange }: OrderHistoryProps) {
     from: '/profiles',
   });
 
-  const { displayCurrency, convert } = useCurrencyContext();
+  const { currency, displayCurrency, convert } = useCurrencyContext();
 
   const { orderHistory, orderItems } = useOrderHistory(
-    pagination,
+    searchParams,
     order_id || '',
   );
   const [copiedId, setCopiedId] = useState<string | null>(null);
@@ -66,7 +73,95 @@ export function OrderHistory({ pagination, onPageChange }: OrderHistoryProps) {
       <Typography variant="h5" fontWeight="bold" gutterBottom>
         {t('order_history')}
       </Typography>
-
+      <Box display="flex" justifyContent="flex-end" mb={2}>
+        <Grid
+          container
+          spacing={2}
+          alignItems="center"
+          justifyContent="flex-end"
+        >
+          <Grid>
+            <Typography variant="body2" sx={{ mb: 0.5 }}>
+              {t('filter_by_status')}
+            </Typography>
+            <Select
+              displayEmpty
+              onChange={(e) => {
+                navigate({
+                  to: '/profiles',
+                  search: {
+                    order_id: order_id || '',
+                    section,
+                    page: section === 'orders' ? page || 1 : undefined,
+                    limit: section === 'orders' ? limit || 10 : undefined,
+                    status: e.target.value,
+                  },
+                });
+              }}
+              sx={{
+                padding: '6px 12px',
+                borderRadius: '4px',
+                minWidth: '160px',
+                height: '40px',
+                backgroundColor: 'background.paper',
+              }}
+              defaultValue=""
+            >
+              <MenuItem value="">
+                <Typography>{t('all')}</Typography>
+              </MenuItem>
+              <MenuItem value="purchased">
+                <Typography sx={{ color: 'success.main', fontWeight: 'bold' }}>
+                  {t('purchased')}
+                </Typography>
+              </MenuItem>
+              <MenuItem value="pending">
+                <Typography sx={{ color: 'warning.main', fontWeight: 'bold' }}>
+                  {t('pending')}
+                </Typography>
+              </MenuItem>
+              <MenuItem value="cancel">
+                <Typography sx={{ color: 'error.main', fontWeight: 'bold' }}>
+                  {t('cancel')}
+                </Typography>
+              </MenuItem>
+            </Select>
+          </Grid>
+          <Grid>
+            <Typography variant="body2" sx={{ mb: 0.5 }}>
+              {t('filter_by_date')}
+            </Typography>
+            <DateTimePicker
+              onChange={(newValue) => {
+                if (newValue) {
+                  const formattedDate = new Date(
+                    newValue.toString(),
+                  ).toISOString();
+                  navigate({
+                    to: '/profiles',
+                    search: {
+                      order_id: order_id || '',
+                      section,
+                      page: section === 'orders' ? page || 1 : undefined,
+                      limit: section === 'orders' ? limit || 10 : undefined,
+                      date: formattedDate,
+                    },
+                  });
+                }
+              }}
+              slotProps={{
+                textField: {
+                  size: 'small',
+                  sx: {
+                    height: '40px',
+                    backgroundColor: 'transparent',
+                  },
+                },
+              }}
+            />
+          </Grid>
+        </Grid>
+      </Box>
       <TableContainer>
         <Table>
           <TableHead>
@@ -83,6 +178,12 @@ export function OrderHistory({ pagination, onPageChange }: OrderHistoryProps) {
               </TableCell>
               <TableCell sx={{ fontWeight: 'bold', color: 'text.primary' }}>
                 {t('address')}
+              </TableCell>
+              <TableCell sx={{ fontWeight: 'bold', color: 'text.primary' }}>
+                {t('quantity')}
+              </TableCell>
+              <TableCell sx={{ fontWeight: 'bold', color: 'text.primary' }}>
+                {t('total')}
               </TableCell>
             </TableRow>
           </TableHead>
@@ -131,25 +232,23 @@ export function OrderHistory({ pagination, onPageChange }: OrderHistoryProps) {
                         cursor: 'pointer',
                       }}
                       onClick={() => {
-                        navigator.clipboard.writeText(
-                          order?.reference_id || '',
-                        );
-                        setCopiedId(order?.reference_id || null);
+                        navigator.clipboard.writeText(order?.referenceID || '');
+                        setCopiedId(order?.referenceID || null);
                         setTimeout(() => setCopiedId(null), 2000);
                       }}
                     >
                       <Typography variant="body2" sx={{ mr: 1 }}>
-                        {order?.reference_id}
+                        {order?.referenceID}
                       </Typography>
                       <Tooltip
                         title={
-                          copiedId === order?.reference_id
+                          copiedId === order?.referenceID
                             ? 'Copied!'
                             : 'Copy to clipboard'
                         }
                       >
                         <IconButton size="small">
-                          {copiedId === order?.reference_id ? (
+                          {copiedId === order?.referenceID ? (
                             <CheckIcon fontSize="small" color="success" />
                           ) : (
                             <ContentCopy fontSize="small" />
@@ -228,6 +327,39 @@ export function OrderHistory({ pagination, onPageChange }: OrderHistoryProps) {
                         ))}
                     </Box>
                   </TableCell>
+                  <TableCell
+                    sx={{
+                      fontWeight: 'bold',
+                      color: 'text.primary',
+                    }}
+                  >
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        fontWeight: 'bold',
+                      }}
+                    >
+                      {order?.quantity}
+                    </Typography>
+                  </TableCell>
+                  <TableCell sx={{ py: 2, color: 'text.primary' }}>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        fontWeight: 'bold',
+                      }}
+                    >
+                      {currency === 'USD' &&
+                        order?.amountUSD &&
+                        `${formatCurrency(Number(order?.amountUSD))} $`}
+                      {currency === 'THB' &&
+                        order?.amountTHB &&
+                        `${formatCurrency(Number(order?.amountTHB))} ฿`}
+                      {currency === 'LAK' &&
+                        order?.amountLAK &&
+                        `${formatCurrency(Number(order?.amountLAK))} ₭`}
+                    </Typography>
+                  </TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell colSpan={5} sx={{ py: 0 }}>
@@ -241,33 +373,51 @@ export function OrderHistory({ pagination, onPageChange }: OrderHistoryProps) {
                           <TableHead>
                             <TableRow>
                               <TableCell
+                                align="center"
                                 sx={{
                                   fontWeight: 'bold',
                                   color: 'text.primary',
+                                  textAlign: 'center',
+                                }}
+                              >
+                                {t('image')}
+                              </TableCell>
+                              <TableCell
+                                align="center"
+                                sx={{
+                                  fontWeight: 'bold',
+                                  color: 'text.primary',
+                                  textAlign: 'center',
                                 }}
                               >
                                 {t('products')}
                               </TableCell>
                               <TableCell
+                                align="center"
                                 sx={{
                                   fontWeight: 'bold',
                                   color: 'text.primary',
+                                  textAlign: 'center',
                                 }}
                               >
                                 {t('date')}
                               </TableCell>
                               <TableCell
+                                align="center"
                                 sx={{
                                   fontWeight: 'bold',
                                   color: 'text.primary',
+                                  textAlign: 'center',
                                 }}
                               >
                                 {t('quantity')}
                               </TableCell>
                               <TableCell
+                                align="center"
                                 sx={{
                                   fontWeight: 'bold',
                                   color: 'text.primary',
+                                  textAlign: 'center',
                                 }}
                               >
                                 {t('total')}
@@ -279,7 +429,28 @@ export function OrderHistory({ pagination, onPageChange }: OrderHistoryProps) {
                             {orderItems?.products?.map((product) => (
                               <React.Fragment key={product.id}>
                                 <TableRow>
-                                  <TableCell>
+                                  <TableCell
+                                    align="center"
+                                    sx={{ textAlign: 'center' }}
+                                  >
+                                    <Link
+                                      to="/shop/view/$productID/$categoryID"
+                                      params={{
+                                        productID: product.id ?? '',
+                                        categoryID: product.category_id ?? '',
+                                      }}
+                                      style={{ display: 'inline-block' }}
+                                    >
+                                      <ProductImage
+                                        src={product?.image_url[0]}
+                                        alt={product?.name}
+                                      />
+                                    </Link>
+                                  </TableCell>
+                                  <TableCell
+                                    align="center"
+                                    sx={{ textAlign: 'center' }}
+                                  >
                                     <Typography
                                       variant="body1"
                                       sx={{
@@ -292,7 +463,10 @@ export function OrderHistory({ pagination, onPageChange }: OrderHistoryProps) {
                                       {product?.name || 'N/A'}
                                     </Typography>
                                   </TableCell>
-                                  <TableCell>
+                                  <TableCell
+                                    align="center"
+                                    sx={{ textAlign: 'center' }}
+                                  >
                                     <Typography
                                       variant="body1"
                                       sx={{
@@ -306,7 +480,10 @@ export function OrderHistory({ pagination, onPageChange }: OrderHistoryProps) {
                                         formatDateDMY(product.created)}
                                     </Typography>
                                   </TableCell>
-                                  <TableCell>
+                                  <TableCell
+                                    align="center"
+                                    sx={{ textAlign: 'center' }}
+                                  >
                                     <Typography
                                       variant="body1"
                                       sx={{
@@ -319,7 +496,10 @@ export function OrderHistory({ pagination, onPageChange }: OrderHistoryProps) {
                                       {product?.quantity || 0}
                                     </Typography>
                                   </TableCell>
-                                  <TableCell>
+                                  <TableCell
+                                    align="center"
+                                    sx={{ textAlign: 'center' }}
+                                  >
                                     <Typography
                                       variant="body1"
                                       sx={{
@@ -329,8 +509,11 @@ export function OrderHistory({ pagination, onPageChange }: OrderHistoryProps) {
                                         whiteSpace: 'nowrap',
                                       }}
                                     >
-                                      {formatCurrency(convert(product.price * product.quantity)) ||
-                                        0}{' '}
+                                      {formatCurrency(
+                                        convert(
+                                          product.price * product.quantity,
+                                        ),
+                                      ) || 0}{' '}
                                       {displayCurrency}
                                     </Typography>
                                   </TableCell>
@@ -348,7 +531,6 @@ export function OrderHistory({ pagination, onPageChange }: OrderHistoryProps) {
           </TableBody>
         </Table>
       </TableContainer>
-
       {/* Pagination Controls */}
       <Box display="flex" justifyContent="center" mt={2}>
         <CustomPagination

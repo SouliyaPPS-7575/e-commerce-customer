@@ -61,6 +61,31 @@ export interface OrderHistoryDetails {
   remark: string;
   created: string;
   updated: string;
+  total?: number;
+}
+
+export interface OrderHistoryItemRes {
+  page: number;
+  perPage: number;
+  totalPages: number;
+  totalItems: number;
+  items: OrderHistoryItem[];
+}
+
+export interface OrderHistoryItem {
+  id: string;
+  referenceID: string;
+  customerID: string;
+  customerName: string;
+  phoneNumber: string;
+  address: string;
+  status: string;
+  quantity: number;
+  amountLAK: string;
+  amountTHB: string;
+  amountUSD: string;
+  created: string;
+  updated: string;
 }
 
 export interface OrderHistoryItems {
