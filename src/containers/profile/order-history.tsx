@@ -41,6 +41,8 @@ export function OrderHistory({
   const { t } = useTranslation();
   const navigate = useNavigate();
 
+  const [status, setStatus] = useState('');
+
   // Obtain search parameters from the router
   const { section, order_id, page, limit } = useSearch<any>({
     from: '/profiles',
@@ -97,6 +99,8 @@ export function OrderHistory({
                     status: e.target.value,
                   },
                 });
+                setStatus(e.target.value);
+                setExpandedRow(null);
               }}
               sx={{
                 padding: '6px 12px',
@@ -213,6 +217,7 @@ export function OrderHistory({
                             page: section === 'orders' ? page || 1 : undefined,
                             limit:
                               section === 'orders' ? limit || 10 : undefined,
+                            status,
                           },
                         });
                       }}
