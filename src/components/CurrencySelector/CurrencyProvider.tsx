@@ -75,10 +75,19 @@ export const useCurrencyContext = () => {
 };
 
 export const formatCurrency = (value: number, locale = 'en-US') => {
-  const roundedValue = value % 1 >= 0.5 ? Math.ceil(value) : Math.floor(value);
+  // Round to two decimal places, but if the third decimal is 5, round down
+  const thirdDecimal = Math.floor((value * 1000) % 10);
+  let roundedValue: number;
+  if (thirdDecimal === 5) {
+    // Round down to two decimals
+    roundedValue = Math.floor(value * 100) / 100;
+  } else {
+    // Standard rounding to two decimals
+    roundedValue = Math.round(value * 100) / 100;
+  }
   return new Intl.NumberFormat(locale, {
     style: 'decimal',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
   }).format(roundedValue);
 };
