@@ -13,8 +13,8 @@ import {
 } from '@mui/material';
 import { Link } from '@tanstack/react-router';
 import { motion } from 'framer-motion';
-import { t } from 'i18next';
-import { useState, useRef, useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useBlogs } from '~/hooks/blogs/useBlogs';
 import { useEditCountBlog } from '~/hooks/blogs/useEditCountBlog';
 import {
@@ -26,9 +26,14 @@ import {
   JournalTitle,
 } from '~/styles/blogs';
 import theme from '~/styles/theme';
-import { cleanedDescription, formattedDate } from '~/utils/format';
+import {
+  cleanedBlogDescription,
+  cleanedDescription,
+  formattedDate,
+} from '~/utils/format';
 
 export default function BlogSection() {
+  const { t } = useTranslation();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const { blogs } = useBlogs();
@@ -83,9 +88,9 @@ export default function BlogSection() {
             transition={{ duration: 0.5 }}
             viewport={{ once: true }}
           >
-            <JournalTitle variant="h4">JOURNAL</JournalTitle>
+            <JournalTitle variant="h4">{t('journal')}</JournalTitle>
             <JournalSubtitle variant="subtitle1">
-              Explore our blog for stories, traditions, and styling ideas.
+              {t('journal_subtitle')}
             </JournalSubtitle>
           </motion.div>
         </Box>
@@ -145,20 +150,16 @@ export default function BlogSection() {
                         >
                           {post?.title}
                         </BlogTitle>
-                        <BlogExcerpt>
-                          <AccordionDetails>
-                            <Box
-                              sx={{
-                                fontSize: '0.95rem',
-                                color: theme.palette.text.secondary,
-                                lineHeight: 1.7,
-                              }}
-                              dangerouslySetInnerHTML={{
-                                __html: cleanedDescription(post?.description),
-                              }}
-                            />
-                          </AccordionDetails>
-                        </BlogExcerpt>
+                        <Box
+                          sx={{
+                            fontSize: '0.95rem',
+                            color: theme.palette.text.secondary,
+                            lineHeight: 1.7,
+                          }}
+                          dangerouslySetInnerHTML={{
+                            __html: cleanedBlogDescription(post?.description),
+                          }}
+                        />
                       </CardContent>
                     </BlogCard>
                   </Link>
@@ -314,7 +315,7 @@ export default function BlogSection() {
           </>
         ) : (
           // Desktop: Horizontal scroll list
-          (<>
+          <>
             <Box
               sx={{
                 display: 'flex',
@@ -420,7 +421,7 @@ export default function BlogSection() {
                 </motion.div>
               ))}
             </Box>
-          </>)
+          </>
         )}
 
         <Box

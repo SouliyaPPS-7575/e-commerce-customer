@@ -1,5 +1,6 @@
 import { Grid } from '@mui/material';
 import { createFileRoute, redirect } from '@tanstack/react-router';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { BillingShippingSection } from '~/containers/checkout/billing-shipping-section';
 import { CheckoutPageLayout } from '~/containers/checkout/checkout-page-layout';
@@ -57,6 +58,8 @@ export const Route = createFileRoute('/shop/checkout')({
 });
 
 function RouteComponent() {
+  const { t } = useTranslation();
+
   const { enrichedCartItems, selectedItemIds } = useCartPage();
 
   const orderItems = enrichedCartItems.filter((item) =>
@@ -83,13 +86,52 @@ function RouteComponent() {
     setIsSubmitting(true);
 
     try {
-      // First submit the address form
+      const { state: addressFormState } = formAddress;
+
+      // Individual field validation for formAddress
+      const { shipping_name, province_id, district_id, village } =
+        addressFormState.values;
+
+      if (!province_id) {
+        toast.error(t('please_select_province'));
+        formAddress.validateField('province_id', 'submit');
+        setIsSubmitting(false);
+        return;
+      }
+
+      if (!district_id) {
+        toast.error(t('please_select_district'));
+        formAddress.validateField('district_id', 'submit');
+        setIsSubmitting(false);
+        return;
+      }
+
+      if (!village) {
+        toast.error(t('village_required'));
+        formAddress.validateField('village', 'submit');
+        setIsSubmitting(false);
+        return;
+      }
+
+      if (!shipping_name) {
+        toast.error(t('shipping_name_required'));
+        formAddress.validateField('shipping_name', 'submit');
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Submit forms
       await formAddress.handleSubmit();
-      // Then submit the checkout form
       await formCheckout.handleSubmit();
+
+      toast.success('Order placed successfully!');
     } catch (error) {
       console.error('Error submitting forms:', error);
-      toast.error('Failed to place order. Please try again.');
+      if (error instanceof Error) {
+        toast.error(`Failed to place order: ${error.message}`);
+      } else {
+        toast.error('Failed to place order. Please try again.');
+      }
       setIsSubmitting(false);
     }
   };

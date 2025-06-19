@@ -48,9 +48,12 @@ export const CurrencyProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, [currency, currencies]);
 
-  const convert = useCallback((value: number) => {
-    return value / rate;
-  }, [rate]);
+  const convert = useCallback(
+    (value: number) => {
+      return value / rate;
+    },
+    [rate],
+  );
 
   return (
     <CurrencyContext.Provider
@@ -71,14 +74,11 @@ export const useCurrencyContext = () => {
   return context;
 };
 
-export const formatCurrency = (
-  value: number,
-  locale = 'en-US',
-) => {
-  const hasFraction = value % 1 !== 0;
+export const formatCurrency = (value: number, locale = 'en-US') => {
+  const roundedValue = value % 1 >= 0.5 ? Math.ceil(value) : Math.floor(value);
   return new Intl.NumberFormat(locale, {
     style: 'decimal',
-    minimumFractionDigits: hasFraction ? 2 : 0,
-    maximumFractionDigits: 2,
-  }).format(value);
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(roundedValue);
 };

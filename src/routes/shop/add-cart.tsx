@@ -153,7 +153,7 @@ function RouteComponent() {
                   fontWeight="medium"
                   sx={{ mb: 1 }}
                 >
-                  {formatCurrency(convert(item.price)) || 0} {displayCurrency}
+                  {formatCurrency(convert(item.price * item.quantity)) || 0} {displayCurrency}
                 </Typography>
 
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>

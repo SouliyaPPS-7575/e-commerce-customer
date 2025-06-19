@@ -57,19 +57,6 @@ export function OrderHistory({
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [expandedRow, setExpandedRow] = useState<string | null>(null);
 
-  if (orderHistory?.items?.length === 0) {
-    return (
-      <Box sx={{ p: 0 }}>
-        <Typography variant="h5" fontWeight="bold" gutterBottom>
-          {t('order_history')}
-        </Typography>
-        <Typography variant="body1" color="text.secondary" sx={{ mt: 2 }}>
-          {t('no_orders_found')}
-        </Typography>
-      </Box>
-    );
-  }
-
   return (
     <Box sx={{ p: 0, mt: 1 }}>
       <Typography variant="h5" fontWeight="bold" gutterBottom>
@@ -193,346 +180,362 @@ export function OrderHistory({
           </TableHead>
 
           <TableBody>
-            {orderHistory?.items?.map((order) => (
-              <React.Fragment key={order.id}>
-                <TableRow
-                  sx={{
-                    '&:last-child td, &:last-child th': {
-                      border: 0,
-                    },
-                  }}
-                >
-                  <TableCell>
-                    <IconButton
-                      size="small"
-                      onClick={() => {
-                        setExpandedRow(
-                          expandedRow === order.id ? null : order.id,
-                        );
-                        navigate({
-                          to: '/profiles',
-                          search: {
-                            order_id: order.id,
-                            section,
-                            page: section === 'orders' ? page || 1 : undefined,
-                            limit:
-                              section === 'orders' ? limit || 10 : undefined,
-                            status,
-                          },
-                        });
-                      }}
-                    >
-                      {expandedRow === order.id ? (
-                        <KeyboardArrowUp />
-                      ) : (
-                        <KeyboardArrowDown />
-                      )}
-                    </IconButton>
-                  </TableCell>
-                  <TableCell sx={{ py: 2, color: 'text.primary' }}>
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        cursor: 'pointer',
-                      }}
-                      onClick={() => {
-                        navigator.clipboard.writeText(order?.referenceID || '');
-                        setCopiedId(order?.referenceID || null);
-                        setTimeout(() => setCopiedId(null), 2000);
-                      }}
-                    >
-                      <Typography variant="body2" sx={{ mr: 1 }}>
-                        {order?.referenceID}
-                      </Typography>
-                      <Tooltip
-                        title={
-                          copiedId === order?.referenceID
-                            ? 'Copied!'
-                            : 'Copy to clipboard'
-                        }
-                      >
-                        <IconButton size="small">
-                          {copiedId === order?.referenceID ? (
-                            <CheckIcon fontSize="small" color="success" />
-                          ) : (
-                            <ContentCopy fontSize="small" />
-                          )}
-                        </IconButton>
-                      </Tooltip>
-                    </Box>
-                  </TableCell>
-                  <TableCell sx={{ py: 2, color: 'text.secondary' }}>
-                    <Typography
-                      variant="body1"
-                      sx={{
-                        fontWeight: 'bold',
-                        color: 'text.secondary',
-                        textTransform: 'capitalize',
-                        textAlign: 'left',
-                        whiteSpace: 'nowrap',
-                      }}
-                    >
-                      {order?.created && formatDateDMY(order.created)}
-                    </Typography>
-                  </TableCell>
-                  <TableCell
+            {orderHistory?.items?.length > 0 ? (
+              orderHistory?.items?.map((order) => (
+                <React.Fragment key={order.id}>
+                  <TableRow
                     sx={{
-                      fontWeight: 'bold',
-                      color:
-                        order?.status === 'completed'
-                          ? 'success.main'
-                          : 'warning.main',
+                      '&:last-child td, &:last-child th': {
+                        border: 0,
+                      },
                     }}
                   >
-                    <Grid size={{ xs: 6, sm: 6 }}>
+                    <TableCell>
+                      <IconButton
+                        size="small"
+                        onClick={() => {
+                          setExpandedRow(
+                            expandedRow === order.id ? null : order.id,
+                          );
+                          navigate({
+                            to: '/profiles',
+                            search: {
+                              order_id: order.id,
+                              section,
+                              page:
+                                section === 'orders' ? page || 1 : undefined,
+                              limit:
+                                section === 'orders' ? limit || 10 : undefined,
+                              status,
+                            },
+                          });
+                        }}
+                      >
+                        {expandedRow === order.id ? (
+                          <KeyboardArrowUp />
+                        ) : (
+                          <KeyboardArrowDown />
+                        )}
+                      </IconButton>
+                    </TableCell>
+                    <TableCell sx={{ py: 2, color: 'text.primary' }}>
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          cursor: 'pointer',
+                        }}
+                        onClick={() => {
+                          navigator.clipboard.writeText(
+                            order?.referenceID || '',
+                          );
+                          setCopiedId(order?.referenceID || null);
+                          setTimeout(() => setCopiedId(null), 2000);
+                        }}
+                      >
+                        <Typography variant="body2" sx={{ mr: 1 }}>
+                          {order?.referenceID}
+                        </Typography>
+                        <Tooltip
+                          title={
+                            copiedId === order?.referenceID
+                              ? 'Copied!'
+                              : 'Copy to clipboard'
+                          }
+                        >
+                          <IconButton size="small">
+                            {copiedId === order?.referenceID ? (
+                              <CheckIcon fontSize="small" color="success" />
+                            ) : (
+                              <ContentCopy fontSize="small" />
+                            )}
+                          </IconButton>
+                        </Tooltip>
+                      </Box>
+                    </TableCell>
+                    <TableCell sx={{ py: 2, color: 'text.secondary' }}>
                       <Typography
                         variant="body1"
                         sx={{
                           fontWeight: 'bold',
-                          color:
-                            order?.status === 'purchased'
-                              ? 'success.main'
-                              : order?.status === 'pending'
-                                ? 'warning.main'
-                                : order?.status === 'cancel'
-                                  ? 'error.main'
-                                  : 'text.primary',
+                          color: 'text.secondary',
                           textTransform: 'capitalize',
                           textAlign: 'left',
                           whiteSpace: 'nowrap',
                         }}
                       >
-                        {t(`${order?.status}`)}
+                        {order?.created && formatDateDMY(order.created)}
                       </Typography>
-                    </Grid>
-                  </TableCell>
-                  <TableCell
-                    sx={{
-                      fontWeight: 'bold',
-                      color: 'text.primary',
-                    }}
-                  >
-                    <Box>
-                      {(order?.address || t('no_address_found'))
-                        .split(',')
-                        .map((line, index) => (
-                          <Typography
-                            key={index}
-                            variant="body2"
-                            sx={{
-                              color: 'text.secondary',
-                              textTransform: 'capitalize',
-                              textAlign: 'left',
-                              whiteSpace: 'nowrap',
-                            }}
-                          >
-                            {line.trim()}
-                          </Typography>
-                        ))}
-                    </Box>
-                  </TableCell>
-                  <TableCell
-                    sx={{
-                      fontWeight: 'bold',
-                      color: 'text.primary',
-                    }}
-                  >
-                    <Typography
-                      variant="body2"
+                    </TableCell>
+                    <TableCell
                       sx={{
                         fontWeight: 'bold',
+                        color:
+                          order?.status === 'completed'
+                            ? 'success.main'
+                            : 'warning.main',
                       }}
                     >
-                      {order?.quantity}
-                    </Typography>
-                  </TableCell>
-                  <TableCell sx={{ py: 2, color: 'text.primary' }}>
-                    <Typography
-                      variant="body2"
+                      <Grid size={{ xs: 6, sm: 6 }}>
+                        <Typography
+                          variant="body1"
+                          sx={{
+                            fontWeight: 'bold',
+                            color:
+                              order?.status === 'purchased'
+                                ? 'success.main'
+                                : order?.status === 'pending'
+                                  ? 'warning.main'
+                                  : order?.status === 'cancel'
+                                    ? 'error.main'
+                                    : 'text.primary',
+                            textTransform: 'capitalize',
+                            textAlign: 'left',
+                            whiteSpace: 'nowrap',
+                          }}
+                        >
+                          {t(`${order?.status}`)}
+                        </Typography>
+                      </Grid>
+                    </TableCell>
+                    <TableCell
                       sx={{
                         fontWeight: 'bold',
+                        color: 'text.primary',
                       }}
                     >
-                      {currency === 'USD' &&
-                        order?.amountUSD &&
-                        `${formatCurrency(Number(order?.amountUSD))} $`}
-                      {currency === 'THB' &&
-                        order?.amountTHB &&
-                        `${formatCurrency(Number(order?.amountTHB))} ฿`}
-                      {currency === 'LAK' &&
-                        order?.amountLAK &&
-                        `${formatCurrency(Number(order?.amountLAK))} ₭`}
-                    </Typography>
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell colSpan={5} sx={{ py: 0 }}>
-                    <Collapse
-                      in={expandedRow === order.id}
-                      timeout="auto"
-                      unmountOnExit
+                      <Box>
+                        {(order?.address || t('no_address_found'))
+                          .split(',')
+                          .map((line, index) => (
+                            <Typography
+                              key={index}
+                              variant="body2"
+                              sx={{
+                                color: 'text.secondary',
+                                textTransform: 'capitalize',
+                                textAlign: 'left',
+                                whiteSpace: 'nowrap',
+                              }}
+                            >
+                              {line.trim()}
+                            </Typography>
+                          ))}
+                      </Box>
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        fontWeight: 'bold',
+                        color: 'text.primary',
+                      }}
                     >
-                      <TableContainer>
-                        <Table>
-                          <TableHead>
-                            <TableRow>
-                              <TableCell
-                                align="center"
-                                sx={{
-                                  fontWeight: 'bold',
-                                  color: 'text.primary',
-                                  textAlign: 'center',
-                                }}
-                              >
-                                {t('image')}
-                              </TableCell>
-                              <TableCell
-                                align="center"
-                                sx={{
-                                  fontWeight: 'bold',
-                                  color: 'text.primary',
-                                  textAlign: 'center',
-                                }}
-                              >
-                                {t('products')}
-                              </TableCell>
-                              <TableCell
-                                align="center"
-                                sx={{
-                                  fontWeight: 'bold',
-                                  color: 'text.primary',
-                                  textAlign: 'center',
-                                }}
-                              >
-                                {t('date')}
-                              </TableCell>
-                              <TableCell
-                                align="center"
-                                sx={{
-                                  fontWeight: 'bold',
-                                  color: 'text.primary',
-                                  textAlign: 'center',
-                                }}
-                              >
-                                {t('quantity')}
-                              </TableCell>
-                              <TableCell
-                                align="center"
-                                sx={{
-                                  fontWeight: 'bold',
-                                  color: 'text.primary',
-                                  textAlign: 'center',
-                                }}
-                              >
-                                {t('total')}
-                              </TableCell>
-                            </TableRow>
-                          </TableHead>
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          fontWeight: 'bold',
+                        }}
+                      >
+                        {order?.quantity}
+                      </Typography>
+                    </TableCell>
+                    <TableCell sx={{ py: 2, color: 'text.primary' }}>
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          fontWeight: 'bold',
+                        }}
+                      >
+                        {currency === 'USD' &&
+                          order?.amountUSD &&
+                          `${formatCurrency(Number(order?.amountUSD))} $`}
+                        {currency === 'THB' &&
+                          order?.amountTHB &&
+                          `${formatCurrency(Number(order?.amountTHB))} ฿`}
+                        {currency === 'LAK' &&
+                          order?.amountLAK &&
+                          `${formatCurrency(Number(order?.amountLAK))} ₭`}
+                      </Typography>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell colSpan={5} sx={{ py: 0 }}>
+                      <Collapse
+                        in={expandedRow === order.id}
+                        timeout="auto"
+                        unmountOnExit
+                      >
+                        <TableContainer>
+                          <Table>
+                            <TableHead>
+                              <TableRow>
+                                <TableCell
+                                  align="center"
+                                  sx={{
+                                    fontWeight: 'bold',
+                                    color: 'text.primary',
+                                    textAlign: 'center',
+                                  }}
+                                >
+                                  {t('image')}
+                                </TableCell>
+                                <TableCell
+                                  align="center"
+                                  sx={{
+                                    fontWeight: 'bold',
+                                    color: 'text.primary',
+                                    textAlign: 'center',
+                                  }}
+                                >
+                                  {t('products')}
+                                </TableCell>
+                                <TableCell
+                                  align="center"
+                                  sx={{
+                                    fontWeight: 'bold',
+                                    color: 'text.primary',
+                                    textAlign: 'center',
+                                  }}
+                                >
+                                  {t('date')}
+                                </TableCell>
+                                <TableCell
+                                  align="center"
+                                  sx={{
+                                    fontWeight: 'bold',
+                                    color: 'text.primary',
+                                    textAlign: 'center',
+                                  }}
+                                >
+                                  {t('quantity')}
+                                </TableCell>
+                                <TableCell
+                                  align="center"
+                                  sx={{
+                                    fontWeight: 'bold',
+                                    color: 'text.primary',
+                                    textAlign: 'center',
+                                  }}
+                                >
+                                  {t('total')}
+                                </TableCell>
+                              </TableRow>
+                            </TableHead>
 
-                          <TableBody>
-                            {orderItems?.products?.map((product) => (
-                              <React.Fragment key={product.id}>
-                                <TableRow>
-                                  <TableCell
-                                    align="center"
-                                    sx={{ textAlign: 'center' }}
-                                  >
-                                    <Link
-                                      to="/shop/view/$productID/$categoryID"
-                                      params={{
-                                        productID: product.id ?? '',
-                                        categoryID: product.category_id ?? '',
-                                      }}
-                                      style={{ display: 'inline-block' }}
+                            <TableBody>
+                              {orderItems?.products?.map((product) => (
+                                <React.Fragment key={product.id}>
+                                  <TableRow>
+                                    <TableCell
+                                      align="center"
+                                      sx={{ textAlign: 'center' }}
                                     >
-                                      <ProductImage
-                                        src={product?.image_url[0]}
-                                        alt={product?.name}
-                                      />
-                                    </Link>
-                                  </TableCell>
-                                  <TableCell
-                                    align="center"
-                                    sx={{ textAlign: 'center' }}
-                                  >
-                                    <Typography
-                                      variant="body1"
-                                      sx={{
-                                        fontWeight: 'bold',
-                                        color: 'text.secondary',
-                                        textTransform: 'capitalize',
-                                        whiteSpace: 'nowrap',
-                                      }}
+                                      <Link
+                                        to="/shop/view/$productID/$categoryID"
+                                        params={{
+                                          productID: product.id ?? '',
+                                          categoryID: product.category_id ?? '',
+                                        }}
+                                        style={{ display: 'inline-block' }}
+                                      >
+                                        <ProductImage
+                                          src={product?.image_url[0]}
+                                          alt={product?.name}
+                                        />
+                                      </Link>
+                                    </TableCell>
+                                    <TableCell
+                                      align="center"
+                                      sx={{ textAlign: 'center' }}
                                     >
-                                      {product?.name || 'N/A'}
-                                    </Typography>
-                                  </TableCell>
-                                  <TableCell
-                                    align="center"
-                                    sx={{ textAlign: 'center' }}
-                                  >
-                                    <Typography
-                                      variant="body1"
-                                      sx={{
-                                        fontWeight: 'bold',
-                                        color: 'text.secondary',
-                                        textTransform: 'capitalize',
-                                        whiteSpace: 'nowrap',
-                                      }}
+                                      <Typography
+                                        variant="body1"
+                                        sx={{
+                                          fontWeight: 'bold',
+                                          color: 'text.secondary',
+                                          textTransform: 'capitalize',
+                                          whiteSpace: 'nowrap',
+                                        }}
+                                      >
+                                        {product?.name || 'N/A'}
+                                      </Typography>
+                                    </TableCell>
+                                    <TableCell
+                                      align="center"
+                                      sx={{ textAlign: 'center' }}
                                     >
-                                      {product?.created &&
-                                        formatDateDMY(product.created)}
-                                    </Typography>
-                                  </TableCell>
-                                  <TableCell
-                                    align="center"
-                                    sx={{ textAlign: 'center' }}
-                                  >
-                                    <Typography
-                                      variant="body1"
-                                      sx={{
-                                        fontWeight: 'bold',
-                                        color: 'text.secondary',
-                                        textTransform: 'capitalize',
-                                        whiteSpace: 'nowrap',
-                                      }}
+                                      <Typography
+                                        variant="body1"
+                                        sx={{
+                                          fontWeight: 'bold',
+                                          color: 'text.secondary',
+                                          textTransform: 'capitalize',
+                                          whiteSpace: 'nowrap',
+                                        }}
+                                      >
+                                        {product?.created &&
+                                          formatDateDMY(product.created)}
+                                      </Typography>
+                                    </TableCell>
+                                    <TableCell
+                                      align="center"
+                                      sx={{ textAlign: 'center' }}
                                     >
-                                      {product?.quantity || 0}
-                                    </Typography>
-                                  </TableCell>
-                                  <TableCell
-                                    align="center"
-                                    sx={{ textAlign: 'center' }}
-                                  >
-                                    <Typography
-                                      variant="body1"
-                                      sx={{
-                                        fontWeight: 'bold',
-                                        color: 'text.secondary',
-                                        textTransform: 'capitalize',
-                                        whiteSpace: 'nowrap',
-                                      }}
+                                      <Typography
+                                        variant="body1"
+                                        sx={{
+                                          fontWeight: 'bold',
+                                          color: 'text.secondary',
+                                          textTransform: 'capitalize',
+                                          whiteSpace: 'nowrap',
+                                        }}
+                                      >
+                                        {product?.quantity || 0}
+                                      </Typography>
+                                    </TableCell>
+                                    <TableCell
+                                      align="center"
+                                      sx={{ textAlign: 'center' }}
                                     >
-                                      {formatCurrency(
-                                        convert(
-                                          product.price * product.quantity,
-                                        ),
-                                      ) || 0}{' '}
-                                      {displayCurrency}
-                                    </Typography>
-                                  </TableCell>
-                                </TableRow>
-                              </React.Fragment>
-                            ))}
-                          </TableBody>
-                        </Table>
-                      </TableContainer>
-                    </Collapse>
-                  </TableCell>
-                </TableRow>
-              </React.Fragment>
-            ))}
+                                      <Typography
+                                        variant="body1"
+                                        sx={{
+                                          fontWeight: 'bold',
+                                          color: 'text.secondary',
+                                          textTransform: 'capitalize',
+                                          whiteSpace: 'nowrap',
+                                        }}
+                                      >
+                                        {formatCurrency(
+                                          convert(
+                                            product.price * product.quantity,
+                                          ),
+                                        ) || 0}{' '}
+                                        {displayCurrency}
+                                      </Typography>
+                                    </TableCell>
+                                  </TableRow>
+                                </React.Fragment>
+                              ))}
+                            </TableBody>
+                          </Table>
+                        </TableContainer>
+                      </Collapse>
+                    </TableCell>
+                  </TableRow>
+                </React.Fragment>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={6} align="center">
+                  <Typography
+                    variant="body1"
+                    color="text.secondary"
+                  >
+                    {t('no_orders_found')}
+                  </Typography>
+                </TableCell>
+              </TableRow>
+            )}
           </TableBody>
         </Table>
       </TableContainer>

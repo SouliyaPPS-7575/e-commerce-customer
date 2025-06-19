@@ -5,7 +5,7 @@ export const recentBlogsQueryOption = () =>
   queryOptions({
     queryKey: ['recentBlogs'],
     queryFn: getRecentBlogs,
-    staleTime: 0,
+    staleTime: 1,
   });
 
 export const useRecentBlogs = () => {

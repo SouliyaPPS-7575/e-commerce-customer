@@ -22,7 +22,11 @@ import {
 import { getViewBlogQueryOption, useViewBlog } from '~/hooks/blogs/useViewBlog';
 import { BlogDate, BlogExcerpt } from '~/styles/blogs';
 import theme from '~/styles/theme';
-import { cleanedDescription, formattedDate } from '~/utils/format';
+import {
+  cleanedBlogDescription,
+  cleanedDescription,
+  formattedDate,
+} from '~/utils/format';
 
 export const Route = createFileRoute('/blog/view/$id')({
   loader: async ({ context, params }) => {
@@ -138,20 +142,16 @@ function RouteComponent() {
                   mb: 3,
                 }}
               >
-                <BlogExcerpt>
-                  <AccordionDetails>
-                    <Box
-                      sx={{
-                        fontSize: '1.2rem',
-                        color: theme.palette.text.secondary,
-                        lineHeight: 1.7,
-                      }}
-                      dangerouslySetInnerHTML={{
-                        __html: cleanedDescription(blog?.description),
-                      }}
-                    />
-                  </AccordionDetails>
-                </BlogExcerpt>
+                <Box
+                  sx={{
+                    fontSize: '1.2rem',
+                    color: theme.palette.text.secondary,
+                    lineHeight: 1.7,
+                  }}
+                  dangerouslySetInnerHTML={{
+                    __html: cleanedBlogDescription(blog?.description),
+                  }}
+                />
               </Typography>
             </Box>
 

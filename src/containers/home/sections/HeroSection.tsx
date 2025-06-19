@@ -1,6 +1,7 @@
 import { KeyboardArrowDown } from '@mui/icons-material';
 import { Box, Container, Typography, useMediaQuery } from '@mui/material';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { useBanners } from '~/hooks/banner/useBanners';
 import theme from '~/styles/theme';
 
@@ -13,6 +14,7 @@ export default function HeroSection({
   goToPage,
   handleScroll,
 }: HeroSectionProps) {
+  const { t } = useTranslation();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const { bannersData } = useBanners();
@@ -120,7 +122,7 @@ export default function HeroSection({
               },
             }}
           >
-            Shop now
+            {t('shop_now')}
           </Box>
         </Box>
         <Box

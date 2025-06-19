@@ -28,3 +28,9 @@
     font-family: 'Canela Trial', serif;
   }
 }
+
+.custom-toast {
+  font-family:
+    'Noto Sans Lao', 'Lao Sans', 'Phetsarath OT', 'Poppins', 'Roboto',
+    'Helvetica', 'Arial', sans-serif;
+}

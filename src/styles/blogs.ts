@@ -1,8 +1,9 @@
 import { styled, Typography, Card } from "@mui/material";
 
-// Styled components
+
 export const JournalTitle = styled(Typography)(({ theme }) => ({
      fontFamily: "'Times New Roman', serif",
+     textTransform: 'uppercase',
      fontSize: '2rem',
      fontWeight: 400,
      letterSpacing: '0.05em',

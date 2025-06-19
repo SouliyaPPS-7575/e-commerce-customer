@@ -2,6 +2,7 @@ import { Grid } from '@mui/material';
 import { useForm } from '@tanstack/react-form';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { BillingShippingSection } from '~/containers/checkout/billing-shipping-section';
 import { CheckoutPageLayout } from '~/containers/checkout/checkout-page-layout';
@@ -51,6 +52,7 @@ export const Route = createFileRoute('/shop/buy-checkout/$cart_id/$product_id')(
 );
 
 function RouteComponent() {
+  const { t } = useTranslation();
   const { cart_id, product_id } = Route.useParams();
 
   const { cartItem } = useBuyNowCartItem(cart_id);
@@ -125,13 +127,61 @@ function RouteComponent() {
     setIsSubmitting(true);
 
     try {
-      // First submit the address form
+      const { state: addressFormState } = formAddress;
+      const { state: checkoutFormState } = formCheckout;
+
+      // Individual field validation for formAddress
+      const { shipping_name, province_id, district_id, village } =
+        addressFormState.values;
+
+      if (!province_id) {
+        toast.error(t('please_select_province'));
+        formAddress.validateField('province_id', 'submit');
+        setIsSubmitting(false);
+        return;
+      }
+
+      if (!district_id) {
+        toast.error(t('please_select_district'));
+        formAddress.validateField('district_id', 'submit');
+        setIsSubmitting(false);
+        return;
+      }
+
+      if (!village) {
+        toast.error(t('village_required'));
+        formAddress.validateField('village', 'submit');
+        setIsSubmitting(false);
+        return;
+      }
+
+      if (!shipping_name) {
+        toast.error(t('shipping_name_required'));
+        formAddress.validateField('shipping_name', 'submit');
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Validate entire checkout form
+      if (!checkoutFormState.isValid) {
+        formCheckout.validateAllFields('submit');
+        toast.error('Please fix the checkout form errors before proceeding.');
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Submit forms
       await formAddress.handleSubmit();
-      // Then submit the checkout form
       await formCheckout.handleSubmit();
+
+      toast.success('Order placed successfully!');
     } catch (error) {
       console.error('Error submitting forms:', error);
-      toast.error('Failed to place order. Please try again.');
+      if (error instanceof Error) {
+        toast.error(`Failed to place order: ${error.message}`);
+      } else {
+        toast.error('Failed to place order. Please try again.');
+      }
       setIsSubmitting(false);
     }
   };

@@ -36,7 +36,7 @@ export function OrderSummarySection({
     <StyledCard>
       <CardContent sx={{ p: 3 }}>
         <Typography variant="h6" sx={{ mb: 3, fontWeight: 400 }}>
-          Your order
+          {t('your_order')}
         </Typography>
 
         {/* Product Header */}
@@ -48,10 +48,10 @@ export function OrderSummarySection({
           }}
         >
           <Typography variant="body2" color="text.secondary">
-            Product
+            {t('product')}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Subtotal
+            {t('subtotal')}
           </Typography>
         </Box>
 
@@ -81,7 +81,7 @@ export function OrderSummarySection({
             </Typography>
           </Box>
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-            <Typography variant="body2">Shipping fee</Typography>
+            <Typography variant="body2">{t('shipping_fee')}</Typography>
             <Typography variant="body2" fontWeight={500}>
               {shippingFee}
             </Typography>
@@ -100,7 +100,7 @@ export function OrderSummarySection({
         {/* Bank Transfer Instructions */}
         <Box sx={{ mb: 3 }}>
           <Typography variant="h6" sx={{ mb: 2, fontWeight: 400 }}>
-            Bank Transfer Instruction
+            {t('bank_transfer_instruction')}
           </Typography>
           <Typography
             variant="body2"

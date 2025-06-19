@@ -1,15 +1,15 @@
 import { CardContent, Stack, TextField, Typography } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import { useTranslation } from 'react-i18next';
+import { Districts, Provinces } from '~/models/profile';
 import { StyledCard } from '~/styles/checkout';
 
 interface BillingShippingSectionProps {
   formAddress: any;
   formCheckout: any;
-  provinces: any[];
-  districts: any[];
+  provinces: Provinces[];
+  districts: Districts[];
 }
-
 export function BillingShippingSection({
   formAddress,
   formCheckout,
@@ -28,10 +28,19 @@ export function BillingShippingSection({
           {/* Province ID */}
           <formAddress.Field
             name="province_id"
+            validators={{
+              onChange: ({ value }: any) => {
+                if (!value) return t('please_select_province');
+              },
+              onBlur: ({ value }: any) => {
+                if (!value) return t('please_select_province');
+              },
+            }}
             children={(field: any) => (
               <Autocomplete
                 fullWidth
-                options={provinces}
+                id={field.name}
+                options={provinces || []}
                 getOptionLabel={(option) => option.name}
                 isOptionEqualToValue={(option, value) => option.id === value.id}
                 value={
@@ -41,16 +50,18 @@ export function BillingShippingSection({
                 }
                 onChange={(_, newValue) => {
                   field.handleChange(newValue ? newValue.id : '');
-                  // Clear district when province changes
                   formAddress.setFieldValue('district_id', '');
                 }}
+                onBlur={() => field.handleBlur()} // this will trigger onBlur validator
                 renderInput={(params) => (
                   <TextField
                     {...params}
-                    label="Province"
+                    label={t('province')}
                     size="small"
                     required
-                    error={Boolean(field.state.meta.touched && field.state.meta.error)}
+                    error={Boolean(
+                      field.state.meta.touched && field.state.meta.error,
+                    )}
                     helperText={
                       field.state.meta.touched ? field.state.meta.error : ''
                     }
@@ -63,9 +74,18 @@ export function BillingShippingSection({
           {/* District ID */}
           <formAddress.Field
             name="district_id"
+            validators={{
+              onChange: ({ value }: any) => {
+                if (!value) return t('please_select_district');
+              },
+              onBlur: ({ value }: any) => {
+                if (!value) return t('please_select_district');
+              },
+            }}
             children={(field: any) => (
               <Autocomplete
                 fullWidth
+                id={field.name}
                 disabled={!formAddress.state.values.province_id}
                 options={districts}
                 getOptionLabel={(option) => option.name}
@@ -75,16 +95,19 @@ export function BillingShippingSection({
                     (district) => district.id === field.state.value,
                   ) || null
                 }
-                onChange={(_, newValue) =>
-                  field.handleChange(newValue ? newValue.id : '')
-                }
+                onChange={(_, newValue) => {
+                  field.handleChange(newValue ? newValue.id : '');
+                }}
+                onBlur={() => field.handleBlur()}
                 renderInput={(params) => (
                   <TextField
                     {...params}
-                    label="District"
+                    label={t('city')}
                     size="small"
                     required
-                    error={Boolean(field.state.meta.touched && field.state.meta.error)}
+                    error={Boolean(
+                      field.state.meta.touched && field.state.meta.error,
+                    )}
                     helperText={
                       field.state.meta.touched ? field.state.meta.error : ''
                     }
@@ -102,17 +125,31 @@ export function BillingShippingSection({
           {/* Village */}
           <formAddress.Field
             name="village"
+            validators={{
+              onChange: ({ value }: any) => {
+                if (!value) return 'Village is required';
+              },
+            }}
             children={(field: any) => (
               <TextField
                 fullWidth
-                label="Village"
+                id={field.name}
+                name={field.name}
+                label={t('village')}
                 variant="outlined"
-                value={field.state.value}
+                value={field.state.value ?? ''}
                 onChange={(e) => field.handleChange(e.target.value)}
+                onBlur={() => field.handleBlur()}
                 size="small"
                 required
-                error={Boolean(field.state.meta.touched && field.state.meta.error)}
-                helperText={field.state.meta.touched ? field.state.meta.error : ''}
+                error={Boolean(
+                  field.state.meta.touched && field.state.meta.error,
+                )}
+                helperText={
+                  field.state.meta.isTouched
+                    ? field.state.meta.errors
+                    : undefined
+                }
               />
             )}
           />
@@ -120,17 +157,31 @@ export function BillingShippingSection({
           {/* Shipping Name */}
           <formAddress.Field
             name="shipping_name"
+            validators={{
+              onChange: ({ value }: any) => {
+                if (!value) return 'Shipping name is required';
+              },
+            }}
             children={(field: any) => (
               <TextField
                 fullWidth
-                label="Shipping Name"
+                id={field.name}
+                name={field.name}
+                label={t('shipping_name')}
                 variant="outlined"
-                value={field.state.value}
+                value={field.state.value ?? ''}
                 onChange={(e) => field.handleChange(e.target.value)}
+                onBlur={() => field.handleBlur()}
                 size="small"
                 required
-                error={Boolean(field.state.meta.touched && field.state.meta.error)}
-                helperText={field.state.meta.touched ? field.state.meta.error : ''}
+                error={Boolean(
+                  field.state.meta.touched && field.state.meta.error,
+                )}
+                helperText={
+                  field.state.meta.isTouched
+                    ? field.state.meta.errors
+                    : undefined
+                }
               />
             )}
           />
@@ -141,7 +192,7 @@ export function BillingShippingSection({
             children={(field: any) => (
               <TextField
                 fullWidth
-                label="Additional Information"
+                label={t('additional_information')}
                 variant="outlined"
                 multiline
                 rows={3}
@@ -149,8 +200,12 @@ export function BillingShippingSection({
                 onChange={(e) => field.handleChange(e.target.value)}
                 size="small"
                 required
-                error={Boolean(field.state.meta.touched && field.state.meta.error)}
-                helperText={field.state.meta.touched ? field.state.meta.error : ''}
+                error={Boolean(
+                  field.state.meta.touched && field.state.meta.error,
+                )}
+                helperText={
+                  field.state.meta.touched ? field.state.meta.error : ''
+                }
               />
             )}
           />
