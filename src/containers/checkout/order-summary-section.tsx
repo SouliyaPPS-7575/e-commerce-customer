@@ -2,9 +2,10 @@ import { Box, CardContent, Divider, Stack, Typography } from '@mui/material';
 import { StyledCard, PlaceOrderButton } from '~/styles/checkout';
 import { OrderItemRow } from './order-item-row';
 import { useTranslation } from 'react-i18next';
+import { OrderItems } from '~/models/checkout';
 
 interface OrderSummarySectionProps {
-  orderItems: any[];
+  orderItems: OrderItems[];
   subtotal: number;
   shippingFee: number;
   total: number;
@@ -13,8 +14,6 @@ interface OrderSummarySectionProps {
   convert: (amount: number) => number;
   isSubmitting: boolean;
   onPlaceOrder: () => void;
-  formAddress: any;
-  formCheckout: any;
 }
 
 export function OrderSummarySection({
@@ -27,8 +26,6 @@ export function OrderSummarySection({
   convert,
   isSubmitting,
   onPlaceOrder,
-  formAddress,
-  formCheckout,
 }: OrderSummarySectionProps) {
   const { t } = useTranslation();
 
@@ -119,7 +116,7 @@ export function OrderSummarySection({
           variant="contained"
           size="medium"
           onClick={onPlaceOrder}
-          disabled={isSubmitting || !formAddress || !formCheckout}
+          disabled={isSubmitting}
         >
           {isSubmitting ? `${t('processing')}...` : `${t('place_order')}`}
         </PlaceOrderButton>

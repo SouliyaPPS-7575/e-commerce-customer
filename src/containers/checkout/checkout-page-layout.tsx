@@ -22,8 +22,8 @@ export function CheckoutPageLayout({ children }: CheckoutPageLayoutProps) {
     >
       <Container maxWidth="lg" sx={{ py: 4 }}>
         <Typography
-          variant="h4"
-          component="h1"
+          variant="h5"
+          component="h2"
           sx={{ mb: 2, fontWeight: 400, color: '#666' }}
         >
           {t('checkout_details')}

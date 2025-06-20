@@ -8,9 +8,17 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import { Link, useRouterState } from '@tanstack/react-router';
 import { Facebook } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 function Footer() {
+  const { t } = useTranslation();
+
+  // Current Path URL
+  const location = useRouterState({ select: (state) => state.location });
+  const currentPath = location.pathname;
+
   return (
     <>
       {/* Green top border */}
@@ -66,7 +74,7 @@ function Footer() {
                 variant="h6"
                 sx={{ fontWeight: 600, mb: 2, color: '#000' }}
               >
-                Contact
+                {t('contact')}
               </Typography>
               <Typography variant="body2" sx={{ color: '#333', mb: 1.5 }}>
                 020 123 456 78
@@ -93,17 +101,102 @@ function Footer() {
                 variant="h6"
                 sx={{ fontWeight: 600, mb: 2, color: '#000' }}
               >
-                Navigation
+                {t('navigation')}
               </Typography>
-              <Typography variant="body2" sx={{ color: '#333', mb: 1.5 }}>
-                Home
-              </Typography>
-              <Typography variant="body2" sx={{ color: '#333', mb: 1.5 }}>
-                Shop
-              </Typography>
-              <Typography variant="body2" sx={{ color: '#333' }}>
-                Blog
-              </Typography>
+              <Link to="/" className={currentPath === '/' ? 'active' : ''}>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: '#333',
+                    mb: 2,
+                    cursor: 'pointer',
+                    display: 'inline-block',
+                    fontWeight: currentPath === '/' ? 700 : 400,
+                    position: 'relative',
+                    '&::after': {
+                      content: '""',
+                      position: 'absolute',
+                      width: currentPath === '/' ? '100%' : '0%',
+                      height: '2px',
+                      bottom: -2,
+                      left: 0,
+                      backgroundColor: 'primary.main',
+                      transition: 'width 0.3s ease',
+                    },
+                    '&:hover::after': {
+                      width: '100%',
+                    },
+                  }}
+                >
+                  {t('home')}
+                </Typography>
+              </Link>
+              <br />
+              <Link
+                to="/shop/index/$category_id"
+                params={{ category_id: 'all' }}
+                className={currentPath === '/shop' ? 'active' : ''}
+              >
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: '#333',
+                    mb: 2,
+                    cursor: 'pointer',
+                    display: 'inline-block',
+                    fontWeight: currentPath.startsWith('/shop') ? 700 : 400,
+                    position: 'relative',
+                    '&::after': {
+                      content: '""',
+                      position: 'absolute',
+                      width: currentPath.startsWith('/shop') ? '100%' : '0%',
+                      height: '2px',
+                      bottom: -2,
+                      left: 0,
+                      backgroundColor: 'primary.main',
+                      transition: 'width 0.3s ease',
+                    },
+                    '&:hover::after': {
+                      width: '100%',
+                    },
+                  }}
+                >
+                  {t('shop')}
+                </Typography>
+              </Link>
+              <br />
+
+              <Link
+                to="/blog"
+                className={currentPath === '/blog' ? 'active' : ''}
+              >
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: '#333',
+                    mb: 2,
+                    cursor: 'pointer',
+                    display: 'inline-block',
+                    fontWeight: currentPath.startsWith('/blog') ? 700 : 400,
+                    position: 'relative',
+                    '&::after': {
+                      content: '""',
+                      position: 'absolute',
+                      width: currentPath.startsWith('/blog') ? '100%' : '0%',
+                      height: '2px',
+                      bottom: -2,
+                      left: 0,
+                      backgroundColor: 'primary.main',
+                      transition: 'width 0.3s ease',
+                    },
+                    '&:hover::after': {
+                      width: '100%',
+                    },
+                  }}
+                >
+                  {t('journal')}
+                </Typography>
+              </Link>
             </Grid>
 
             {/* Join Us Column */}
@@ -117,14 +210,14 @@ function Footer() {
                 variant="h6"
                 sx={{ fontWeight: 600, mb: 2, color: '#000' }}
               >
-                Join us
+                {t('join_us')}
               </Typography>
               <Typography variant="body2" sx={{ color: '#333', mb: 2 }}>
-                Be the first to recieve news & update
+                {t('recieve_news')}
               </Typography>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                 <TextField
-                  placeholder="Enter your email address"
+                  placeholder={t('enter_email')}
                   variant="outlined"
                   size="small"
                   sx={{
@@ -157,7 +250,7 @@ function Footer() {
                     borderRadius: 1,
                   }}
                 >
-                  Subscribe
+                  {t('subscribe')}
                 </Button>
               </Box>
             </Grid>

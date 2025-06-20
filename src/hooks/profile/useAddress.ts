@@ -18,6 +18,7 @@ export const useAddress = () => {
   const { address } = useViewAddress();
   const { provinces } = useProvinces();
   const { districts } = useDistricts(provinceID || address?.province_id);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { mutate: createAddressMutate } = useMutation({
     mutationFn: createAdresses,
@@ -46,6 +47,12 @@ export const useAddress = () => {
     listeners: {
       onChange: (e) => {
         setProvinceID(e.formApi.store.state.values.province_id);
+        const { province_id, district_id, village, shipping_name } =
+          e.formApi.store.state.values;
+        
+        const isAllEmpty =
+          !!province_id && !!district_id && !!village && !!shipping_name;
+        setIsSubmitting(!isAllEmpty);
       },
     },
     onSubmit: async ({ value }) => {
@@ -94,5 +101,7 @@ export const useAddress = () => {
     formAddress,
     provinces,
     districts,
+    isSubmitting,
+    setIsSubmitting,
   };
 };

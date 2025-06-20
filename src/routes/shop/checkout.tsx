@@ -66,10 +66,10 @@ function RouteComponent() {
     selectedItemIds.includes(item.id),
   ) as OrderItems[];
 
-  const { formAddress, provinces, districts } = useAddress();
+  const { formAddress, provinces, districts, isSubmitting, setIsSubmitting } =
+    useAddress();
 
-  const { isSubmitting, setIsSubmitting, formCheckout } =
-    useCheckoutLogic(selectedItemIds);
+  const { formCheckout } = useCheckoutLogic(selectedItemIds);
 
   const {
     subtotal,
@@ -170,8 +170,6 @@ function RouteComponent() {
           convert={convert}
           isSubmitting={isSubmitting}
           onPlaceOrder={handlePlaceOrder}
-          formAddress={formAddress}
-          formCheckout={formCheckout}
         />
       </Grid>
     </CheckoutPageLayout>

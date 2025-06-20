@@ -60,10 +60,10 @@ function RouteComponent() {
   const { data: product } = useSuspenseQuery(
     viewProductDetailsQueryOption(product_id),
   );
-  const { formAddress, provinces, districts } = useAddress();
+  const { formAddress, provinces, districts, isSubmitting, setIsSubmitting } =
+    useAddress();
 
-  const { isSubmitting, setIsSubmitting, createOrderMutate } =
-    useCheckoutLogic();
+  const { createOrderMutate } = useCheckoutLogic();
 
   const orderItems: OrderItems[] = [
     {
@@ -220,8 +220,6 @@ function RouteComponent() {
           convert={convert}
           isSubmitting={isSubmitting}
           onPlaceOrder={handlePlaceOrder}
-          formAddress={formAddress}
-          formCheckout={formCheckout}
         />
       </Grid>
     </CheckoutPageLayout>

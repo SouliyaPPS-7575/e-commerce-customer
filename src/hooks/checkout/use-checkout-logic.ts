@@ -1,7 +1,6 @@
 import { useForm } from '@tanstack/react-form';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate, useRouterState } from '@tanstack/react-router';
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { localStorageData } from '~/server/cache';
@@ -18,7 +17,6 @@ import { useDeleteCartItem } from '../shop/useDeleteCartItem';
 export function useCheckoutLogic(selectedItemIds?: string[]) {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Current Path URL
   const location = useRouterState({ select: (state) => state.location });
@@ -57,11 +55,6 @@ export function useCheckoutLogic(selectedItemIds?: string[]) {
           params: { order_id: res.order_id },
         });
       }
-
-      setIsSubmitting(false);
-    },
-    onError: () => {
-      setIsSubmitting(false);
     },
   });
 
@@ -102,8 +95,6 @@ export function useCheckoutLogic(selectedItemIds?: string[]) {
   });
 
   return {
-    isSubmitting,
-    setIsSubmitting,
     formCheckout,
     createOrderMutate,
   };

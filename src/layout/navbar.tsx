@@ -251,6 +251,11 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
 
             {/* Action icons */}
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              {/* Language change */}
+              <Box sx={{ mr: 1.2 }}>
+                <LanguageSelection />
+              </Box>
+
               {/* Currency selector */}
               <CurrencySelector isTransparent={isTransparent} />
 
@@ -303,86 +308,81 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
               )}
 
               {/* User account dropdown */}
-              {!isMobile && (
-                <Box sx={{ position: 'relative', ml: 1, mr: 0 }}>
-                  <IconButton
-                    color="inherit"
-                    onClick={handleAccountClick}
-                    aria-controls={open ? 'account-menu' : undefined}
-                    aria-haspopup="true"
-                    aria-expanded={open ? 'true' : undefined}
-                  >
-                    <AccountCircle
-                      sx={{ color: isTransparent ? 'back' : 'white' }}
-                    />
-                  </IconButton>
-                  <Menu
-                    id="account-menu"
-                    anchorEl={anchorEl}
-                    open={open}
-                    onClose={() => setAnchorEl(null)}
-                    MenuListProps={{
-                      'aria-labelledby': 'account-button',
+              <Box sx={{ position: 'relative', ml: 1, mr: -1 }}>
+                <IconButton
+                  color="inherit"
+                  onClick={handleAccountClick}
+                  aria-controls={open ? 'account-menu' : undefined}
+                  aria-haspopup="true"
+                  aria-expanded={open ? 'true' : undefined}
+                >
+                  <AccountCircle
+                    sx={{ color: isTransparent ? 'back' : 'white' }}
+                  />
+                </IconButton>
+                <Menu
+                  id="account-menu"
+                  anchorEl={anchorEl}
+                  open={open}
+                  onClose={() => setAnchorEl(null)}
+                  MenuListProps={{
+                    'aria-labelledby': 'account-button',
+                  }}
+                  PaperProps={{
+                    elevation: 0,
+                    sx: {
+                      overflow: 'visible',
+                      filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.1))',
+                      mt: 1.5,
+                      borderRadius: 2,
+                      minWidth: 180,
+                      '& .MuiAvatar-root': {
+                        width: 32,
+                        height: 32,
+                        ml: -0.5,
+                        mr: 1,
+                      },
+                      '& .MuiMenuItem-root': {
+                        py: 1.5,
+                      },
+                    },
+                  }}
+                  transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                  anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                >
+                  <MenuItem
+                    onClick={() => {
+                      setAnchorEl(null);
+                      navigate({ to: '/profiles' });
                     }}
-                    PaperProps={{
-                      elevation: 0,
-                      sx: {
-                        overflow: 'visible',
-                        filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.1))',
-                        mt: 1.5,
-                        borderRadius: 2,
-                        minWidth: 180,
-                        '& .MuiAvatar-root': {
-                          width: 32,
-                          height: 32,
-                          ml: -0.5,
-                          mr: 1,
-                        },
-                        '& .MuiMenuItem-root': {
-                          py: 1.5,
-                        },
+                    sx={{
+                      color: '#4A5568',
+                      '&:hover': {
+                        backgroundColor: '#F7FAFC',
                       },
                     }}
-                    transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-                    anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
                   >
-                    <MenuItem
-                      onClick={() => {
-                        setAnchorEl(null);
-                        navigate({ to: '/profiles' });
-                      }}
-                      sx={{
-                        color: '#4A5568',
-                        '&:hover': {
-                          backgroundColor: '#F7FAFC',
-                        },
-                      }}
-                    >
-                      <Profile sx={{ mr: 1, color: '#C98B6B' }} />
-                      <Typography>{t('view_profile')}</Typography>
-                    </MenuItem>
-                    <Divider />
-                    <MenuItem
-                      onClick={() => {
-                        setAnchorEl(null);
-                        navigate({ to: '/logout' });
-                      }}
-                      sx={{
-                        color: '#4A5568',
-                        '&:hover': {
-                          backgroundColor: '#FEF2F2',
-                        },
-                      }}
-                    >
-                      <Logout sx={{ mr: 1, color: '#E53E3E' }} />
-                      <Typography>{t('logout')}</Typography>
-                    </MenuItem>
-                  </Menu>
-                </Box>
-              )}
-
-              {/* Language change */}
-              <LanguageSelection />
+                    <Profile sx={{ mr: 1, color: '#C98B6B' }} />
+                    <Typography>{t('view_profile')}</Typography>
+                  </MenuItem>
+                  <Divider />
+                  <MenuItem
+                    onClick={() => {
+                      setAnchorEl(null);
+                      navigate({ to: '/logout' });
+                    }}
+                    sx={{
+                      color: '#4A5568',
+                      '&:hover': {
+                        backgroundColor: '#FEF2F2',
+                      },
+                    }}
+                  >
+                    <Logout sx={{ mr: 1, color: '#E53E3E' }} />
+                    <Typography>{t('logout')}</Typography>
+                  </MenuItem>
+                </Menu>
+              </Box>
             </Box>
           </Toolbar>
         </Container>
