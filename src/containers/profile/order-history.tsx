@@ -416,6 +416,16 @@ export function OrderHistory({
                                     textAlign: 'center',
                                   }}
                                 >
+                                  {t('price')}
+                                </TableCell>
+                                <TableCell
+                                  align="center"
+                                  sx={{
+                                    fontWeight: 'bold',
+                                    color: 'text.primary',
+                                    textAlign: 'center',
+                                  }}
+                                >
                                   {t('total')}
                                 </TableCell>
                               </TableRow>
@@ -425,6 +435,7 @@ export function OrderHistory({
                               {orderItems?.products?.map((product) => (
                                 <React.Fragment key={product.id}>
                                   <TableRow>
+                                    {/* Image */}
                                     <TableCell
                                       align="center"
                                       sx={{ textAlign: 'center' }}
@@ -443,6 +454,8 @@ export function OrderHistory({
                                         />
                                       </Link>
                                     </TableCell>
+
+                                    {/* Product */}
                                     <TableCell
                                       align="center"
                                       sx={{ textAlign: 'center' }}
@@ -459,6 +472,8 @@ export function OrderHistory({
                                         {product?.name || 'N/A'}
                                       </Typography>
                                     </TableCell>
+
+                                    {/* Date */}
                                     <TableCell
                                       align="center"
                                       sx={{ textAlign: 'center' }}
@@ -476,6 +491,8 @@ export function OrderHistory({
                                           formatDateDMY(product.created)}
                                       </Typography>
                                     </TableCell>
+
+                                    {/* Quantity */}
                                     <TableCell
                                       align="center"
                                       sx={{ textAlign: 'center' }}
@@ -492,6 +509,29 @@ export function OrderHistory({
                                         {product?.quantity || 0}
                                       </Typography>
                                     </TableCell>
+
+                                    {/* Price */}
+                                    <TableCell
+                                      align="center"
+                                      sx={{ textAlign: 'center' }}
+                                    >
+                                      <Typography
+                                        variant="body1"
+                                        sx={{
+                                          fontWeight: 'bold',
+                                          color: 'text.secondary',
+                                          textTransform: 'capitalize',
+                                          whiteSpace: 'nowrap',
+                                        }}
+                                      >
+                                        {formatCurrency(
+                                          convert(product.price),
+                                        ) || 0}{' '}
+                                        {displayCurrency}
+                                      </Typography>
+                                    </TableCell>
+
+                                    {/* Total */}
                                     <TableCell
                                       align="center"
                                       sx={{ textAlign: 'center' }}
@@ -527,10 +567,7 @@ export function OrderHistory({
             ) : (
               <TableRow>
                 <TableCell colSpan={6} align="center">
-                  <Typography
-                    variant="body1"
-                    color="text.secondary"
-                  >
+                  <Typography variant="body1" color="text.secondary">
                     {t('no_orders_found')}
                   </Typography>
                 </TableCell>
