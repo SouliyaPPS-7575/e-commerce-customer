@@ -1,13 +1,13 @@
 import CheckIcon from '@mui/icons-material/Check';
 import ContentCopy from '@mui/icons-material/ContentCopy';
 import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUp from '@mui/icons-material/KeyboardArrowUp';
 import {
   Box,
   Collapse,
   Grid,
   IconButton,
   MenuItem,
+  Paper,
   Select,
   Table,
   TableBody,
@@ -16,7 +16,7 @@ import {
   TableHead,
   TableRow,
   Tooltip,
-  Typography,
+  Typography
 } from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { Link, useNavigate, useSearch } from '@tanstack/react-router';
@@ -153,27 +153,64 @@ export function OrderHistory({
           </Grid>
         </Grid>
       </Box>
-      <TableContainer>
-        <Table>
+      {/* Main Order History Table */}
+      <TableContainer component={Paper} sx={{ mb: 2, borderRadius: 2 }}>
+        <Table stickyHeader>
           <TableHead>
             <TableRow>
-              <TableCell />
-              <TableCell sx={{ fontWeight: 'bold', color: 'text.primary' }}>
+              <TableCell sx={{ width: '50px' }} />
+              <TableCell
+                sx={{
+                  fontWeight: 'bold',
+                  color: 'text.primary',
+                  minWidth: '150px',
+                }}
+              >
                 {t('reference_id')}
               </TableCell>
-              <TableCell sx={{ fontWeight: 'bold', color: 'text.primary' }}>
+              <TableCell
+                sx={{
+                  fontWeight: 'bold',
+                  color: 'text.primary',
+                  minWidth: '120px',
+                }}
+              >
                 {t('date')}
               </TableCell>
-              <TableCell sx={{ fontWeight: 'bold', color: 'text.primary' }}>
+              <TableCell
+                sx={{
+                  fontWeight: 'bold',
+                  color: 'text.primary',
+                  minWidth: '100px',
+                }}
+              >
                 {t('status')}
               </TableCell>
-              <TableCell sx={{ fontWeight: 'bold', color: 'text.primary' }}>
+              <TableCell
+                sx={{
+                  fontWeight: 'bold',
+                  color: 'text.primary',
+                  minWidth: '200px',
+                }}
+              >
                 {t('address')}
               </TableCell>
-              <TableCell sx={{ fontWeight: 'bold', color: 'text.primary' }}>
+              <TableCell
+                sx={{
+                  fontWeight: 'bold',
+                  color: 'text.primary',
+                  minWidth: '80px',
+                }}
+              >
                 {t('quantity')}
               </TableCell>
-              <TableCell sx={{ fontWeight: 'bold', color: 'text.primary' }}>
+              <TableCell
+                sx={{
+                  fontWeight: 'bold',
+                  color: 'text.primary',
+                  minWidth: '120px',
+                }}
+              >
                 {t('total')}
               </TableCell>
             </TableRow>
@@ -188,6 +225,9 @@ export function OrderHistory({
                       '&:last-child td, &:last-child th': {
                         border: 0,
                       },
+                      backgroundColor:
+                        expandedRow === order.id ? 'action.hover' : 'inherit',
+                      transition: 'background-color 0.2s ease',
                     }}
                   >
                     <TableCell>
@@ -210,12 +250,15 @@ export function OrderHistory({
                             },
                           });
                         }}
+                        sx={{
+                          transform:
+                            expandedRow === order.id
+                              ? 'rotate(180deg)'
+                              : 'rotate(0deg)',
+                          transition: 'transform 0.2s ease',
+                        }}
                       >
-                        {expandedRow === order.id ? (
-                          <KeyboardArrowUp />
-                        ) : (
-                          <KeyboardArrowDown />
-                        )}
+                        <KeyboardArrowDown />
                       </IconButton>
                     </TableCell>
                     <TableCell sx={{ py: 2, color: 'text.primary' }}>
@@ -267,46 +310,34 @@ export function OrderHistory({
                         {order?.created && formatDateDMY(order.created)}
                       </Typography>
                     </TableCell>
-                    <TableCell
-                      sx={{
-                        fontWeight: 'bold',
-                        color:
-                          order?.status === 'completed'
-                            ? 'success.main'
-                            : 'warning.main',
-                      }}
-                    >
-                      <Grid size={{ xs: 6, sm: 6 }}>
-                        <Typography
-                          variant="body1"
-                          sx={{
-                            fontWeight: 'bold',
-                            color:
-                              order?.status === 'purchased'
-                                ? 'success.main'
-                                : order?.status === 'pending'
-                                  ? 'warning.main'
-                                  : order?.status === 'cancel'
-                                    ? 'error.main'
-                                    : 'text.primary',
-                            textTransform: 'capitalize',
-                            textAlign: 'left',
-                            whiteSpace: 'nowrap',
-                          }}
-                        >
-                          {t(`${order?.status}`)}
-                        </Typography>
-                      </Grid>
+                    <TableCell>
+                      <Typography
+                        variant="body1"
+                        sx={{
+                          fontWeight: 'bold',
+                          color:
+                            order?.status === 'purchased'
+                              ? 'success.main'
+                              : order?.status === 'pending'
+                                ? 'warning.main'
+                                : order?.status === 'cancel'
+                                  ? 'error.main'
+                                  : 'text.primary',
+                          textTransform: 'capitalize',
+                          textAlign: 'left',
+                          whiteSpace: 'nowrap',
+                        }}
+                      >
+                        {t(`${order?.status}`)}
+                      </Typography>
                     </TableCell>
                     <TableCell
-                      sx={{
-                        fontWeight: 'bold',
-                        color: 'text.primary',
-                      }}
+                      sx={{ fontWeight: 'bold', color: 'text.primary' }}
                     >
                       <Box>
                         {(order?.address || t('no_address_found'))
                           .split(',')
+                          .slice(0, 2) // Show only first 2 lines to save space
                           .map((line, index) => (
                             <Typography
                               key={index}
@@ -315,7 +346,10 @@ export function OrderHistory({
                                 color: 'text.secondary',
                                 textTransform: 'capitalize',
                                 textAlign: 'left',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
                                 whiteSpace: 'nowrap',
+                                maxWidth: '200px',
                               }}
                             >
                               {line.trim()}
@@ -324,10 +358,7 @@ export function OrderHistory({
                       </Box>
                     </TableCell>
                     <TableCell
-                      sx={{
-                        fontWeight: 'bold',
-                        color: 'text.primary',
-                      }}
+                      sx={{ fontWeight: 'bold', color: 'text.primary' }}
                     >
                       <Typography
                         variant="body2"
@@ -357,172 +388,147 @@ export function OrderHistory({
                       </Typography>
                     </TableCell>
                   </TableRow>
+
+                  {/* Collapsed Detail Row */}
                   <TableRow>
-                    <TableCell colSpan={5} sx={{ py: 0 }}>
+                    <TableCell
+                      colSpan={7}
+                      sx={{
+                        py: 0,
+                        border: 'none',
+                        backgroundColor: 'grey.50',
+                      }}
+                    >
                       <Collapse
                         in={expandedRow === order.id}
                         timeout="auto"
                         unmountOnExit
                       >
-                        <TableContainer>
-                          <Table>
-                            <TableHead>
-                              <TableRow>
-                                <TableCell
-                                  align="center"
-                                  sx={{
-                                    fontWeight: 'bold',
-                                    color: 'text.primary',
-                                    textAlign: 'center',
-                                  }}
-                                >
-                                  {t('image')}
-                                </TableCell>
-                                <TableCell
-                                  align="center"
-                                  sx={{
-                                    fontWeight: 'bold',
-                                    color: 'text.primary',
-                                    textAlign: 'center',
-                                  }}
-                                >
-                                  {t('products')}
-                                </TableCell>
-                                <TableCell
-                                  align="center"
-                                  sx={{
-                                    fontWeight: 'bold',
-                                    color: 'text.primary',
-                                    textAlign: 'center',
-                                  }}
-                                >
-                                  {t('date')}
-                                </TableCell>
-                                <TableCell
-                                  align="center"
-                                  sx={{
-                                    fontWeight: 'bold',
-                                    color: 'text.primary',
-                                    textAlign: 'center',
-                                  }}
-                                >
-                                  {t('quantity')}
-                                </TableCell>
-                                <TableCell
-                                  align="center"
-                                  sx={{
-                                    fontWeight: 'bold',
-                                    color: 'text.primary',
-                                    textAlign: 'center',
-                                  }}
-                                >
-                                  {t('price')}
-                                </TableCell>
-                                <TableCell
-                                  align="center"
-                                  sx={{
-                                    fontWeight: 'bold',
-                                    color: 'text.primary',
-                                    textAlign: 'center',
-                                  }}
-                                >
-                                  {t('total')}
-                                </TableCell>
-                              </TableRow>
-                            </TableHead>
-
-                            <TableBody>
-                              {orderItems?.products?.map((product) => (
-                                <React.Fragment key={product.id}>
-                                  <TableRow>
-                                    {/* Image */}
-                                    <TableCell
-                                      align="center"
-                                      sx={{ textAlign: 'center' }}
-                                    >
+                        <Box sx={{ p: 2 }}>
+                          {/* Product Details Table */}
+                          <TableContainer
+                            component={Paper}
+                            sx={{ mb: 3, borderRadius: 1 }}
+                          >
+                            <Table size="small">
+                              <TableHead>
+                                <TableRow sx={{ backgroundColor: 'grey.100' }}>
+                                  <TableCell
+                                    sx={{
+                                      minWidth: '100px',
+                                    }}
+                                  >
+                                    {t('image')}
+                                  </TableCell>
+                                  <TableCell
+                                    sx={{
+                                      minWidth: '200px',
+                                    }}
+                                  >
+                                    {t('products')}
+                                  </TableCell>
+                                  <TableCell
+                                    sx={{
+                                      minWidth: '120px',
+                                    }}
+                                  >
+                                    {t('date')}
+                                  </TableCell>
+                                  <TableCell
+                                    sx={{
+                                      minWidth: '80px',
+                                      textAlign: 'center',
+                                    }}
+                                  >
+                                    {t('quantity')}
+                                  </TableCell>
+                                  <TableCell
+                                    sx={{
+                                      minWidth: '100px',
+                                      textAlign: 'right',
+                                    }}
+                                  >
+                                    {t('price')}
+                                  </TableCell>
+                                  <TableCell
+                                    sx={{
+                                      minWidth: '120px',
+                                      textAlign: 'right',
+                                    }}
+                                  >
+                                    {t('total')}
+                                  </TableCell>
+                                </TableRow>
+                              </TableHead>
+                              <TableBody>
+                                {orderItems?.products?.map((product) => (
+                                  <TableRow
+                                    key={product.id}
+                                    sx={{
+                                      '&:hover': {
+                                        backgroundColor: 'action.hover',
+                                      },
+                                    }}
+                                  >
+                                    <TableCell>
                                       <Link
                                         to="/shop/view/$productID/$categoryID"
                                         params={{
                                           productID: product.id ?? '',
                                           categoryID: product.category_id ?? '',
                                         }}
-                                        style={{ display: 'inline-block' }}
+                                        style={{ textDecoration: 'none' }}
                                       >
                                         <ProductImage
                                           src={product?.image_url[0]}
                                           alt={product?.name}
+                                          style={{
+                                            width: '60px',
+                                            height: '60px',
+                                            objectFit: 'cover',
+                                            borderRadius: '8px',
+                                            cursor: 'pointer',
+                                          }}
                                         />
                                       </Link>
                                     </TableCell>
-
-                                    {/* Product */}
-                                    <TableCell
-                                      align="center"
-                                      sx={{ textAlign: 'center' }}
-                                    >
+                                    <TableCell>
                                       <Typography
-                                        variant="body1"
+                                        variant="body2"
                                         sx={{
-                                          fontWeight: 'bold',
-                                          color: 'text.secondary',
-                                          textTransform: 'capitalize',
+                                          fontWeight: 'medium',
+                                          color: 'text.primary',
+                                          overflow: 'hidden',
+                                          textOverflow: 'ellipsis',
                                           whiteSpace: 'nowrap',
+                                          maxWidth: '200px',
                                         }}
                                       >
                                         {product?.name || 'N/A'}
                                       </Typography>
                                     </TableCell>
-
-                                    {/* Date */}
-                                    <TableCell
-                                      align="center"
-                                      sx={{ textAlign: 'center' }}
-                                    >
+                                    <TableCell>
                                       <Typography
-                                        variant="body1"
-                                        sx={{
-                                          fontWeight: 'bold',
-                                          color: 'text.secondary',
-                                          textTransform: 'capitalize',
-                                          whiteSpace: 'nowrap',
-                                        }}
+                                        variant="body2"
+                                        color="text.secondary"
+                                        sx={{ whiteSpace: 'nowrap' }}
                                       >
                                         {product?.created &&
                                           formatDateDMY(product.created)}
                                       </Typography>
                                     </TableCell>
-
-                                    {/* Quantity */}
-                                    <TableCell
-                                      align="center"
-                                      sx={{ textAlign: 'center' }}
-                                    >
+                                    <TableCell sx={{ textAlign: 'center' }}>
                                       <Typography
-                                        variant="body1"
-                                        sx={{
-                                          fontWeight: 'bold',
-                                          color: 'text.secondary',
-                                          textTransform: 'capitalize',
-                                          whiteSpace: 'nowrap',
-                                        }}
+                                        variant="body2"
+                                        sx={{ fontWeight: 'bold' }}
                                       >
                                         {product?.quantity || 0}
                                       </Typography>
                                     </TableCell>
-
-                                    {/* Price */}
-                                    <TableCell
-                                      align="center"
-                                      sx={{ textAlign: 'center' }}
-                                    >
+                                    <TableCell sx={{ textAlign: 'right' }}>
                                       <Typography
-                                        variant="body1"
-                                        sx={{
-                                          fontWeight: 'bold',
-                                          color: 'text.secondary',
-                                          textTransform: 'capitalize',
-                                          whiteSpace: 'nowrap',
-                                        }}
+                                        variant="body2"
+                                        color="text.primary"
                                       >
                                         {formatCurrency(
                                           convert(product.price),
@@ -530,19 +536,12 @@ export function OrderHistory({
                                         {displayCurrency}
                                       </Typography>
                                     </TableCell>
-
-                                    {/* Total */}
-                                    <TableCell
-                                      align="center"
-                                      sx={{ textAlign: 'center' }}
-                                    >
+                                    <TableCell sx={{ textAlign: 'right' }}>
                                       <Typography
-                                        variant="body1"
+                                        variant="body2"
                                         sx={{
                                           fontWeight: 'bold',
-                                          color: 'text.secondary',
-                                          textTransform: 'capitalize',
-                                          whiteSpace: 'nowrap',
+                                          color: 'primary.main',
                                         }}
                                       >
                                         {formatCurrency(
@@ -554,11 +553,145 @@ export function OrderHistory({
                                       </Typography>
                                     </TableCell>
                                   </TableRow>
-                                </React.Fragment>
-                              ))}
-                            </TableBody>
-                          </Table>
-                        </TableContainer>
+                                ))}
+                              </TableBody>
+                            </Table>
+                          </TableContainer>
+
+                          {/* Order Summary */}
+                          <Box
+                            sx={{
+                              mt: 3,
+                              p: 2,
+                              backgroundColor: 'background.paper',
+                              borderRadius: 2,
+                            }}
+                          >
+                            <Typography variant="h6" sx={{ mb: 2 }}>
+                              {t('order_summary')}
+                            </Typography>
+                            <Grid container spacing={2}>
+                              {/* Shipping Name Section */}
+                              <Grid
+                                size={{
+                                  xs: 12,
+                                  sm: 6,
+                                  md: 4,
+                                }}
+                              >
+                                <Typography
+                                  variant="body2"
+                                  color="text.secondary"
+                                  sx={{ mb: 0.5 }}
+                                >
+                                  {t('shipping_name')}:
+                                </Typography>
+                                <Typography
+                                  variant="body1"
+                                  sx={{ fontWeight: 'bold' }}
+                                >
+                                  {(() => {
+                                    if (order?.address?.split(',').length >= 2)
+                                      return order.address
+                                        .split(',')
+                                        .slice(-2)
+                                        .join(', ');
+                                    if (order?.customerName)
+                                      return order.customerName;
+
+                                    // Extract shipping name from address (last 2 parts)
+                                    if (order?.address) {
+                                      const addressParts = order.address
+                                        .split(',')
+                                        .map((part) => part.trim());
+                                      if (addressParts.length >= 2) {
+                                        return addressParts
+                                          .slice(-2)
+                                          .join(', ');
+                                      }
+                                    }
+                                    return t('no_name_found');
+                                  })()}
+                                </Typography>
+                              </Grid>
+
+                              {/* Address Section */}
+                              <Grid
+                                size={{
+                                  xs: 12,
+                                  sm: 6,
+                                  md: 4,
+                                }}
+                              >
+                                <Typography
+                                  variant="body2"
+                                  color="text.secondary"
+                                  sx={{ mb: 0.5 }}
+                                >
+                                  {t('shipping_address')}:
+                                </Typography>
+                                <Typography
+                                  variant="body1"
+                                  sx={{ fontWeight: 'bold' }}
+                                >
+                                  {(() => {
+                                    if (!order?.address)
+                                      return t('no_address_found');
+
+                                    // Extract address (first parts, excluding last 2 which are name)
+                                    const addressParts = order.address
+                                      .split(',')
+                                      .map((part) => part.trim());
+                                    if (addressParts.length > 2) {
+                                      return addressParts
+                                        .slice(0, -2)
+                                        .join(', ');
+                                    } else if (addressParts.length <= 2) {
+                                      // If only 2 or fewer parts, show all as address
+                                      return order.address;
+                                    }
+                                    return order.address;
+                                  })()}
+                                </Typography>
+                              </Grid>
+                              <Grid
+                                size={{
+                                  xs: 12,
+                                  sm: 6,
+                                  md: 3.5,
+                                }}
+                              >
+                                <Box
+                                  sx={{
+                                    textAlign: { xs: 'left', sm: 'right' },
+                                  }}
+                                >
+                                  <Typography
+                                    variant="body2"
+                                    color="text.secondary"
+                                  >
+                                    {t('total')}:
+                                  </Typography>
+                                  <Typography
+                                    variant="h6"
+                                    color="primary.main"
+                                    sx={{ fontWeight: 'bold' }}
+                                  >
+                                    {currency === 'USD' &&
+                                      order?.amountUSD &&
+                                      `${formatCurrency(Number(order?.amountUSD))} $`}
+                                    {currency === 'THB' &&
+                                      order?.amountTHB &&
+                                      `${formatCurrency(Number(order?.amountTHB))} ฿`}
+                                    {currency === 'LAK' &&
+                                      order?.amountLAK &&
+                                      `${formatCurrency(Number(order?.amountLAK))} ₭`}
+                                  </Typography>
+                                </Box>
+                              </Grid>
+                            </Grid>
+                          </Box>
+                        </Box>
                       </Collapse>
                     </TableCell>
                   </TableRow>
@@ -566,7 +699,7 @@ export function OrderHistory({
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={6} align="center">
+                <TableCell colSpan={7} align="center" sx={{ py: 4 }}>
                   <Typography variant="body1" color="text.secondary">
                     {t('no_orders_found')}
                   </Typography>

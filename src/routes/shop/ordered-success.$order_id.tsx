@@ -75,36 +75,40 @@ export default function RouteComponent() {
             </h2>
 
             <div className="space-y-4">
-              {orderItems?.map((item, index) => (
-                <div key={index} className="flex items-center gap-4">
-                  <div className="w-16 h-16 bg-gray-100 rounded-md overflow-hidden flex-shrink-0">
-                    <img
-                      src={item?.image_url?.[0] || '/placeholder.svg'}
-                      alt={item?.product_name}
-                      className="w-full h-full object-cover"
-                    />
+              <div className="max-h-80 overflow-y-auto space-y-4 pr-2 scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-800">
+                {orderItems?.map((item, index) => (
+                  <div key={index} className="flex items-center gap-4">
+                    <div className="w-16 h-16 bg-gray-100 rounded-md overflow-hidden flex-shrink-0">
+                      <img
+                        src={item?.image_url?.[0] || '/placeholder.svg'}
+                        alt={item?.product_name}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-medium text-gray-900">
+                        {item?.product_name}
+                      </h3>
+                      <p className="text-sm text-gray-600">
+                        x {item?.quantity}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-medium text-gray-900">
+                        {currency === 'USD' &&
+                          item?.price_usd &&
+                          `${formatCurrency(item?.price_usd * item.quantity)} $`}
+                        {currency === 'THB' &&
+                          item?.price_thb &&
+                          `${formatCurrency(item?.price_thb * item.quantity)} ฿`}
+                        {currency === 'LAK' &&
+                          item?.price_lak &&
+                          `${formatCurrency(item?.price_lak * item.quantity)} ₭`}
+                      </p>
+                    </div>
                   </div>
-                  <div className="flex-1">
-                    <h3 className="font-medium text-gray-900">
-                      {item?.product_name}
-                    </h3>
-                    <p className="text-sm text-gray-600">x {item?.quantity}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-medium text-gray-900">
-                      {currency === 'USD' &&
-                        item?.price_usd &&
-                        `${formatCurrency(item?.price_usd * item.quantity)} $`}
-                      {currency === 'THB' &&
-                        item?.price_thb &&
-                        `${formatCurrency(item?.price_thb * item.quantity)} ฿`}
-                      {currency === 'LAK' &&
-                        item?.price_lak &&
-                        `${formatCurrency(item?.price_lak * item.quantity)} ₭`}
-                    </p>
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
 
               <div className="border-t pt-4 mt-6">
                 <div className="flex justify-between items-center">
