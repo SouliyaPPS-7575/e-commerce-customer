@@ -55,6 +55,11 @@ export function ProfileSidebar({
     const file = event.target.files?.[0];
     if (!file || !user?.id) return;
 
+    if (file.size > 1024 * 1024) {
+      toast.error(t('file_too_large'));
+      return;
+    }
+
     const formData = new FormData();
     formData.append('avatar', file);
 
@@ -86,6 +91,10 @@ export function ProfileSidebar({
           <input
             type="file"
             accept="image/*"
+            name="avatar"
+            id="avatar"
+            multiple={false}
+            max={1024 * 1024}
             ref={fileInputRef}
             onChange={handleAvatarChange}
             style={{ display: 'none' }}

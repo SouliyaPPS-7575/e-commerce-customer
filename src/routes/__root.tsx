@@ -136,6 +136,11 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           href="https://fonts.googleapis.com/icon?family=Material+Icons"
         />
         <script src="https://unpkg.com/react-phone-input-2@2.x/dist/lib.js"></script>
+
+        <meta
+          name="google-site-verification"
+          content="wLiRq5VCANMXlE1uKudA2uXzBjfKfrLqs_j3JeEkej8"
+        />
       </head>
       <body suppressHydrationWarning>
         <I18nextProvider i18n={i18next}>
