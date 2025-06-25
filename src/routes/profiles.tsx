@@ -35,6 +35,7 @@ import { EditProfileForm } from '~/models/profile';
 import { getToken } from '~/server/auth';
 import { editProfile } from '~/server/profile';
 import { queryClient } from '~/services/queryClient';
+import { useRef } from 'react';
 
 export const Route = createFileRoute('/profiles')({
   beforeLoad: async () => {
@@ -69,6 +70,7 @@ export const Route = createFileRoute('/profiles')({
 function RouteComponent() {
   const theme = useTheme();
   const navigate = useNavigate();
+
   const [isEditingAccount, setIsEditingAccount] = useState(false);
   const [isEditingAddress, setIsEditingAddress] = useState(false);
 
@@ -83,7 +85,7 @@ function RouteComponent() {
   // Create pagination object from search params
   const pagination: SearchParamsAPI = {
     page: Number(searchParams.page) || 1,
-    limit: Number(searchParams.limit) || 10,
+    limit: Number(searchParams.limit) || 25,
     status: searchParams.status || '',
   };
 
@@ -96,8 +98,12 @@ function RouteComponent() {
         section,
         // Reset pagination when changing sections
         page: section === 'orders' ? searchParams.page || 1 : undefined,
-        limit: section === 'orders' ? searchParams.limit || 10 : undefined,
+        limit: section === 'orders' ? searchParams.limit || 25 : undefined,
+        status: section === 'orders' ? searchParams.status || '' : undefined,
+        tab: section === 'account' ? 0 : undefined,
       },
+      resetScroll: false,
+      hashScrollIntoView: false,
     });
   };
 
@@ -109,6 +115,8 @@ function RouteComponent() {
         ...searchParams,
         page,
       },
+      resetScroll: false,
+      hashScrollIntoView: false,
     });
   };
 
@@ -199,6 +207,14 @@ function RouteComponent() {
     });
   }, []);
 
+  // Add ref and effect for scrolling OrderHistory into view
+  const orderRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (activeSection === 'orders') {
+      orderRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [activeSection]);
+
   return (
     <>
       <Box
@@ -223,12 +239,12 @@ function RouteComponent() {
             <Grid size={{ xs: 12, md: 9 }} sx={{ p: 1, mt: -2 }}>
               {activeSection === 'account' && (
                 <>
+                  <Typography variant="h5" fontWeight="bold" gutterBottom>
+                    {t('account_details')}
+                  </Typography>
+
                   <Box sx={{ p: 0, mt: 0 }}>
                     <form onSubmit={handleSubmit}>
-                      <Typography variant="h5" fontWeight="bold" gutterBottom>
-                        {t('account_details')}
-                      </Typography>
-
                       <Grid container spacing={3} sx={{ mt: 2 }}>
                         {/* Name */}
                         <Grid size={{ xs: 12, sm: 6 }}>
@@ -489,11 +505,15 @@ function RouteComponent() {
                   />
                 </>
               )}
+
+              {/* Order History */}
               {activeSection === 'orders' && (
-                <OrderHistory
-                  searchParams={pagination}
-                  onPageChange={handlePageChange}
-                />
+                <div ref={orderRef}>
+                  <OrderHistory
+                    searchParams={pagination}
+                    onPageChange={handlePageChange}
+                  />
+                </div>
               )}
             </Grid>
           </Grid>

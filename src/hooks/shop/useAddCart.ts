@@ -288,7 +288,7 @@ export function useCartPage() {
       }
     });
 
-    navigate({ to: '/shop/checkout' });
+    navigate({ to: '/shop/checkout', search: { tab: 0 } });
   };
 
   return {

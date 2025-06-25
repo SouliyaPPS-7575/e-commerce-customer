@@ -6,7 +6,7 @@ export const orderHistoryQueryOption = (searchParams: SearchParamsAPI) =>
   queryOptions({
     queryKey: ['orderHistory', searchParams],
     queryFn: () => getOrderHistory({ data: searchParams }),
-    staleTime: 0,
+    staleTime: 1,
   });
 
 export const orderHistoryItemQueryOption = (order_id: string) =>

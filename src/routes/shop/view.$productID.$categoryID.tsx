@@ -192,6 +192,9 @@ function ProductDetailComponent() {
                 cart_id,
                 product_id: product.id,
               },
+              search: {
+                tab: 0,
+              },
             });
           },
         },

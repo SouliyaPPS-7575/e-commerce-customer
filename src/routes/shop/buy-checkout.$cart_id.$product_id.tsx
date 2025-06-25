@@ -1,7 +1,7 @@
 import { Grid } from '@mui/material';
 import { useForm } from '@tanstack/react-form';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, useSearch } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { BillingShippingSection } from '~/containers/checkout/billing-shipping-section';
@@ -93,6 +93,10 @@ function RouteComponent() {
     formatCurrency,
   } = useOrderCalculations(orderItems);
 
+  const { tab } = useSearch<any>({
+    from: '/shop/buy-checkout/$cart_id/$product_id',
+  });
+
   const { deleteCartItem } = useDeleteCartItem();
 
   const { refetchCountCartItems } = useCountCartItems();
@@ -131,31 +135,46 @@ function RouteComponent() {
       const { state: checkoutFormState } = formCheckout;
 
       // Individual field validation for formAddress
-      const { shipping_name, province_id, district_id, village } =
-        addressFormState.values;
+      const {
+        // laos address
+        shipping_name,
+        province_id,
+        district_id,
+        village,
 
-      if (!province_id) {
+        // global address
+        country_code,
+        country_name,
+        address_line_1,
+        address_line_2,
+        city,
+        state_region,
+        postal_code,
+        // is_international,
+      } = addressFormState.values;
+      // laos address
+      if (!province_id && tab === 0) {
         toast.error(t('please_select_province'));
         formAddress.validateField('province_id', 'submit');
         setIsSubmitting(false);
         return;
       }
 
-      if (!district_id) {
+      if (!district_id && tab === 0) {
         toast.error(t('please_select_district'));
         formAddress.validateField('district_id', 'submit');
         setIsSubmitting(false);
         return;
       }
 
-      if (!village) {
+      if (!village && tab === 0) {
         toast.error(t('village_required'));
         formAddress.validateField('village', 'submit');
         setIsSubmitting(false);
         return;
       }
 
-      if (!shipping_name) {
+      if (!shipping_name && tab === 0) {
         toast.error(t('shipping_name_required'));
         formAddress.validateField('shipping_name', 'submit');
         setIsSubmitting(false);
@@ -166,6 +185,56 @@ function RouteComponent() {
       if (!checkoutFormState.isValid) {
         formCheckout.validateAllFields('submit');
         toast.error('Please fix the checkout form errors before proceeding.');
+        setIsSubmitting(false);
+        return;
+      }
+
+      // global address
+      if (!country_code && tab === 1) {
+        toast.error(t('country_code_required'));
+        formAddress.validateField('country_code', 'submit');
+        setIsSubmitting(false);
+        return;
+      }
+
+      if (!country_name && tab === 1) {
+        toast.error(t('country_name_required'));
+        formAddress.validateField('country_name', 'submit');
+        setIsSubmitting(false);
+        return;
+      }
+
+      if (!address_line_1 && tab === 1) {
+        toast.error(t('address_line_1_required'));
+        formAddress.validateField('address_line_1', 'submit');
+        setIsSubmitting(false);
+        return;
+      }
+
+      if (!address_line_2 && tab === 1) {
+        toast.error(t('address_line_2_required'));
+        formAddress.validateField('address_line_2', 'submit');
+        setIsSubmitting(false);
+        return;
+      }
+
+      if (!city && tab === 1) {
+        toast.error(t('city_required'));
+        formAddress.validateField('city', 'submit');
+        setIsSubmitting(false);
+        return;
+      }
+
+      if (!state_region && tab === 1) {
+        toast.error(t('state_region_required'));
+        formAddress.validateField('state_region', 'submit');
+        setIsSubmitting(false);
+        return;
+      }
+
+      if (!postal_code && tab === 1) {
+        toast.error(t('postal_code_required'));
+        formAddress.validateField('postal_code', 'submit');
         setIsSubmitting(false);
         return;
       }

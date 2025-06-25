@@ -1,8 +1,8 @@
 import { Box, CardContent, Divider, Stack, Typography } from '@mui/material';
-import { StyledCard, PlaceOrderButton } from '~/styles/checkout';
-import { OrderItemRow } from './order-item-row';
 import { useTranslation } from 'react-i18next';
 import { OrderItems } from '~/models/checkout';
+import { PlaceOrderButton, StyledCard } from '~/styles/checkout';
+import { OrderItemRow } from './order-item-row';
 
 interface OrderSummarySectionProps {
   orderItems: OrderItems[];

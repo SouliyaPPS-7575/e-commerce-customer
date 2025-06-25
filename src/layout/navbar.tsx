@@ -353,7 +353,10 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
                   <MenuItem
                     onClick={() => {
                       setAnchorEl(null);
-                      navigate({ to: '/profiles' });
+                      navigate({
+                        to: '/profiles',
+                        search: { section: 'account', tab: 0 },
+                      });
                     }}
                     sx={{
                       color: '#4A5568',
@@ -444,6 +447,7 @@ const Navbar = ({ currentPage, goToPage }: NavbarProps) => {
                       setAnchorEl(null);
                       navigate({
                         to: '/profiles',
+                        search: { section: 'account', tab: 0 },
                       });
 
                       toggleMobileMenu();
