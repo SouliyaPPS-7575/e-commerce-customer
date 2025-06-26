@@ -1288,90 +1288,102 @@ export function OrderHistory({
                             borderColor: 'grey.100',
                           }}
                         >
-                          <Box sx={{ display: 'flex', gap: 1 }}>
-                            <Box
-                              component="img"
-                              src={product?.image_url?.[0]}
-                              alt={product?.name}
-                              sx={{
-                                width: 60,
-                                height: 60,
-                                borderRadius: 1.5,
-                                objectFit: 'cover',
-                                flexShrink: 0,
-                              }}
-                            />
-                            <Box sx={{ flex: 1, minWidth: 0 }}>
-                              <Typography
-                                variant="body2"
-                                sx={{
-                                  fontWeight: 500,
-                                  color: 'text.primary',
-                                  overflow: 'hidden',
-                                  textOverflow: 'ellipsis',
-                                  whiteSpace: 'nowrap',
-                                  fontSize: '1rem',
-                                }}
-                              >
-                                {product?.name || 'N/A'}
-                              </Typography>
-                              <Box
-                                sx={{
-                                  display: 'flex',
-                                  justifyContent: 'space-between',
-                                  alignItems: 'center',
-                                  mt: 0.25,
-                                }}
-                              >
-                                <Typography
-                                  variant="caption"
-                                  color="text.secondary"
-                                  sx={{ whiteSpace: 'nowrap' }}
-                                >
-                                  {product?.created &&
-                                    formatDateDMY(product?.created)}
-                                </Typography>
-                                {/* <Typography
+                          {isLoading ? (
+                            <>
+                              <div className="flex items-center justify-center p-4">
+                                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-b-yellow-700"></div>
+                              </div>
+                            </>
+                          ) : (
+                            <>
+                              <Box sx={{ display: 'flex', gap: 1 }}>
+                                <Box
+                                  component="img"
+                                  src={product?.image_url?.[0]}
+                                  alt={product?.name}
+                                  sx={{
+                                    width: 60,
+                                    height: 60,
+                                    borderRadius: 1.5,
+                                    objectFit: 'cover',
+                                    flexShrink: 0,
+                                  }}
+                                />
+                                <Box sx={{ flex: 1, minWidth: 0 }}>
+                                  <Typography
+                                    variant="body2"
+                                    sx={{
+                                      fontWeight: 500,
+                                      color: 'text.primary',
+                                      overflow: 'hidden',
+                                      textOverflow: 'ellipsis',
+                                      whiteSpace: 'nowrap',
+                                      fontSize: '1rem',
+                                    }}
+                                  >
+                                    {product?.name || 'N/A'}
+                                  </Typography>
+                                  <Box
+                                    sx={{
+                                      display: 'flex',
+                                      justifyContent: 'space-between',
+                                      alignItems: 'center',
+                                      mt: 0.25,
+                                    }}
+                                  >
+                                    <Typography
+                                      variant="caption"
+                                      color="text.secondary"
+                                      sx={{ whiteSpace: 'nowrap' }}
+                                    >
+                                      {product?.created &&
+                                        formatDateDMY(product?.created)}
+                                    </Typography>
+                                    {/* <Typography
                                       variant="caption"
                                       color="text.secondary"
                                       sx={{ fontSize: '0.6875rem' }}
                                     >
                                       {t('qty')}: {product?.quantity || 0}
                                     </Typography> */}
-                                <Typography
-                                  variant="body2"
-                                  color="primary"
-                                  sx={{
-                                    fontWeight: 700,
-                                    fontSize: '0.8125rem',
-                                  }}
-                                >
-                                  {t('totals')}:{' '}
-                                  {formatCurrency(
-                                    convert(product?.price * product?.quantity),
-                                  )}{' '}
-                                  {displayCurrency}
-                                </Typography>
+                                    <Typography
+                                      variant="body2"
+                                      color="primary"
+                                      sx={{
+                                        fontWeight: 700,
+                                        fontSize: '0.8125rem',
+                                      }}
+                                    >
+                                      {t('totals')}:{' '}
+                                      {formatCurrency(
+                                        convert(
+                                          product?.price * product?.quantity,
+                                        ),
+                                      )}{' '}
+                                      {displayCurrency}
+                                    </Typography>
+                                  </Box>
+                                  <Box
+                                    sx={{
+                                      display: 'flex',
+                                      justifyContent: 'flex-end',
+                                    }}
+                                  >
+                                    <Typography
+                                      color="primary"
+                                      sx={{
+                                        fontSize: '0.7125rem',
+                                      }}
+                                    >
+                                      {t('price')}: {product?.quantity} x{' '}
+                                      {formatCurrency(convert(product?.price))}{' '}
+                                      {displayCurrency}
+                                    </Typography>
+                                  </Box>
+                                </Box>
                               </Box>
-                              <Box
-                                sx={{
-                                  display: 'flex',
-                                  justifyContent: 'flex-end',
-                                }}
-                              >
-                                <Typography
-                                  color="primary"
-                                  sx={{
-                                    fontSize: '0.7125rem',
-                                  }}
-                                >
-                                  {t('price')}: {product?.quantity} x{' '}
-                                  {formatCurrency(convert(product?.price))}{' '}
-                                  {displayCurrency}
-                                </Typography>
-                              </Box>
-                            </Box>
-                          </Box>
+                            </>
+                          )}
                         </Card>
                       ))}
                     </Box>
