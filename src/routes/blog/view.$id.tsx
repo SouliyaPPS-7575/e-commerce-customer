@@ -14,6 +14,7 @@ import { motion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ImagePreview from '~/components/ImagePreview';
+import Footer from '~/containers/footer';
 import { useEditCountBlog } from '~/hooks/blogs/useEditCountBlog';
 import {
   recentBlogsQueryOption,
@@ -81,379 +82,385 @@ function RouteComponent() {
   }, [recentBlogs.length]);
 
   return (
-    <Box
-      sx={{
-        backgroundColor: '#f8f6f3',
-        py: { xs: -1, md: 1 },
-      }}
-    >
-      <Container maxWidth="lg" sx={{ py: 10, position: 'relative', zIndex: 2 }}>
-        <Grid container spacing={4}>
-          {/* Main Content */}
-          <Grid size={12}>
-            {/* Header */}
-            <Box sx={{ mb: 4 }}>
-              <Typography
-                variant="h5"
-                component="h1"
-                sx={{
-                  fontWeight: 'bold',
-                  mb: 1,
-                  color: '#333',
-                }}
-              >
-                {blog?.title}
-              </Typography>
-              <Typography
-                variant="body1"
-                color="text.secondary"
-                sx={{ mb: 3, fontSize: '18px' }}
-              >
-                {formattedDate(blog?.created)}
-              </Typography>
-            </Box>
-
-            {/* Hero Image */}
-            <Box
-              component="img"
-              src={blog?.image_url || ''}
-              alt={blog?.title}
-              onClick={() => setSelectedImage(blog?.image_url || '')}
-              sx={{
-                width: '100%',
-                height: 'auto',
-                backgroundColor: '#c4c4c4',
-                borderRadius: theme.spacing(1),
-                marginBottom: theme.spacing(4),
-                cursor: 'pointer',
-                objectFit: 'cover',
-                objectPosition: 'center',
-              }}
-            />
-
-            {/* Article Content */}
-            <Box sx={{ mb: 6 }}>
-              <Typography
-                variant="body1"
-                paragraph
-                sx={{
-                  lineHeight: 1.7,
-                  color: '#666',
-                  mb: 3,
-                }}
-              >
-                <Box
+    <>
+      <Box
+        sx={{
+          backgroundColor: '#f8f6f3',
+          py: { xs: -1, md: 1 },
+        }}
+      >
+        <Container
+          maxWidth="lg"
+          sx={{ py: 10, position: 'relative', zIndex: 2 }}
+        >
+          <Grid container spacing={4}>
+            {/* Main Content */}
+            <Grid size={12}>
+              {/* Header */}
+              <Box sx={{ mb: 4 }}>
+                <Typography
+                  variant="h5"
+                  component="h1"
                   sx={{
-                    fontSize: '1.2rem',
-                    color: theme.palette.text.secondary,
-                    lineHeight: 1.7,
+                    fontWeight: 'bold',
+                    mb: 1,
+                    color: '#333',
                   }}
-                  dangerouslySetInnerHTML={{
-                    __html: cleanedBlogDescription(blog?.description),
-                  }}
-                />
-              </Typography>
-            </Box>
+                >
+                  {blog?.title}
+                </Typography>
+                <Typography
+                  variant="body1"
+                  color="text.secondary"
+                  sx={{ mb: 3, fontSize: '18px' }}
+                >
+                  {formattedDate(blog?.created)}
+                </Typography>
+              </Box>
 
-            {/* Image Preview Component */}
-            <ImagePreview
-              selectedImage={selectedImage}
-              setSelectedImage={setSelectedImage}
-            />
-
-            {/* Recent Stories Section */}
-            <Box sx={{ mb: 4 }}>
-              <Typography
-                variant="h5"
-                component="h5"
+              {/* Hero Image */}
+              <Box
+                component="img"
+                src={blog?.image_url || ''}
+                alt={blog?.title}
+                onClick={() => setSelectedImage(blog?.image_url || '')}
                 sx={{
-                  fontWeight: 'bold',
-                  mb: 4,
-                  color: '#333',
+                  width: '100%',
+                  height: 'auto',
+                  backgroundColor: '#c4c4c4',
+                  borderRadius: theme.spacing(1),
+                  marginBottom: theme.spacing(4),
+                  cursor: 'pointer',
+                  objectFit: 'cover',
+                  objectPosition: 'center',
                 }}
-              >
-                {t('recent_stories')}
-              </Typography>
+              />
 
-              {isMobile ? (
-                <>
+              {/* Article Content */}
+              <Box sx={{ mb: 6 }}>
+                <Typography
+                  variant="body1"
+                  paragraph
+                  sx={{
+                    lineHeight: 1.7,
+                    color: '#666',
+                    mb: 3,
+                  }}
+                >
                   <Box
-                    ref={scrollContainerRef}
                     sx={{
-                      display: 'flex',
-                      overflowX: 'auto',
-                      scrollSnapType: 'x mandatory',
-                      gap: 2,
-                      pb: 2,
-                      px: 1,
+                      fontSize: '1.2rem',
+                      color: theme.palette.text.secondary,
+                      lineHeight: 1.7,
                     }}
-                  >
-                    {recentBlogs?.map((story, idx) => (
-                      <motion.div
-                        key={`${story.id}-${idx}`}
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.4 }}
-                        style={{ scrollSnapAlign: 'start', minWidth: '80%' }}
-                      >
-                        <Link
-                          to="/blog/view/$id"
-                          params={{ id: String(story?.id) }}
-                          style={{ textDecoration: 'none' }}
+                    dangerouslySetInnerHTML={{
+                      __html: cleanedBlogDescription(blog?.description),
+                    }}
+                  />
+                </Typography>
+              </Box>
+
+              {/* Image Preview Component */}
+              <ImagePreview
+                selectedImage={selectedImage}
+                setSelectedImage={setSelectedImage}
+              />
+
+              {/* Recent Stories Section */}
+              <Box sx={{ mb: 4 }}>
+                <Typography
+                  variant="h5"
+                  component="h5"
+                  sx={{
+                    fontWeight: 'bold',
+                    mb: 4,
+                    color: '#333',
+                  }}
+                >
+                  {t('recent_stories')}
+                </Typography>
+
+                {isMobile ? (
+                  <>
+                    <Box
+                      ref={scrollContainerRef}
+                      sx={{
+                        display: 'flex',
+                        overflowX: 'auto',
+                        scrollSnapType: 'x mandatory',
+                        gap: 2,
+                        pb: 2,
+                        px: 1,
+                      }}
+                    >
+                      {recentBlogs?.map((story, idx) => (
+                        <motion.div
+                          key={`${story.id}-${idx}`}
+                          initial={{ opacity: 0, y: 20 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          viewport={{ once: true }}
+                          transition={{ duration: 0.4 }}
+                          style={{ scrollSnapAlign: 'start', minWidth: '80%' }}
                         >
-                          <Card
-                            key={story.id}
-                            component={motion.div}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.5, delay: idx * 0.1 }}
-                            sx={{
-                              minWidth: '85%',
-                              scrollSnapAlign: 'center',
-                              borderRadius: 2,
-                              boxShadow: 'none',
-                              overflow: 'hidden',
-                              bgcolor: 'transparent',
-                              textAlign: 'center',
-                            }}
-                            onClick={() => {
-                              handleSlideChange(idx);
-                              editCountBlog({
-                                data: {
-                                  blog_id: story.id,
-                                  formData: {
-                                    ...story,
-                                    count: story?.count + 1,
-                                  },
-                                },
-                              });
-                            }}
+                          <Link
+                            to="/blog/view/$id"
+                            params={{ id: String(story?.id) }}
+                            style={{ textDecoration: 'none' }}
                           >
-                            <CardMedia
-                              component="img"
-                              image={story?.image_url}
-                              alt={story?.title}
+                            <Card
+                              key={story.id}
+                              component={motion.div}
+                              initial={{ opacity: 0, y: 20 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ duration: 0.5, delay: idx * 0.1 }}
                               sx={{
-                                height: 200,
-                                width: '100%',
-                                objectFit: 'cover',
+                                minWidth: '85%',
+                                scrollSnapAlign: 'center',
+                                borderRadius: 2,
+                                boxShadow: 'none',
+                                overflow: 'hidden',
+                                bgcolor: 'transparent',
+                                textAlign: 'center',
                               }}
-                            />
-                            <CardContent>
-                              <BlogDate>
-                                {formattedDate(story?.created)}
-                              </BlogDate>
-                              <Typography
-                                variant="h6"
-                                gutterBottom
+                              onClick={() => {
+                                handleSlideChange(idx);
+                                editCountBlog({
+                                  data: {
+                                    blog_id: story.id,
+                                    formData: {
+                                      ...story,
+                                      count: story?.count + 1,
+                                    },
+                                  },
+                                });
+                              }}
+                            >
+                              <CardMedia
+                                component="img"
+                                image={story?.image_url}
+                                alt={story?.title}
                                 sx={{
-                                  fontWeight: 'bold',
-                                  display: '-webkit-box',
-                                  WebkitLineClamp: 3,
-                                  WebkitBoxOrient: 'vertical',
-                                  overflow: 'hidden',
-                                  textOverflow: 'ellipsis',
+                                  height: 200,
+                                  width: '100%',
+                                  objectFit: 'cover',
                                 }}
-                              >
-                                {story?.title}
-                              </Typography>
-                              <Typography
-                                variant="body2"
-                                color="text.secondary"
-                                sx={{ mt: -2 }}
-                              >
-                                <BlogExcerpt>
-                                  <AccordionDetails>
-                                    <Box
-                                      sx={{
-                                        fontSize: '0.95rem',
-                                        color: theme.palette.text.secondary,
-                                        lineHeight: 1.7,
-                                      }}
-                                      dangerouslySetInnerHTML={{
-                                        __html: cleanedDescription(
-                                          story?.description,
-                                        ),
-                                      }}
-                                    />
-                                  </AccordionDetails>
-                                </BlogExcerpt>
-                              </Typography>
-                              <Link
-                                to="/blog"
-                                style={{ textDecoration: 'none' }}
-                              >
+                              />
+                              <CardContent>
+                                <BlogDate>
+                                  {formattedDate(story?.created)}
+                                </BlogDate>
                                 <Typography
-                                  variant="body2"
+                                  variant="h6"
+                                  gutterBottom
                                   sx={{
-                                    color: '#b06b40',
-                                    fontWeight: 500,
-                                    '&:hover': {
-                                      textDecoration: 'underline',
-                                    },
+                                    fontWeight: 'bold',
+                                    display: '-webkit-box',
+                                    WebkitLineClamp: 3,
+                                    WebkitBoxOrient: 'vertical',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
                                   }}
                                 >
-                                  Read more
+                                  {story?.title}
                                 </Typography>
-                              </Link>
-                            </CardContent>
-                          </Card>
-                        </Link>
-                      </motion.div>
-                    ))}
-                  </Box>
-                  {/* Pagination dots */}
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      justifyContent: 'center',
-                      gap: 1,
-                      mt: 1,
-                      mb: 5,
-                    }}
-                  >
-                    {Array.from({ length: recentBlogs.length }).map(
-                      (_, index) => (
-                        <Box
-                          key={index}
-                          sx={{
-                            width: 10,
-                            height: 10,
-                            borderRadius: '50%',
-                            bgcolor:
-                              index === activeSlide ? '#d4af37' : '#d0d0d0',
-                            transition: 'all 0.3s ease',
-                          }}
-                          onClick={() => handleSlideChange(index)}
-                        />
-                      ),
-                    )}
-                  </Box>
-                </>
-              ) : (
-                <>
-                  {/* Desktop: Horizontal scroll list */}
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      overflowX: 'auto',
-                      scrollSnapType: 'x mandatory',
-                      gap: 2,
-                      pb: 2,
-                      px: 1,
-                    }}
-                  >
-                    {recentBlogs.map((story, idx) => (
-                      <motion.div
-                        key={`${story.id}-${idx}`}
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.4 }}
-                        style={{ scrollSnapAlign: 'start', minWidth: '30%' }}
-                      >
-                        <Link
-                          to="/blog/view/$id"
-                          params={{ id: String(story?.id) }}
-                          style={{ textDecoration: 'none' }}
-                        >
-                          <Card
+                                <Typography
+                                  variant="body2"
+                                  color="text.secondary"
+                                  sx={{ mt: -2 }}
+                                >
+                                  <BlogExcerpt>
+                                    <AccordionDetails>
+                                      <Box
+                                        sx={{
+                                          fontSize: '0.95rem',
+                                          color: theme.palette.text.secondary,
+                                          lineHeight: 1.7,
+                                        }}
+                                        dangerouslySetInnerHTML={{
+                                          __html: cleanedDescription(
+                                            story?.description,
+                                          ),
+                                        }}
+                                      />
+                                    </AccordionDetails>
+                                  </BlogExcerpt>
+                                </Typography>
+                                <Link
+                                  to="/blog"
+                                  style={{ textDecoration: 'none' }}
+                                >
+                                  <Typography
+                                    variant="body2"
+                                    sx={{
+                                      color: '#b06b40',
+                                      fontWeight: 500,
+                                      '&:hover': {
+                                        textDecoration: 'underline',
+                                      },
+                                    }}
+                                  >
+                                    Read more
+                                  </Typography>
+                                </Link>
+                              </CardContent>
+                            </Card>
+                          </Link>
+                        </motion.div>
+                      ))}
+                    </Box>
+                    {/* Pagination dots */}
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        gap: 1,
+                        mt: 1,
+                        mb: 5,
+                      }}
+                    >
+                      {Array.from({ length: recentBlogs.length }).map(
+                        (_, index) => (
+                          <Box
+                            key={index}
                             sx={{
-                              borderRadius: 2,
-                              overflow: 'hidden',
-                              boxShadow: 'none',
-                              border: '1px solid #eee',
+                              width: 10,
+                              height: 10,
+                              borderRadius: '50%',
+                              bgcolor:
+                                index === activeSlide ? '#d4af37' : '#d0d0d0',
                               transition: 'all 0.3s ease',
-                              '&:hover': {
-                                transform: 'translateY(-5px)',
-                                boxShadow: '0 12px 24px rgba(0, 0, 0, 0.1)',
-                              },
-                              cursor: 'pointer',
                             }}
-                            onClick={() => {
-                              editCountBlog({
-                                data: {
-                                  blog_id: story.id,
-                                  formData: {
-                                    ...story,
-                                    count: story?.count + 1,
-                                  },
-                                },
-                              });
-                            }}
+                            onClick={() => handleSlideChange(index)}
+                          />
+                        ),
+                      )}
+                    </Box>
+                  </>
+                ) : (
+                  <>
+                    {/* Desktop: Horizontal scroll list */}
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        overflowX: 'auto',
+                        scrollSnapType: 'x mandatory',
+                        gap: 2,
+                        pb: 2,
+                        px: 1,
+                      }}
+                    >
+                      {recentBlogs.map((story, idx) => (
+                        <motion.div
+                          key={`${story.id}-${idx}`}
+                          initial={{ opacity: 0, y: 20 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          viewport={{ once: true }}
+                          transition={{ duration: 0.4 }}
+                          style={{ scrollSnapAlign: 'start', minWidth: '30%' }}
+                        >
+                          <Link
+                            to="/blog/view/$id"
+                            params={{ id: String(story?.id) }}
+                            style={{ textDecoration: 'none' }}
                           >
-                            <CardMedia
-                              component="img"
-                              image={story?.image_url}
-                              alt={story?.title}
+                            <Card
                               sx={{
-                                height: 200,
-                                width: '100%',
-                                objectFit: 'cover',
+                                borderRadius: 2,
+                                overflow: 'hidden',
+                                boxShadow: 'none',
+                                border: '1px solid #eee',
+                                transition: 'all 0.3s ease',
+                                '&:hover': {
+                                  transform: 'translateY(-5px)',
+                                  boxShadow: '0 12px 24px rgba(0, 0, 0, 0.1)',
+                                },
+                                cursor: 'pointer',
                               }}
-                            />
-                            <CardContent>
-                              <BlogDate>
-                                {formattedDate(story?.created)}
-                              </BlogDate>
-                              <Typography
-                                variant="h6"
-                                gutterBottom
-                                sx={{ fontWeight: 'bold' }}
-                              >
-                                {story?.title}
-                              </Typography>
-                              <Typography
-                                variant="body2"
-                                color="text.secondary"
-                                sx={{ mt: -1 }}
-                              >
-                                <BlogExcerpt>
-                                  <AccordionDetails>
-                                    <Box
-                                      sx={{
-                                        fontSize: '0.95rem',
-                                        color: theme.palette.text.secondary,
-                                      }}
-                                      dangerouslySetInnerHTML={{
-                                        __html: cleanedDescription(
-                                          story?.description,
-                                        ),
-                                      }}
-                                    />
-                                  </AccordionDetails>
-                                </BlogExcerpt>
-                              </Typography>
-                              <Link
-                                to="/blog"
-                                style={{ textDecoration: 'none' }}
-                              >
+                              onClick={() => {
+                                editCountBlog({
+                                  data: {
+                                    blog_id: story.id,
+                                    formData: {
+                                      ...story,
+                                      count: story?.count + 1,
+                                    },
+                                  },
+                                });
+                              }}
+                            >
+                              <CardMedia
+                                component="img"
+                                image={story?.image_url}
+                                alt={story?.title}
+                                sx={{
+                                  height: 200,
+                                  width: '100%',
+                                  objectFit: 'cover',
+                                }}
+                              />
+                              <CardContent>
+                                <BlogDate>
+                                  {formattedDate(story?.created)}
+                                </BlogDate>
+                                <Typography
+                                  variant="h6"
+                                  gutterBottom
+                                  sx={{ fontWeight: 'bold' }}
+                                >
+                                  {story?.title}
+                                </Typography>
                                 <Typography
                                   variant="body2"
-                                  sx={{
-                                    color: '#b06b40',
-                                    fontWeight: 500,
-                                    '&:hover': {
-                                      textDecoration: 'underline',
-                                    },
-                                  }}
+                                  color="text.secondary"
+                                  sx={{ mt: -1 }}
                                 >
-                                  Read more
+                                  <BlogExcerpt>
+                                    <AccordionDetails>
+                                      <Box
+                                        sx={{
+                                          fontSize: '0.95rem',
+                                          color: theme.palette.text.secondary,
+                                        }}
+                                        dangerouslySetInnerHTML={{
+                                          __html: cleanedDescription(
+                                            story?.description,
+                                          ),
+                                        }}
+                                      />
+                                    </AccordionDetails>
+                                  </BlogExcerpt>
                                 </Typography>
-                              </Link>
-                            </CardContent>
-                          </Card>
-                        </Link>
-                      </motion.div>
-                    ))}
-                  </Box>
-                </>
-              )}
-            </Box>
+                                <Link
+                                  to="/blog"
+                                  style={{ textDecoration: 'none' }}
+                                >
+                                  <Typography
+                                    variant="body2"
+                                    sx={{
+                                      color: '#b06b40',
+                                      fontWeight: 500,
+                                      '&:hover': {
+                                        textDecoration: 'underline',
+                                      },
+                                    }}
+                                  >
+                                    Read more
+                                  </Typography>
+                                </Link>
+                              </CardContent>
+                            </Card>
+                          </Link>
+                        </motion.div>
+                      ))}
+                    </Box>
+                  </>
+                )}
+              </Box>
+            </Grid>
           </Grid>
-        </Grid>
-      </Container>
-    </Box>
+        </Container>
+      </Box>
+      <Footer />
+    </>
   );
 }
