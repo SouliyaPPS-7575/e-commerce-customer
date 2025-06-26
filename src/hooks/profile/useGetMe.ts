@@ -9,9 +9,7 @@ export const getMeQueryOption = () =>
   });
 
 export const useGetMe = () => {
-  const {
-    data: me,
-  } = useSuspenseQuery(getMeQueryOption());
+  const { data: me } = useSuspenseQuery(getMeQueryOption());
 
   return { me };
 };

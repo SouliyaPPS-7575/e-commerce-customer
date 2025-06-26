@@ -75,7 +75,7 @@ export const getOrderHistory = createServerFn({
   method: 'GET',
 })
   .validator((d: SearchParamsAPI) => d)
-  .handler(async ({ data: { page = 1, limit = 10, status, createAt } }) => {
+  .handler(async ({ data: { page = 1, limit = 10, status, createdAt } }) => {
     try {
       const url = '/cust/order-list';
 
@@ -99,9 +99,9 @@ export const getOrderHistory = createServerFn({
         queryParams.append('status', '');
       }
 
-      // ✅ Add createAt date filter if present
-      if (createAt?.trim()) {
-        queryParams.append('createAt', createAt.trim());
+      // ✅ Add createdAt date filter if present
+      if (createdAt?.trim()) {
+        queryParams.append('createdAt', createdAt.trim());
       }
 
       const fullUrl = `${url}?${queryParams.toString()}`;

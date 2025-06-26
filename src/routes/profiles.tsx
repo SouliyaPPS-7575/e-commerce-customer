@@ -57,7 +57,7 @@ export const Route = createFileRoute('/profiles')({
         page,
         limit,
         status: searchParams.get('status') || '',
-        createAt: searchParams.get('date') || '',
+        createdAt: searchParams.get('createdAt') || '',
       }),
     );
     const orderHistoryItems = order_id
@@ -90,7 +90,7 @@ function RouteComponent() {
     page: Number(searchParams.page) || 1,
     limit: Number(searchParams.limit) || 10,
     status: searchParams.status || '',
-    createAt: searchParams.date || '',
+    createdAt: searchParams.createdAt || '',
   };
 
   // Function to handle section change
@@ -105,7 +105,8 @@ function RouteComponent() {
         limit: section === 'orders' ? searchParams.limit || 10 : undefined,
         status: section === 'orders' ? searchParams.status || '' : undefined,
         tab: section === 'account' ? 0 : undefined,
-        date: section === 'orders' ? searchParams.date || '' : undefined,
+        createdAt:
+          section === 'orders' ? searchParams.createdAt || '' : undefined,
       },
       resetScroll: false,
       hashScrollIntoView: false,
@@ -214,17 +215,6 @@ function RouteComponent() {
 
   // Add ref and effect for scrolling OrderHistory into view
   const orderRef = useRef<HTMLDivElement>(null);
-  // This ref ensures the scrollIntoView only happens once for the 'orders' section
-  // during the component's lifecycle, preventing unwanted re-scrolling on subsequent visits.
-  const hasScrolledToOrders = useRef(false);
-  useEffect(() => {
-    if (activeSection === 'orders' && !hasScrolledToOrders.current) {
-      orderRef.current?.scrollIntoView({ behavior: 'smooth' });
-      hasScrolledToOrders.current = true;
-    } else if (activeSection !== 'orders') {
-      hasScrolledToOrders.current = false;
-    }
-  }, [activeSection]);
 
   return (
     <>

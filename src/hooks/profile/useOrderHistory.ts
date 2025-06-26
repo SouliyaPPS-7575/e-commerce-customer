@@ -1,4 +1,4 @@
-import { queryOptions, useSuspenseQuery } from '@tanstack/react-query';
+import { queryOptions, useQuery } from '@tanstack/react-query';
 import { SearchParamsAPI } from '~/models';
 import { getOrderHistory, getOrderHistoryItems } from '~/server/orders';
 
@@ -20,12 +20,16 @@ export const useOrderHistory = (
   searchParams: SearchParamsAPI,
   order_id: string,
 ) => {
-  const { data: orderHistory, isLoading } = useSuspenseQuery(
+  const { data: orderHistory, isLoading: isLoadingOrderHistory } = useQuery(
     orderHistoryQueryOption(searchParams),
   );
-  const { data: orderItems } = useSuspenseQuery(
+  const { data: orderItems, isLoading: isLoadingItems } = useQuery(
     orderHistoryItemQueryOption(order_id),
   );
 
-  return { orderHistory, orderItems, isLoading };
+  return {
+    orderHistory,
+    orderItems,
+    isLoading: isLoadingItems || isLoadingOrderHistory,
+  };
 };

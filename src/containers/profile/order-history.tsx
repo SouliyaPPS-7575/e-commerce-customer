@@ -6,7 +6,6 @@ import {
   Card,
   CardContent,
   Chip,
-  CircularProgress,
   Collapse,
   Divider,
   Grid,
@@ -26,6 +25,7 @@ import {
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { Link, useRouter, useSearch } from '@tanstack/react-router';
+import { format } from 'date-fns'; // Add this if not already imported
 import {
   Calendar,
   Check,
@@ -45,7 +45,6 @@ import type { SearchParamsAPI } from '~/models';
 import { ProductImage } from '~/styles/checkout';
 import theme from '~/styles/theme';
 import { formatCurrency, formatDateDMY } from '~/utils/format';
-import { format } from 'date-fns'; // Add this if not already imported
 
 interface OrderHistoryProps {
   orderRef: RefObject<HTMLDivElement | null>;
@@ -82,6 +81,7 @@ export function OrderHistory({
   const [expandedRow, setExpandedRow] = useState<string | null>(null);
 
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const [openDatePicker, setOpenDatePicker] = useState(false);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -182,6 +182,9 @@ export function OrderHistory({
             {t('filter_by_date')}
           </Typography>
           <DatePicker
+            open={openDatePicker}
+            onClose={() => setOpenDatePicker(false)}
+            onOpen={() => setOpenDatePicker(true)}
             onChange={(newValue) => {
               if (newValue) {
                 // Format to 'YYYY-MM-DD'
@@ -199,9 +202,11 @@ export function OrderHistory({
                     section,
                     page: section === 'orders' ? page || 1 : undefined,
                     limit: section === 'orders' ? limit || 10 : undefined,
-                    date: formattedDate, // Only the date
+                    createdAt: formattedDate, // Only the date
                   },
                 });
+
+                setOpenDatePicker(false);
               }
             }}
             slotProps={{
@@ -340,7 +345,7 @@ export function OrderHistory({
 
             {/*  Table Body */}
             <TableBody>
-              {orderHistory?.items?.length > 0 ? (
+              {orderHistory && orderHistory?.items?.length > 0 ? (
                 orderHistory?.items?.map((order) => (
                   <React.Fragment key={order.id}>
                     <TableRow
@@ -538,339 +543,329 @@ export function OrderHistory({
                     </TableRow>
 
                     {/* Collapsed Detail Row */}
-                    {isLoading ? (
-                      <Box
-                        display="flex"
-                        justifyContent="center"
-                        alignItems="center"
-                        p={2}
+
+                    <TableRow>
+                      <TableCell
+                        colSpan={7}
+                        sx={{
+                          py: 0,
+                          overflow: 'hidden',
+                          height: 'auto',
+                          '&:last-child': {
+                            border: 0,
+                          },
+                          transition: 'background-color 0.2s ease',
+                          '&:hover': {
+                            cursor: 'pointer',
+                          },
+                        }}
                       >
-                        <CircularProgress size={24} />
-                      </Box>
-                    ) : (
-                      <TableRow>
-                        <TableCell
-                          colSpan={7}
-                          sx={{
-                            py: 0,
-                            overflow: 'hidden',
-                            height: 'auto',
-                            '&:last-child': {
-                              border: 0,
-                            },
-                            transition: 'background-color 0.2s ease',
-                            '&:hover': {
-                              cursor: 'pointer',
-                            },
-                          }}
+                        <Collapse
+                          in={expandedRow === order.id}
+                          timeout="auto"
+                          unmountOnExit
                         >
-                          <Collapse
-                            in={expandedRow === order.id}
-                            timeout="auto"
-                            unmountOnExit
+                          <Box
+                            sx={{
+                              p: { xs: 2, md: 3 },
+                              bgcolor: 'background.paper',
+                            }}
                           >
-                            <Box
+                            {/* Product Table */}
+                            <TableContainer
+                              component={Paper}
                               sx={{
-                                p: { xs: 2, md: 3 },
-                                bgcolor: 'background.paper',
+                                borderRadius: 2,
+                                boxShadow: 1,
+                                maxHeight: 400, // Increased height
+                                overflow: 'auto', // Enable scrolling
+                                mb: 3,
+                                '&::-webkit-scrollbar': {
+                                  width: 6,
+                                  height: 6,
+                                },
+                                '&::-webkit-scrollbar-track': {
+                                  backgroundColor: '#f5f5f5',
+                                  borderRadius: 4,
+                                },
+                                '&::-webkit-scrollbar-thumb': {
+                                  backgroundColor: '#ccc',
+                                  borderRadius: 4,
+                                  '&:hover': {
+                                    backgroundColor: '#999',
+                                  },
+                                },
                               }}
                             >
-                              {/* Product Table */}
-                              <TableContainer
-                                component={Paper}
-                                sx={{
-                                  borderRadius: 2,
-                                  boxShadow: 1,
-                                  maxHeight: 400, // Increased height
-                                  overflow: 'auto', // Enable scrolling
-                                  mb: 3,
-                                  '&::-webkit-scrollbar': {
-                                    width: 6,
-                                    height: 6,
-                                  },
-                                  '&::-webkit-scrollbar-track': {
-                                    backgroundColor: '#f5f5f5',
-                                    borderRadius: 4,
-                                  },
-                                  '&::-webkit-scrollbar-thumb': {
-                                    backgroundColor: '#ccc',
-                                    borderRadius: 4,
-                                    '&:hover': {
-                                      backgroundColor: '#999',
-                                    },
-                                  },
-                                }}
-                              >
-                                <Table stickyHeader size="small">
-                                  <TableHead>
-                                    <TableRow>
-                                      {[
-                                        {
-                                          label: t('image'),
-                                          align: 'left',
-                                          minWidth: 80,
-                                        },
-                                        {
-                                          label: t('products'),
-                                          align: 'left',
-                                          minWidth: 180,
-                                        },
-                                        {
-                                          label: t('date'),
-                                          align: 'left',
-                                          minWidth: 120,
-                                        },
-                                        {
-                                          label: t('quantity'),
-                                          align: 'center',
-                                          minWidth: 80,
-                                        },
-                                        {
-                                          label: t('price'),
-                                          align: 'right',
-                                          minWidth: 100,
-                                        },
-                                        {
-                                          label: t('total'),
-                                          align: 'right',
-                                          minWidth: 120,
-                                        },
-                                      ].map((col, i) => (
-                                        <TableCell
-                                          key={i}
-                                          align={'center'}
-                                          sx={{
-                                            fontWeight: 600,
-                                            fontSize: {
-                                              xs: '0.75rem',
-                                              md: '0.875rem',
-                                            },
-                                            backgroundColor: 'grey.100',
-                                            minWidth: col.minWidth,
-                                            position: 'sticky',
-                                            top: 0,
-                                            zIndex: 100,
-                                          }}
-                                        >
-                                          {col.label}
-                                        </TableCell>
-                                      ))}
-                                    </TableRow>
-                                  </TableHead>
-                                  <TableBody>
-                                    {orderItems?.products?.map((product) => (
-                                      <TableRow
-                                        key={product.id}
-                                        hover
+                              <Table stickyHeader size="small">
+                                <TableHead>
+                                  <TableRow>
+                                    {[
+                                      {
+                                        label: t('image'),
+                                        align: 'left',
+                                        minWidth: 80,
+                                      },
+                                      {
+                                        label: t('products'),
+                                        align: 'left',
+                                        minWidth: 180,
+                                      },
+                                      {
+                                        label: t('date'),
+                                        align: 'left',
+                                        minWidth: 120,
+                                      },
+                                      {
+                                        label: t('quantity'),
+                                        align: 'center',
+                                        minWidth: 80,
+                                      },
+                                      {
+                                        label: t('price'),
+                                        align: 'right',
+                                        minWidth: 100,
+                                      },
+                                      {
+                                        label: t('total'),
+                                        align: 'right',
+                                        minWidth: 120,
+                                      },
+                                    ].map((col, i) => (
+                                      <TableCell
+                                        key={i}
+                                        align={'center'}
                                         sx={{
-                                          '&:nth-of-type(odd)': {
-                                            backgroundColor: 'grey.50',
+                                          fontWeight: 600,
+                                          fontSize: {
+                                            xs: '0.75rem',
+                                            md: '0.875rem',
                                           },
+                                          backgroundColor: 'grey.100',
+                                          minWidth: col.minWidth,
+                                          position: 'sticky',
+                                          top: 0,
+                                          zIndex: 100,
                                         }}
                                       >
-                                        <TableCell>
-                                          <Link
-                                            to="/shop/view/$productID/$categoryID"
-                                            params={{
-                                              productID: product.id ?? '',
-                                              categoryID:
-                                                product.category_id ?? '',
-                                            }}
-                                            style={{ textDecoration: 'none' }}
-                                          >
-                                            <ProductImage
-                                              src={product?.image_url?.[0]}
-                                              alt={product?.name}
-                                              style={{
-                                                width: 48,
-                                                height: 48,
-                                                objectFit: 'cover',
-                                                borderRadius: 6,
-                                              }}
-                                            />
-                                          </Link>
-                                        </TableCell>
-                                        <TableCell>
-                                          <Typography
-                                            variant="body2"
-                                            noWrap
-                                            sx={{
-                                              fontWeight: 500,
-                                              maxWidth: 180,
-                                              color: 'text.primary',
-                                            }}
-                                          >
-                                            {product?.name || 'N/A'}
-                                          </Typography>
-                                        </TableCell>
-                                        <TableCell>
-                                          <Typography
-                                            variant="body2"
-                                            color="text.secondary"
-                                            noWrap
-                                          >
-                                            {product?.created &&
-                                              formatDateDMY(product?.created)}
-                                          </Typography>
-                                        </TableCell>
-                                        <TableCell align="center">
-                                          <Typography variant="body2">
-                                            {product?.quantity || 0}
-                                          </Typography>
-                                        </TableCell>
-                                        <TableCell align="right">
-                                          <Typography variant="body2">
-                                            {formatCurrency(
-                                              convert(product?.price),
-                                            )}{' '}
-                                            {displayCurrency}
-                                          </Typography>
-                                        </TableCell>
-                                        <TableCell align="right">
-                                          <Typography
-                                            variant="body2"
-                                            color="primary"
-                                            fontWeight="bold"
-                                          >
-                                            {formatCurrency(
-                                              convert(
-                                                product?.price *
-                                                  product?.quantity,
-                                              ),
-                                            )}{' '}
-                                            {displayCurrency}
-                                          </Typography>
-                                        </TableCell>
-                                      </TableRow>
+                                        {col.label}
+                                      </TableCell>
                                     ))}
-                                  </TableBody>
-                                </Table>
-                              </TableContainer>
+                                  </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                  {orderItems?.products?.map((product) => (
+                                    <TableRow
+                                      key={product.id}
+                                      hover
+                                      sx={{
+                                        '&:nth-of-type(odd)': {
+                                          backgroundColor: 'grey.50',
+                                        },
+                                      }}
+                                    >
+                                      <TableCell>
+                                        <Link
+                                          to="/shop/view/$productID/$categoryID"
+                                          params={{
+                                            productID: product.id ?? '',
+                                            categoryID:
+                                              product.category_id ?? '',
+                                          }}
+                                          style={{ textDecoration: 'none' }}
+                                        >
+                                          <ProductImage
+                                            src={product?.image_url?.[0]}
+                                            alt={product?.name}
+                                            style={{
+                                              width: 48,
+                                              height: 48,
+                                              objectFit: 'cover',
+                                              borderRadius: 6,
+                                            }}
+                                          />
+                                        </Link>
+                                      </TableCell>
+                                      <TableCell>
+                                        <Typography
+                                          variant="body2"
+                                          noWrap
+                                          sx={{
+                                            fontWeight: 500,
+                                            maxWidth: 180,
+                                            color: 'text.primary',
+                                          }}
+                                        >
+                                          {product?.name || 'N/A'}
+                                        </Typography>
+                                      </TableCell>
+                                      <TableCell>
+                                        <Typography
+                                          variant="body2"
+                                          color="text.secondary"
+                                          noWrap
+                                        >
+                                          {product?.created &&
+                                            formatDateDMY(product?.created)}
+                                        </Typography>
+                                      </TableCell>
+                                      <TableCell align="center">
+                                        <Typography variant="body2">
+                                          {product?.quantity || 0}
+                                        </Typography>
+                                      </TableCell>
+                                      <TableCell align="right">
+                                        <Typography variant="body2">
+                                          {formatCurrency(
+                                            convert(product?.price),
+                                          )}{' '}
+                                          {displayCurrency}
+                                        </Typography>
+                                      </TableCell>
+                                      <TableCell align="right">
+                                        <Typography
+                                          variant="body2"
+                                          color="primary"
+                                          fontWeight="bold"
+                                        >
+                                          {formatCurrency(
+                                            convert(
+                                              product?.price *
+                                                product?.quantity,
+                                            ),
+                                          )}{' '}
+                                          {displayCurrency}
+                                        </Typography>
+                                      </TableCell>
+                                    </TableRow>
+                                  ))}
+                                </TableBody>
+                              </Table>
+                            </TableContainer>
 
-                              {/* Order Summary */}
-                              <Paper
-                                elevation={1}
-                                sx={{
-                                  borderRadius: 2,
-                                  p: { xs: 2, sm: 3 },
-                                  backgroundColor: 'grey.100',
-                                }}
-                              >
-                                <Typography variant="h6" sx={{ mb: 2 }}>
-                                  {t('order_summary')}
-                                </Typography>
-                                <Grid container spacing={3}>
-                                  <Grid
-                                    size={{
-                                      xs: 12,
-                                      sm: 6,
-                                      md: 4,
-                                    }}
+                            {/* Order Summary */}
+                            <Paper
+                              elevation={1}
+                              sx={{
+                                borderRadius: 2,
+                                p: { xs: 2, sm: 3 },
+                                backgroundColor: 'grey.100',
+                              }}
+                            >
+                              <Typography variant="h6" sx={{ mb: 2 }}>
+                                {t('order_summary')}
+                              </Typography>
+                              <Grid container spacing={3}>
+                                <Grid
+                                  size={{
+                                    xs: 12,
+                                    sm: 6,
+                                    md: 4,
+                                  }}
+                                >
+                                  <Typography
+                                    variant="caption"
+                                    color="text.secondary"
+                                    gutterBottom
                                   >
-                                    <Typography
-                                      variant="caption"
-                                      color="text.secondary"
-                                      gutterBottom
-                                    >
-                                      {t('shipping_name')}:
-                                    </Typography>
-                                    <Typography
-                                      variant="body1"
-                                      fontWeight={600}
-                                    >
-                                      {(() => {
-                                        if (
-                                          order?.address?.split(',').length >= 2
-                                        )
-                                          return order.address
-                                            .split(',')
-                                            .slice(-2)
-                                            .join(', ');
-                                        if (order?.customerName)
-                                          return order?.customerName;
-                                        return t('no_name_found');
-                                      })()}
-                                    </Typography>
-                                  </Grid>
-
-                                  <Grid
-                                    size={{
-                                      xs: 12,
-                                      sm: 6,
-                                      md: 5,
-                                    }}
-                                  >
-                                    <Typography
-                                      variant="caption"
-                                      color="text.secondary"
-                                      gutterBottom
-                                    >
-                                      {t('shipping_address')}:
-                                    </Typography>
-                                    <Typography
-                                      variant="body1"
-                                      fontWeight={600}
-                                    >
-                                      {(() => {
-                                        if (!order?.address)
-                                          return t('no_address_found');
-                                        const parts = order.address
+                                    {t('shipping_name')}:
+                                  </Typography>
+                                  <Typography variant="body1" fontWeight={600}>
+                                    {(() => {
+                                      if (
+                                        order?.address?.split(',').length >= 2
+                                      )
+                                        return order.address
                                           .split(',')
-                                          .map((p) => p.trim());
-                                        if (parts.length > 2)
-                                          return parts.slice(0, -2).join(', ');
-                                        return order.address;
-                                      })()}
-                                    </Typography>
-                                  </Grid>
-
-                                  <Grid
-                                    size={{
-                                      xs: 12,
-                                      sm: 12,
-                                      md: 3,
-                                    }}
-                                  >
-                                    <Box
-                                      textAlign={{ xs: 'left', sm: 'right' }}
-                                    >
-                                      <Typography
-                                        variant="caption"
-                                        color="text.secondary"
-                                      >
-                                        {t('total')}:
-                                      </Typography>
-                                      <Typography
-                                        variant="h6"
-                                        color="primary"
-                                        fontWeight="bold"
-                                      >
-                                        {currency === 'USD' &&
-                                          order?.amountUSD &&
-                                          `${formatCurrency(Number(order?.amountUSD))} $`}
-                                        {currency === 'THB' &&
-                                          order?.amountTHB &&
-                                          `${formatCurrency(Number(order?.amountTHB))} ฿`}
-                                        {currency === 'LAK' &&
-                                          order?.amountLAK &&
-                                          `${formatCurrency(Number(order?.amountLAK))} ₭`}
-                                      </Typography>
-                                    </Box>
-                                  </Grid>
+                                          .slice(-2)
+                                          .join(', ');
+                                      if (order?.customerName)
+                                        return order?.customerName;
+                                      return t('no_name_found');
+                                    })()}
+                                  </Typography>
                                 </Grid>
-                              </Paper>
-                            </Box>
-                          </Collapse>
-                        </TableCell>
-                      </TableRow>
-                    )}
+
+                                <Grid
+                                  size={{
+                                    xs: 12,
+                                    sm: 6,
+                                    md: 5,
+                                  }}
+                                >
+                                  <Typography
+                                    variant="caption"
+                                    color="text.secondary"
+                                    gutterBottom
+                                  >
+                                    {t('shipping_address')}:
+                                  </Typography>
+                                  <Typography variant="body1" fontWeight={600}>
+                                    {(() => {
+                                      if (!order?.address)
+                                        return t('no_address_found');
+                                      const parts = order.address
+                                        .split(',')
+                                        .map((p) => p.trim());
+                                      if (parts.length > 2)
+                                        return parts.slice(0, -2).join(', ');
+                                      return order.address;
+                                    })()}
+                                  </Typography>
+                                </Grid>
+
+                                <Grid
+                                  size={{
+                                    xs: 12,
+                                    sm: 12,
+                                    md: 3,
+                                  }}
+                                >
+                                  <Box textAlign={{ xs: 'left', sm: 'right' }}>
+                                    <Typography
+                                      variant="caption"
+                                      color="text.secondary"
+                                    >
+                                      {t('total')}:
+                                    </Typography>
+                                    <Typography
+                                      variant="h6"
+                                      color="primary"
+                                      fontWeight="bold"
+                                    >
+                                      {currency === 'USD' &&
+                                        order?.amountUSD &&
+                                        `${formatCurrency(Number(order?.amountUSD))} $`}
+                                      {currency === 'THB' &&
+                                        order?.amountTHB &&
+                                        `${formatCurrency(Number(order?.amountTHB))} ฿`}
+                                      {currency === 'LAK' &&
+                                        order?.amountLAK &&
+                                        `${formatCurrency(Number(order?.amountLAK))} ₭`}
+                                    </Typography>
+                                  </Box>
+                                </Grid>
+                              </Grid>
+                            </Paper>
+                          </Box>
+                        </Collapse>
+                      </TableCell>
+                    </TableRow>
                   </React.Fragment>
                 ))
               ) : (
                 <TableRow>
                   <TableCell colSpan={7} align="center" sx={{ py: 4 }}>
                     <Typography variant="body1" color="text.secondary">
-                      {t('no_orders_found')}
+                      {isLoading ? (
+                        <>
+                          <div className="flex items-center justify-center">
+                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-b-yellow-700"></div>
+                          </div>
+                        </>
+                      ) : (
+                        t('no_orders_found')
+                      )}
                     </Typography>
                   </TableCell>
                 </TableRow>
@@ -1244,313 +1239,297 @@ export function OrderHistory({
                     },
                   }}
                 >
-                  {isLoading ? (
-                    <Box
-                      display="flex"
-                      justifyContent="center"
-                      alignItems="center"
-                      p={2}
-                    >
-                      <CircularProgress size={24} />
-                    </Box>
-                  ) : (
-                    <>
-                      <Typography
-                        variant="subtitle2"
-                        sx={{
-                          fontWeight: 600,
-                          color: 'text.primary',
-                          mb: 1.5,
-                          fontSize: '0.875rem',
-                        }}
-                      >
-                        {t('products')} ({orderItems?.orderItems?.length})
-                      </Typography>
+                  <Typography
+                    variant="subtitle2"
+                    sx={{
+                      fontWeight: 600,
+                      color: 'text.primary',
+                      mb: 1.5,
+                      fontSize: '0.875rem',
+                    }}
+                  >
+                    {t('products')} ({orderItems?.orderItems?.length})
+                  </Typography>
 
-                      {/* Scrollable Product List */}
-                      <Box
-                        sx={{
-                          pr: 1,
-                          mb: 2,
-                        }}
-                      >
-                        <Box
+                  {/* Scrollable Product List */}
+                  <Box
+                    sx={{
+                      pr: 1,
+                      mb: 2,
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 1,
+                      }}
+                    >
+                      {orderItems?.products?.map((product) => (
+                        <Card
+                          key={product?.id}
                           sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: 1,
+                            p: 1,
+                            backgroundColor: '#ffffff',
+                            borderRadius: 1.5,
+                            boxShadow: 'none',
+                            border: '1px solid',
+                            borderColor: 'grey.100',
                           }}
                         >
-                          {orderItems?.products?.map((product) => (
-                            <Card
-                              key={product?.id}
+                          <Box sx={{ display: 'flex', gap: 1 }}>
+                            <Box
+                              component="img"
+                              src={product?.image_url?.[0]}
+                              alt={product?.name}
                               sx={{
-                                p: 1,
-                                backgroundColor: '#ffffff',
+                                width: 60,
+                                height: 60,
                                 borderRadius: 1.5,
-                                boxShadow: 'none',
-                                border: '1px solid',
-                                borderColor: 'grey.100',
+                                objectFit: 'cover',
+                                flexShrink: 0,
                               }}
-                            >
-                              <Box sx={{ display: 'flex', gap: 1 }}>
-                                <Box
-                                  component="img"
-                                  src={product?.image_url?.[0]}
-                                  alt={product?.name}
-                                  sx={{
-                                    width: 60,
-                                    height: 60,
-                                    borderRadius: 1.5,
-                                    objectFit: 'cover',
-                                    flexShrink: 0,
-                                  }}
-                                />
-                                <Box sx={{ flex: 1, minWidth: 0 }}>
-                                  <Typography
-                                    variant="body2"
-                                    sx={{
-                                      fontWeight: 500,
-                                      color: 'text.primary',
-                                      overflow: 'hidden',
-                                      textOverflow: 'ellipsis',
-                                      whiteSpace: 'nowrap',
-                                      fontSize: '1rem',
-                                    }}
-                                  >
-                                    {product?.name || 'N/A'}
-                                  </Typography>
-                                  <Box
-                                    sx={{
-                                      display: 'flex',
-                                      justifyContent: 'space-between',
-                                      alignItems: 'center',
-                                      mt: 0.25,
-                                    }}
-                                  >
-                                    <Typography
-                                      variant="caption"
-                                      color="text.secondary"
-                                      sx={{ whiteSpace: 'nowrap' }}
-                                    >
-                                      {product?.created &&
-                                        formatDateDMY(product?.created)}
-                                    </Typography>
-                                    {/* <Typography
+                            />
+                            <Box sx={{ flex: 1, minWidth: 0 }}>
+                              <Typography
+                                variant="body2"
+                                sx={{
+                                  fontWeight: 500,
+                                  color: 'text.primary',
+                                  overflow: 'hidden',
+                                  textOverflow: 'ellipsis',
+                                  whiteSpace: 'nowrap',
+                                  fontSize: '1rem',
+                                }}
+                              >
+                                {product?.name || 'N/A'}
+                              </Typography>
+                              <Box
+                                sx={{
+                                  display: 'flex',
+                                  justifyContent: 'space-between',
+                                  alignItems: 'center',
+                                  mt: 0.25,
+                                }}
+                              >
+                                <Typography
+                                  variant="caption"
+                                  color="text.secondary"
+                                  sx={{ whiteSpace: 'nowrap' }}
+                                >
+                                  {product?.created &&
+                                    formatDateDMY(product?.created)}
+                                </Typography>
+                                {/* <Typography
                                       variant="caption"
                                       color="text.secondary"
                                       sx={{ fontSize: '0.6875rem' }}
                                     >
                                       {t('qty')}: {product?.quantity || 0}
                                     </Typography> */}
-                                    <Typography
-                                      variant="body2"
-                                      color="primary"
-                                      sx={{
-                                        fontWeight: 700,
-                                        fontSize: '0.8125rem',
-                                      }}
-                                    >
-                                      {t('totals')}:{' '}
-                                      {formatCurrency(
-                                        convert(
-                                          product?.price * product?.quantity,
-                                        ),
-                                      )}{' '}
-                                      {displayCurrency}
-                                    </Typography>
-                                  </Box>
-                                  <Box
-                                    sx={{
-                                      display: 'flex',
-                                      justifyContent: 'flex-end',
-                                    }}
-                                  >
-                                    <Typography
-                                      color="primary"
-                                      sx={{
-                                        fontSize: '0.7125rem',
-                                      }}
-                                    >
-                                      {t('price')}: {product?.quantity} x{' '}
-                                      {formatCurrency(convert(product?.price))}{' '}
-                                      {displayCurrency}
-                                    </Typography>
-                                  </Box>
-                                </Box>
+                                <Typography
+                                  variant="body2"
+                                  color="primary"
+                                  sx={{
+                                    fontWeight: 700,
+                                    fontSize: '0.8125rem',
+                                  }}
+                                >
+                                  {t('totals')}:{' '}
+                                  {formatCurrency(
+                                    convert(product?.price * product?.quantity),
+                                  )}{' '}
+                                  {displayCurrency}
+                                </Typography>
                               </Box>
-                            </Card>
-                          ))}
+                              <Box
+                                sx={{
+                                  display: 'flex',
+                                  justifyContent: 'flex-end',
+                                }}
+                              >
+                                <Typography
+                                  color="primary"
+                                  sx={{
+                                    fontSize: '0.7125rem',
+                                  }}
+                                >
+                                  {t('price')}: {product?.quantity} x{' '}
+                                  {formatCurrency(convert(product?.price))}{' '}
+                                  {displayCurrency}
+                                </Typography>
+                              </Box>
+                            </Box>
+                          </Box>
+                        </Card>
+                      ))}
+                    </Box>
+                  </Box>
+
+                  {/* Compact Order Summary */}
+                  <Grid container spacing={2}>
+                    {/* Shipping Information */}
+                    <Grid
+                      size={{
+                        xs: 12,
+                        sm: 6,
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          p: 2,
+                          borderRadius: 2,
+                          bgcolor: '#F5F5F5', // light blue background
+                          border: '1px solid',
+                          borderColor: 'grey.100',
+                        }}
+                      >
+                        {/* Shipping Name */}
+                        <Box sx={{ mb: 1 }}>
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 0.5,
+                            }}
+                          >
+                            <User size={11} color="#9CA3AF" />
+                            <Typography
+                              variant="caption"
+                              color="text.secondary"
+                              sx={{ fontSize: '0.6875rem' }}
+                            >
+                              {t('shipping_name')}
+                            </Typography>
+                          </Box>
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              fontWeight: 500,
+                              color: 'text.primary',
+                              ml: 1.5,
+                              fontSize: '0.8125rem',
+                            }}
+                          >
+                            {(() => {
+                              if (order?.address?.split(',').length >= 2)
+                                return order.address
+                                  .split(',')
+                                  .slice(-2)
+                                  .join(', ');
+                              if (order?.customerName)
+                                return order.customerName;
+                              const addressParts =
+                                order?.address?.split(',') || [];
+                              return (
+                                addressParts.slice(-2).join(', ') ||
+                                t('no_name_found')
+                              );
+                            })()}
+                          </Typography>
+                        </Box>
+
+                        {/* Shipping Address */}
+                        <Box>
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 0.5,
+                            }}
+                          >
+                            <MapPin size={11} color="#9CA3AF" />
+                            <Typography
+                              variant="caption"
+                              color="text.secondary"
+                              sx={{ fontSize: '0.6875rem' }}
+                            >
+                              {t('shipping_address')}
+                            </Typography>
+                          </Box>
+                          <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            sx={{
+                              ml: 1.5,
+                              fontSize: '0.8125rem',
+                            }}
+                          >
+                            {(() => {
+                              if (!order?.address) return t('no_address_found');
+                              const addressParts = order?.address
+                                .split(',')
+                                .map((part) => part.trim());
+                              return addressParts.length > 2
+                                ? addressParts.slice(0, -2).join(', ')
+                                : order?.address;
+                            })()}
+                          </Typography>
                         </Box>
                       </Box>
+                    </Grid>
 
-                      {/* Compact Order Summary */}
-                      <Grid container spacing={2}>
-                        {/* Shipping Information */}
-                        <Grid
-                          size={{
-                            xs: 12,
-                            sm: 6,
+                    {/* Order Summary */}
+                    <Grid
+                      size={{
+                        xs: 12,
+                        sm: 6,
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          p: 2,
+                          borderRadius: 2,
+                          bgcolor: '#FFFFFF', // ligt green background
+                          border: '1px solid',
+                          borderColor: 'grey.100',
+                        }}
+                      >
+                        <Typography
+                          variant="subtitle2"
+                          sx={{
+                            fontWeight: 600,
+                            color: 'text.primary',
+                            mb: 1,
+                            fontSize: '0.875rem',
                           }}
                         >
-                          <Box
-                            sx={{
-                              p: 2,
-                              borderRadius: 2,
-                              bgcolor: '#F5F5F5', // light blue background
-                              border: '1px solid',
-                              borderColor: 'grey.100',
-                            }}
-                          >
-                            {/* Shipping Name */}
-                            <Box sx={{ mb: 1 }}>
-                              <Box
-                                sx={{
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  gap: 0.5,
-                                }}
-                              >
-                                <User size={11} color="#9CA3AF" />
-                                <Typography
-                                  variant="caption"
-                                  color="text.secondary"
-                                  sx={{ fontSize: '0.6875rem' }}
-                                >
-                                  {t('shipping_name')}
-                                </Typography>
-                              </Box>
-                              <Typography
-                                variant="body2"
-                                sx={{
-                                  fontWeight: 500,
-                                  color: 'text.primary',
-                                  ml: 1.5,
-                                  fontSize: '0.8125rem',
-                                }}
-                              >
-                                {(() => {
-                                  if (order?.address?.split(',').length >= 2)
-                                    return order.address
-                                      .split(',')
-                                      .slice(-2)
-                                      .join(', ');
-                                  if (order?.customerName)
-                                    return order.customerName;
-                                  const addressParts =
-                                    order?.address?.split(',') || [];
-                                  return (
-                                    addressParts.slice(-2).join(', ') ||
-                                    t('no_name_found')
-                                  );
-                                })()}
-                              </Typography>
-                            </Box>
+                          {t('order_summary')}
+                        </Typography>
 
-                            {/* Shipping Address */}
-                            <Box>
-                              <Box
-                                sx={{
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  gap: 0.5,
-                                }}
-                              >
-                                <MapPin size={11} color="#9CA3AF" />
-                                <Typography
-                                  variant="caption"
-                                  color="text.secondary"
-                                  sx={{ fontSize: '0.6875rem' }}
-                                >
-                                  {t('shipping_address')}
-                                </Typography>
-                              </Box>
-                              <Typography
-                                variant="body2"
-                                color="text.secondary"
-                                sx={{
-                                  ml: 1.5,
-                                  fontSize: '0.8125rem',
-                                }}
-                              >
-                                {(() => {
-                                  if (!order?.address)
-                                    return t('no_address_found');
-                                  const addressParts = order?.address
-                                    .split(',')
-                                    .map((part) => part.trim());
-                                  return addressParts.length > 2
-                                    ? addressParts.slice(0, -2).join(', ')
-                                    : order?.address;
-                                })()}
-                              </Typography>
-                            </Box>
-                          </Box>
-                        </Grid>
+                        <Divider sx={{ my: 1 }} />
 
-                        {/* Order Summary */}
-                        <Grid
-                          size={{
-                            xs: 12,
-                            sm: 6,
-                          }}
+                        <Box
+                          display="flex"
+                          justifyContent="space-between"
+                          alignItems="center"
                         >
-                          <Box
-                            sx={{
-                              p: 2,
-                              borderRadius: 2,
-                              bgcolor: '#FFFFFF', // ligt green background
-                              border: '1px solid',
-                              borderColor: 'grey.100',
-                            }}
+                          <Typography
+                            fontWeight={600}
+                            variant="caption"
+                            color="text.secondary"
                           >
-                            <Typography
-                              variant="subtitle2"
-                              sx={{
-                                fontWeight: 600,
-                                color: 'text.primary',
-                                mb: 1,
-                                fontSize: '0.875rem',
-                              }}
-                            >
-                              {t('order_summary')}
-                            </Typography>
-
-                            <Divider sx={{ my: 1 }} />
-
-                            <Box
-                              display="flex"
-                              justifyContent="space-between"
-                              alignItems="center"
-                            >
-                              <Typography
-                                fontWeight={600}
-                                variant="caption"
-                                color="text.secondary"
-                              >
-                                {t('total')}:
-                              </Typography>
-                              <Typography
-                                fontWeight={700}
-                                color="primary"
-                                sx={{ fontSize: '1rem' }}
-                              >
-                                {currency === 'USD' &&
-                                  order?.amountUSD &&
-                                  `${formatCurrency(Number(order?.amountUSD))} $`}
-                                {currency === 'THB' &&
-                                  order?.amountTHB &&
-                                  `${formatCurrency(Number(order?.amountTHB))} ฿`}
-                                {currency === 'LAK' &&
-                                  order?.amountLAK &&
-                                  `${formatCurrency(Number(order?.amountLAK))} ₭`}
-                              </Typography>
-                            </Box>
-                          </Box>
-                        </Grid>
-                      </Grid>
-                    </>
-                  )}
+                            {t('total')}:
+                          </Typography>
+                          <Typography
+                            fontWeight={700}
+                            color="primary"
+                            sx={{ fontSize: '1rem' }}
+                          >
+                            {currency === 'USD' &&
+                              order?.amountUSD &&
+                              `${formatCurrency(Number(order?.amountUSD))} $`}
+                            {currency === 'THB' &&
+                              order?.amountTHB &&
+                              `${formatCurrency(Number(order?.amountTHB))} ฿`}
+                            {currency === 'LAK' &&
+                              order?.amountLAK &&
+                              `${formatCurrency(Number(order?.amountLAK))} ₭`}
+                          </Typography>
+                        </Box>
+                      </Box>
+                    </Grid>
+                  </Grid>
                 </Box>
               </Collapse>
             </Card>
