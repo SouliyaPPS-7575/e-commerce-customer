@@ -6,7 +6,7 @@ export const orderHistoryQueryOption = (searchParams: SearchParamsAPI) =>
   queryOptions({
     queryKey: ['orderHistory', searchParams],
     queryFn: () => getOrderHistory({ data: searchParams }),
-    staleTime: 1,
+    staleTime: 0,
   });
 
 export const orderHistoryItemQueryOption = (order_id: string) =>
@@ -20,12 +20,12 @@ export const useOrderHistory = (
   searchParams: SearchParamsAPI,
   order_id: string,
 ) => {
-  const { data: orderHistory } = useSuspenseQuery(
+  const { data: orderHistory, isLoading } = useSuspenseQuery(
     orderHistoryQueryOption(searchParams),
   );
   const { data: orderItems } = useSuspenseQuery(
     orderHistoryItemQueryOption(order_id),
   );
 
-  return { orderHistory, orderItems };
+  return { orderHistory, orderItems, isLoading };
 };

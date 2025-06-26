@@ -20,7 +20,7 @@ import {
   useSearch,
 } from '@tanstack/react-router';
 import { t } from 'i18next';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { AddressForm } from '~/containers/profile/address-form';
 import { OrderHistory } from '~/containers/profile/order-history';
@@ -35,7 +35,6 @@ import { EditProfileForm } from '~/models/profile';
 import { getToken } from '~/server/auth';
 import { editProfile } from '~/server/profile';
 import { queryClient } from '~/services/queryClient';
-import { useRef } from 'react';
 
 export const Route = createFileRoute('/profiles')({
   beforeLoad: async () => {
@@ -48,20 +47,24 @@ export const Route = createFileRoute('/profiles')({
   },
   loader: ({ context, location }) => {
     const searchParams = new URLSearchParams(location.search);
-    const page = Number(searchParams.get('page'));
-    const limit = Number(searchParams.get('limit'));
-    const order_id = String(searchParams.get('order_id'));
+    const page = Number(searchParams.get('page')) || 1;
+    const limit = Number(searchParams.get('limit')) || 10;
+    const order_id = searchParams.get('order_id');
 
     const me = context.queryClient.ensureQueryData(getMeQueryOption());
     const orderHistory = context.queryClient.ensureQueryData(
       orderHistoryQueryOption({
         page,
         limit,
+        status: searchParams.get('status') || '',
+        createAt: searchParams.get('date') || '',
       }),
     );
-    const orderHistoryItems = context.queryClient.ensureQueryData(
-      orderHistoryItemQueryOption(order_id),
-    );
+    const orderHistoryItems = order_id
+      ? context.queryClient.ensureQueryData(
+          orderHistoryItemQueryOption(order_id),
+        )
+      : Promise.resolve(null);
     return { me, orderHistory, orderHistoryItems };
   },
   component: RouteComponent,
@@ -85,8 +88,9 @@ function RouteComponent() {
   // Create pagination object from search params
   const pagination: SearchParamsAPI = {
     page: Number(searchParams.page) || 1,
-    limit: Number(searchParams.limit) || 25,
+    limit: Number(searchParams.limit) || 10,
     status: searchParams.status || '',
+    createAt: searchParams.date || '',
   };
 
   // Function to handle section change
@@ -98,9 +102,10 @@ function RouteComponent() {
         section,
         // Reset pagination when changing sections
         page: section === 'orders' ? searchParams.page || 1 : undefined,
-        limit: section === 'orders' ? searchParams.limit || 25 : undefined,
+        limit: section === 'orders' ? searchParams.limit || 10 : undefined,
         status: section === 'orders' ? searchParams.status || '' : undefined,
         tab: section === 'account' ? 0 : undefined,
+        date: section === 'orders' ? searchParams.date || '' : undefined,
       },
       resetScroll: false,
       hashScrollIntoView: false,
@@ -209,9 +214,15 @@ function RouteComponent() {
 
   // Add ref and effect for scrolling OrderHistory into view
   const orderRef = useRef<HTMLDivElement>(null);
+  // This ref ensures the scrollIntoView only happens once for the 'orders' section
+  // during the component's lifecycle, preventing unwanted re-scrolling on subsequent visits.
+  const hasScrolledToOrders = useRef(false);
   useEffect(() => {
-    if (activeSection === 'orders') {
+    if (activeSection === 'orders' && !hasScrolledToOrders.current) {
       orderRef.current?.scrollIntoView({ behavior: 'smooth' });
+      hasScrolledToOrders.current = true;
+    } else if (activeSection !== 'orders') {
+      hasScrolledToOrders.current = false;
     }
   }, [activeSection]);
 
@@ -510,6 +521,7 @@ function RouteComponent() {
               {activeSection === 'orders' && (
                 <div ref={orderRef}>
                   <OrderHistory
+                    orderRef={orderRef}
                     searchParams={pagination}
                     onPageChange={handlePageChange}
                   />

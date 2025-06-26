@@ -28,6 +28,7 @@
     "@types/lodash.startswith": "^4.2.9",
     "@vite-pwa/assets-generator": "^1.0.0",
     "axios": "^1.8.4",
+    "date-fns": "^4.1.0",
     "dayjs": "^1.11.13",
     "framer-motion": "^12.4.7",
     "i18next": "^24.2.2",

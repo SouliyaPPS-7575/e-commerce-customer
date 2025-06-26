@@ -75,29 +75,49 @@ export const getOrderHistory = createServerFn({
   method: 'GET',
 })
   .validator((d: SearchParamsAPI) => d)
-  .handler(async ({ data: { page, limit, status } }) => {
+  .handler(async ({ data: { page = 1, limit = 10, status, createAt } }) => {
     try {
       const url = '/cust/order-list';
 
-      const queryParams = new URLSearchParams({
-        page: page.toString(),
-        limit: limit.toString(),
-        ...(status && { status }),
-      });
+      const queryParams = new URLSearchParams();
 
-      const orders = await pb.send<OrderHistoryItemRes>(
-        `${url}?${queryParams}`,
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${getCookie('token')}`,
-          },
+      // Pagination
+      if (status === '') {
+        queryParams.append('limit', '5000'); // fallback to large number
+        queryParams.append('page', '1');
+      } else {
+        const validPage = Math.max(1, Number(page) || 1);
+        const validLimit = Math.max(1, Math.min(100, Number(limit) || 10));
+        queryParams.append('page', validPage.toString());
+        queryParams.append('limit', validLimit.toString());
+      }
+
+      // Status filter
+      if (status?.trim()) {
+        queryParams.append('status', status.trim());
+      } else {
+        queryParams.append('status', '');
+      }
+
+      // ✅ Add createAt date filter if present
+      if (createAt?.trim()) {
+        queryParams.append('createAt', createAt.trim());
+      }
+
+      const fullUrl = `${url}?${queryParams.toString()}`;
+      console.log('Fetching orders:', fullUrl);
+
+      const orders = await pb.send<OrderHistoryItemRes>(fullUrl, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${getCookie('token')}`,
         },
-      );
+      });
 
       return orders;
     } catch (error) {
+      console.error('Error fetching order history:', error);
       throw handleError(error);
     }
   });
