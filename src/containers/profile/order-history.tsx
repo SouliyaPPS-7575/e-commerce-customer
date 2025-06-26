@@ -344,6 +344,7 @@ export function OrderHistory({
             </TableHead>
 
             {/*  Table Body */}
+
             <TableBody>
               {orderHistory && orderHistory?.items?.length > 0 ? (
                 orderHistory?.items?.map((order) => (
@@ -654,91 +655,101 @@ export function OrderHistory({
                                   </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                  {orderItems?.products?.map((product) => (
-                                    <TableRow
-                                      key={product.id}
-                                      hover
-                                      sx={{
-                                        '&:nth-of-type(odd)': {
-                                          backgroundColor: 'grey.50',
-                                        },
-                                      }}
-                                    >
-                                      <TableCell>
-                                        <Link
-                                          to="/shop/view/$productID/$categoryID"
-                                          params={{
-                                            productID: product.id ?? '',
-                                            categoryID:
-                                              product.category_id ?? '',
-                                          }}
-                                          style={{ textDecoration: 'none' }}
-                                        >
-                                          <ProductImage
-                                            src={product?.image_url?.[0]}
-                                            alt={product?.name}
-                                            style={{
-                                              width: 48,
-                                              height: 48,
-                                              objectFit: 'cover',
-                                              borderRadius: 6,
-                                            }}
-                                          />
-                                        </Link>
-                                      </TableCell>
-                                      <TableCell>
-                                        <Typography
-                                          variant="body2"
-                                          noWrap
+                                  {isLoading ? (
+                                    <>
+                                      <div className="flex items-center justify-center ml-80 p-4">
+                                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-b-yellow-700"></div>
+                                      </div>
+                                    </>
+                                  ) : (
+                                    <>
+                                      {orderItems?.products?.map((product) => (
+                                        <TableRow
+                                          key={product.id}
+                                          hover
                                           sx={{
-                                            fontWeight: 500,
-                                            maxWidth: 180,
-                                            color: 'text.primary',
+                                            '&:nth-of-type(odd)': {
+                                              backgroundColor: 'grey.50',
+                                            },
                                           }}
                                         >
-                                          {product?.name || 'N/A'}
-                                        </Typography>
-                                      </TableCell>
-                                      <TableCell>
-                                        <Typography
-                                          variant="body2"
-                                          color="text.secondary"
-                                          noWrap
-                                        >
-                                          {product?.created &&
-                                            formatDateDMY(product?.created)}
-                                        </Typography>
-                                      </TableCell>
-                                      <TableCell align="center">
-                                        <Typography variant="body2">
-                                          {product?.quantity || 0}
-                                        </Typography>
-                                      </TableCell>
-                                      <TableCell align="right">
-                                        <Typography variant="body2">
-                                          {formatCurrency(
-                                            convert(product?.price),
-                                          )}{' '}
-                                          {displayCurrency}
-                                        </Typography>
-                                      </TableCell>
-                                      <TableCell align="right">
-                                        <Typography
-                                          variant="body2"
-                                          color="primary"
-                                          fontWeight="bold"
-                                        >
-                                          {formatCurrency(
-                                            convert(
-                                              product?.price *
-                                                product?.quantity,
-                                            ),
-                                          )}{' '}
-                                          {displayCurrency}
-                                        </Typography>
-                                      </TableCell>
-                                    </TableRow>
-                                  ))}
+                                          <TableCell>
+                                            <Link
+                                              to="/shop/view/$productID/$categoryID"
+                                              params={{
+                                                productID: product.id ?? '',
+                                                categoryID:
+                                                  product.category_id ?? '',
+                                              }}
+                                              style={{ textDecoration: 'none' }}
+                                            >
+                                              <ProductImage
+                                                src={product?.image_url?.[0]}
+                                                alt={product?.name}
+                                                style={{
+                                                  width: 48,
+                                                  height: 48,
+                                                  objectFit: 'cover',
+                                                  borderRadius: 6,
+                                                }}
+                                              />
+                                            </Link>
+                                          </TableCell>
+                                          <TableCell>
+                                            <Typography
+                                              variant="body2"
+                                              noWrap
+                                              sx={{
+                                                fontWeight: 500,
+                                                maxWidth: 180,
+                                                color: 'text.primary',
+                                              }}
+                                            >
+                                              {product?.name || 'N/A'}
+                                            </Typography>
+                                          </TableCell>
+                                          <TableCell>
+                                            <Typography
+                                              variant="body2"
+                                              color="text.secondary"
+                                              noWrap
+                                            >
+                                              {product?.created &&
+                                                formatDateDMY(product?.created)}
+                                            </Typography>
+                                          </TableCell>
+                                          <TableCell align="center">
+                                            <Typography variant="body2">
+                                              {product?.quantity || 0}
+                                            </Typography>
+                                          </TableCell>
+                                          <TableCell align="right">
+                                            <Typography variant="body2">
+                                              {formatCurrency(
+                                                convert(product?.price),
+                                              )}{' '}
+                                              {displayCurrency}
+                                            </Typography>
+                                          </TableCell>
+                                          <TableCell align="right">
+                                            <Typography
+                                              variant="body2"
+                                              color="primary"
+                                              fontWeight="bold"
+                                            >
+                                              {formatCurrency(
+                                                convert(
+                                                  product?.price *
+                                                    product?.quantity,
+                                                ),
+                                              )}{' '}
+                                              {displayCurrency}
+                                            </Typography>
+                                          </TableCell>
+                                        </TableRow>
+                                      ))}
+                                    </>
+                                  )}
                                 </TableBody>
                               </Table>
                             </TableContainer>
