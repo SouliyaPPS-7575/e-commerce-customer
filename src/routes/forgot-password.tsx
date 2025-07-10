@@ -87,7 +87,7 @@ function RouteComponent() {
         >
           <CardContent sx={{ p: 4 }}>
             <Typography variant="body1" sx={{ mb: 1, textAlign: 'center' }}>
-              {t('please_enter_your_phone_number_to_receive_otp')}
+              {t('please_enter_your_email_to_reset_your_password')}
             </Typography>
             <form
               onSubmit={(e) => {

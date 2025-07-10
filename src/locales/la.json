@@ -22,7 +22,7 @@
   "register": "ລົງທະບຽນ",
   "already_have_account": "ມີບັນຊີແລ້ວບໍ?",
   "set_new_password": "ຕັ້ງລະຫັດຜ່ານໃໝ່",
-  "please_enter_your_phone_number_to_receive_otp": "ກະລຸນາປ້ອນເບີໂທລະສັບຂອງທ່ານເພື່ອຮັບລະຫັດ OTP",
+  "please_enter_your_email_to_reset_your_password": "ກະລຸນາປ້ອນອີເມວຂອງທ່ານເພື່ອປ້ຽນລະຫັດຜ່ານ",
   "please_enter_your_phone_number": "ກະລຸນາປ້ອນເບີໂທລະສັບ",
   "confirm": "ຢືນຢັນ",
   "remember_password?": "ຈື່ລະຫັດຜ່ານແລ້ວບໍ?",

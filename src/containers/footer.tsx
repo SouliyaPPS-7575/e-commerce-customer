@@ -1,13 +1,5 @@
 import { Email, YouTube } from '@mui/icons-material';
-import {
-  Box,
-  Button,
-  Container,
-  Grid,
-  IconButton,
-  TextField,
-  Typography,
-} from '@mui/material';
+import { Box, Container, Grid, IconButton, Typography } from '@mui/material';
 import { Link, useRouterState } from '@tanstack/react-router';
 import { Facebook } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -26,232 +18,289 @@ function Footer() {
         sx={{ bgcolor: '#E8D9B1', height: '100px', width: '100%', zIndex: 1 }}
       />
       {/* Main content with white background */}
-      <Box sx={{ bgcolor: 'white', color: '#333', py: 6 }}>
+      <Box sx={{ bgcolor: 'white', color: '#333', py: { xs: 4, md: 6 } }}>
         <Container maxWidth="lg">
-          <Grid container spacing={4} sx={{ mb: 6 }}>
-            {/* Logo Column */}
+          {/* Main footer content */}
+          <Grid
+            container
+            spacing={{ xs: 3, md: 4 }}
+            sx={{
+              justifyContent: 'flex-end',
+              textAlign: 'center',
+              mb: { xs: 3, md: 4 },
+            }}
+          >
+            {/* Logo & Description Column */}
             <Grid
               size={{
                 xs: 12,
-                md: 3,
+                md: 4,
+              }}
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
               }}
             >
               <Typography
-                variant="h6"
-                sx={{ fontWeight: 600, mb: 2, color: '#000' }}
+                variant="h5"
+                sx={{
+                  fontWeight: 700,
+                  mb: 2,
+                  color: '#2c3e50',
+                  letterSpacing: '-0.5px',
+                }}
               >
-                Logo
+                Your Brand
               </Typography>
               <Typography
-                variant="body2"
-                sx={{ color: '#333', lineHeight: 1.6 }}
+                variant="body1"
+                sx={{
+                  color: '#6c757d',
+                  lineHeight: 1.7,
+                  mb: 3,
+                  maxWidth: '280px',
+                }}
               >
-                Lorem Ipsum is simply dummy text of the printing and typesetting
-                industry. Lorem Ipsum has been the industry's standard dummy
-                text ever since the 1500s
+                Creating exceptional experiences through innovative design and
+                quality craftsmanship.
               </Typography>
-              <Box sx={{ display: 'flex', gap: 2, mt: 3 }}>
-                <IconButton sx={{ color: '#D4AF37', p: 0 }}>
-                  <Facebook />
+              {/* Social Media Icons */}
+              <Box
+                sx={{
+                  display: 'flex',
+                  gap: 2,
+                  justifyContent: 'center',
+                }}
+              >
+                <IconButton
+                  sx={{
+                    bgcolor: '#3b5998',
+                    color: 'white',
+                    '&:hover': {
+                      bgcolor: '#2d4373',
+                      transform: 'translateY(-2px)',
+                    },
+                    transition: 'all 0.3s ease',
+                    boxShadow: '0 4px 8px rgba(59, 89, 152, 0.3)',
+                  }}
+                >
+                  <Facebook size={20} />
                 </IconButton>
-                <IconButton sx={{ color: '#D4AF37', p: 0 }}>
+                <IconButton
+                  sx={{
+                    bgcolor: '#ff0000',
+                    color: 'white',
+                    '&:hover': {
+                      bgcolor: '#cc0000',
+                      transform: 'translateY(-2px)',
+                    },
+                    transition: 'all 0.3s ease',
+                    boxShadow: '0 4px 8px rgba(255, 0, 0, 0.3)',
+                  }}
+                >
                   <YouTube />
                 </IconButton>
-                <IconButton sx={{ color: '#D4AF37', p: 0 }}>
+                <IconButton
+                  sx={{
+                    bgcolor: '#ea4335',
+                    color: 'white',
+                    '&:hover': {
+                      bgcolor: '#d33b2c',
+                      transform: 'translateY(-2px)',
+                    },
+                    transition: 'all 0.3s ease',
+                    boxShadow: '0 4px 8px rgba(234, 67, 53, 0.3)',
+                  }}
+                >
                   <Email />
                 </IconButton>
               </Box>
             </Grid>
 
-            {/* Contact Column */}
+            {/* Contact Information Column */}
             <Grid
               size={{
                 xs: 12,
-                md: 3,
+                md: 4,
+              }}
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
               }}
             >
               <Typography
                 variant="h6"
-                sx={{ fontWeight: 600, mb: 2, color: '#000' }}
+                sx={{
+                  fontWeight: 600,
+                  mb: 2.5,
+                  color: '#2c3e50',
+                  position: 'relative',
+                  '&::after': {
+                    content: '""',
+                    position: 'absolute',
+                    bottom: -8,
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    width: '40px',
+                    height: '3px',
+                    bgcolor: '#E8D9B1',
+                    borderRadius: '2px',
+                  },
+                }}
               >
                 {t('contact')}
               </Typography>
-              <Typography variant="body2" sx={{ color: '#333', mb: 1.5 }}>
-                020 123 456 78
-              </Typography>
-              <Typography variant="body2" sx={{ color: '#333', mb: 1.5 }}>
-                example@gmail.com
-              </Typography>
-              <Typography variant="body2" sx={{ color: '#333', mb: 1.5 }}>
-                Live Chat
-              </Typography>
-              <Typography variant="body2" sx={{ color: '#333' }}>
-                Village, District, Province
-              </Typography>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    color: '#495057',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 1,
+                    fontWeight: 500,
+                  }}
+                >
+                  📞 020 123 456 78
+                </Typography>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    color: '#495057',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 1,
+                    fontWeight: 500,
+                  }}
+                >
+                  ✉️ example@gmail.com
+                </Typography>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    color: '#495057',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 1,
+                    fontWeight: 500,
+                  }}
+                >
+                  💬 Live Chat
+                </Typography>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    color: '#495057',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 1,
+                    fontWeight: 500,
+                  }}
+                >
+                  📍 Village, District, Province
+                </Typography>
+              </Box>
             </Grid>
 
-            {/* Navigation Column */}
+            {/* Navigation Links Column */}
             <Grid
               size={{
                 xs: 12,
-                md: 3,
+                md: 4,
+              }}
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
               }}
             >
               <Typography
                 variant="h6"
-                sx={{ fontWeight: 600, mb: 2, color: '#000' }}
+                sx={{
+                  fontWeight: 600,
+                  mb: 2.5,
+                  color: '#2c3e50',
+                  position: 'relative',
+                  '&::after': {
+                    content: '""',
+                    position: 'absolute',
+                    bottom: -8,
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    width: '40px',
+                    height: '3px',
+                    bgcolor: '#E8D9B1',
+                    borderRadius: '2px',
+                  },
+                }}
               >
                 {t('navigation')}
               </Typography>
-              <Link to="/" className={currentPath === '/' ? 'active' : ''}>
-                <Typography
-                  variant="body2"
-                  sx={{
-                    color: '#333',
-                    mb: 2,
-                    cursor: 'pointer',
-                    display: 'inline-block',
-                    fontWeight: currentPath === '/' ? 700 : 400,
-                    position: 'relative',
-                    '&::after': {
-                      content: '""',
-                      position: 'absolute',
-                      width: currentPath === '/' ? '100%' : '0%',
-                      height: '2px',
-                      bottom: -2,
-                      left: 0,
-                      backgroundColor: 'primary.main',
-                      transition: 'width 0.3s ease',
-                    },
-                    '&:hover::after': {
-                      width: '100%',
-                    },
-                  }}
-                >
-                  {t('home')}
-                </Typography>
-              </Link>
-              <br />
-              <Link
-                to="/shop/index/$category_id"
-                params={{ category_id: 'all' }}
-                className={currentPath === '/shop' ? 'active' : ''}
-              >
-                <Typography
-                  variant="body2"
-                  sx={{
-                    color: '#333',
-                    mb: 2,
-                    cursor: 'pointer',
-                    display: 'inline-block',
-                    fontWeight: currentPath.startsWith('/shop') ? 700 : 400,
-                    position: 'relative',
-                    '&::after': {
-                      content: '""',
-                      position: 'absolute',
-                      width: currentPath.startsWith('/shop') ? '100%' : '0%',
-                      height: '2px',
-                      bottom: -2,
-                      left: 0,
-                      backgroundColor: 'primary.main',
-                      transition: 'width 0.3s ease',
-                    },
-                    '&:hover::after': {
-                      width: '100%',
-                    },
-                  }}
-                >
-                  {t('shop')}
-                </Typography>
-              </Link>
-              <br />
-
-              <Link
-                to="/blog"
-                className={currentPath === '/blog' ? 'active' : ''}
-              >
-                <Typography
-                  variant="body2"
-                  sx={{
-                    color: '#333',
-                    mb: 2,
-                    cursor: 'pointer',
-                    display: 'inline-block',
-                    fontWeight: currentPath.startsWith('/blog') ? 700 : 400,
-                    position: 'relative',
-                    '&::after': {
-                      content: '""',
-                      position: 'absolute',
-                      width: currentPath.startsWith('/blog') ? '100%' : '0%',
-                      height: '2px',
-                      bottom: -2,
-                      left: 0,
-                      backgroundColor: 'primary.main',
-                      transition: 'width 0.3s ease',
-                    },
-                    '&:hover::after': {
-                      width: '100%',
-                    },
-                  }}
-                >
-                  {t('journal')}
-                </Typography>
-              </Link>
-            </Grid>
-
-            {/* Join Us Column */}
-            <Grid
-              size={{
-                xs: 12,
-                md: 3,
-              }}
-            >
-              <Typography
-                variant="h6"
-                sx={{ fontWeight: 600, mb: 2, color: '#000' }}
-              >
-                {t('join_us')}
-              </Typography>
-              <Typography variant="body2" sx={{ color: '#333', mb: 2 }}>
-                {t('recieve_news')}
-              </Typography>
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                <TextField
-                  placeholder={t('enter_email')}
-                  variant="outlined"
-                  size="small"
-                  sx={{
-                    bgcolor: '#f5f5f5',
-                    borderRadius: 1,
-                    '& .MuiOutlinedInput-root': {
-                      '& fieldset': {
-                        borderColor: 'transparent',
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+                <Link to="/" className={currentPath === '/' ? 'active' : ''}>
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      color: currentPath === '/' ? '#E8D9B1' : '#495057',
+                      cursor: 'pointer',
+                      fontWeight: currentPath === '/' ? 600 : 500,
+                      transition: 'all 0.3s ease',
+                      '&:hover': {
+                        color: '#E8D9B1',
+                        transform: 'translateX(4px)',
                       },
-                      '&:hover fieldset': {
-                        borderColor: 'transparent',
-                      },
-                      '&.Mui-focused fieldset': {
-                        borderColor: 'transparent',
-                      },
-                    },
-                  }}
-                />
-                <Button
-                  variant="contained"
-                  sx={{
-                    background:
-                      'linear-gradient(45deg,#de9c69 10%, #C98B6B 90%)',
-                    color: 'white',
-                    textTransform: 'none',
-                    '&:hover': {
-                      bgcolor: '#a88659',
-                    },
-                    alignSelf: 'flex-start',
-                    borderRadius: 1,
-                  }}
+                    }}
+                  >
+                    {t('home')}
+                  </Typography>
+                </Link>
+                <Link
+                  to="/shop/index/$category_id"
+                  params={{ category_id: 'all' }}
+                  className={currentPath === '/shop' ? 'active' : ''}
                 >
-                  {t('subscribe')}
-                </Button>
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      color: currentPath.startsWith('/shop')
+                        ? '#E8D9B1'
+                        : '#495057',
+                      cursor: 'pointer',
+                      fontWeight: currentPath.startsWith('/shop') ? 600 : 500,
+                      transition: 'all 0.3s ease',
+                      '&:hover': {
+                        color: '#E8D9B1',
+                        transform: 'translateX(4px)',
+                      },
+                    }}
+                  >
+                    {t('shop')}
+                  </Typography>
+                </Link>
+                <Link
+                  to="/blog"
+                  className={currentPath === '/blog' ? 'active' : ''}
+                >
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      color: currentPath.startsWith('/blog')
+                        ? '#E8D9B1'
+                        : '#495057',
+                      cursor: 'pointer',
+                      fontWeight: currentPath.startsWith('/blog') ? 600 : 500,
+                      transition: 'all 0.3s ease',
+                      '&:hover': {
+                        color: '#E8D9B1',
+                        transform: 'translateX(4px)',
+                      },
+                    }}
+                  >
+                    {t('journal')}
+                  </Typography>
+                </Link>
               </Box>
             </Grid>
           </Grid>
@@ -263,7 +312,7 @@ function Footer() {
           variant="body2"
           sx={{ color: '#000', opacity: 0.9, textAlign: 'center' }}
         >
-          © 2025 Copyright Company Brand. All rights reserved.
+          © 2025 Your Brand. All rights reserved. Made with ❤️
         </Typography>
       </Box>
     </>

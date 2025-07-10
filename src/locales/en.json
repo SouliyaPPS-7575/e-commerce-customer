@@ -23,7 +23,7 @@
   "register": "Register",
   "already_have_account": "Have an account already?",
   "set_new_password": "Set a new password",
-  "please_enter_your_phone_number_to_receive_otp": "Please enter your phone number to receive an OTP.",
+  "please_enter_your_email_to_reset_your_password": "Please enter your email to change your password",
   "please_enter_your_phone_number": "Please enter your phone number",
   "confirm": "Confirm",
   "remember_password": "Remember the password?",
