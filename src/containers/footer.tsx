@@ -163,7 +163,7 @@ function Footer() {
                     fontWeight: 500,
                   }}
                 >
-                  📞 020 123 456 78
+                  📞 +856 20 55 512 935
                 </Typography>
                 <Typography
                   variant="body1"
