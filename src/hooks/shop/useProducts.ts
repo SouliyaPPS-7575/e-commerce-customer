@@ -13,5 +13,6 @@ export const useProducts = () => {
     productsQueryOption(),
   );
 
-  return { productsData, isLoading };
+  const filteredProductsData = productsData.filter((product: any) => !product.is_delete);
+  return { productsData: filteredProductsData, isLoading };
 };
