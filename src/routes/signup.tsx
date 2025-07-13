@@ -261,8 +261,8 @@ function RouteComponent() {
                   name="password"
                   validators={{
                     onChange: ({ value }) =>
-                      !value || value.length < 8
-                        ? 'Password must be at least 8 characters'
+                      !value || value.length < 6
+                        ? 'Password must be at least 6 characters'
                         : undefined,
                   }}
                 >
@@ -321,8 +321,8 @@ function RouteComponent() {
                   name="passwordConfirm"
                   validators={{
                     onChange: ({ value }) =>
-                      !value || value.length < 8
-                        ? 'Password must be at least 8 characters'
+                      !value || value.length < 6
+                        ? 'Password must be at least 6 characters'
                         : undefined,
                   }}
                 >

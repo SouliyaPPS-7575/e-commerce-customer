@@ -19,7 +19,7 @@ const ProductImageGallery = ({ product }: { product: ProductItem }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   // Ensure we have an array of images
-  const images = product.image_url || [];
+  const images = Array.isArray(product.image_url) ? product.image_url : (product.image_url ? [product.image_url] : []);
 
   const handleDragEnd = (
     _event: MouseEvent | TouchEvent | PointerEvent,

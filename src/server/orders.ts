@@ -61,6 +61,7 @@ export const getOrderHistoryItems = createServerFn({
             status: orderItems.find(
               (orderItem) => orderItem.product_id === item.id,
             )?.status,
+            image_url: [item.image_url], // Ensure image_url is an array
           };
         }) as OrderProductItem[],
       };

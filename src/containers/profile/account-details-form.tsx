@@ -182,8 +182,8 @@ export function AccountDetailsForm({
               name="oldPassword"
               validators={{
                 onChange: ({ value }) =>
-                  value && value.length < 8
-                    ? 'Password must be at least 8 characters'
+                  value && value.length < 6
+                    ? 'Password must be at least 6 characters'
                     : undefined,
               }}
             >
@@ -224,8 +224,8 @@ export function AccountDetailsForm({
               name="password"
               validators={{
                 onChange: ({ value }) =>
-                  value && value.length < 8
-                    ? 'Password must be at least 8 characters'
+                  value && value.length < 6
+                    ? 'Password must be at least 6 characters'
                     : undefined,
               }}
             >
@@ -266,8 +266,8 @@ export function AccountDetailsForm({
               name="passwordConfirm"
               validators={{
                 onChange: ({ value }) =>
-                  value && value.length < 8
-                    ? 'Password must be at least 8 characters'
+                  value && value.length < 6
+                    ? 'Password must be at least 6 characters'
                     : undefined,
               }}
             >

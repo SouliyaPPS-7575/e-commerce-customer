@@ -13,6 +13,7 @@ import { createFileRoute, Link } from '@tanstack/react-router';
 import { motion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import i18next from '~/utils/i18n';
 import ImagePreview from '~/components/ImagePreview';
 import Footer from '~/containers/footer';
 import { useEditCountBlog } from '~/hooks/blogs/useEditCountBlog';
@@ -154,7 +155,12 @@ function RouteComponent() {
                       lineHeight: 1.7,
                     }}
                     dangerouslySetInnerHTML={{
-                      __html: cleanedBlogDescription(blog?.description, 0),
+                      __html: cleanedBlogDescription(
+                        i18next.language === 'la'
+                          ? blog?.description_la
+                          : blog?.description,
+                        0,
+                      ),
                     }}
                   />
                 </Typography>

@@ -37,7 +37,7 @@ export default function RouteComponent() {
     return {
       ...item,
       product_name: product?.name || item.product_name,
-      image_url: product?.image_url,
+      image_url: product?.image_url ? [product.image_url] : [],
     };
   }) as OrderItemRes[];
 
