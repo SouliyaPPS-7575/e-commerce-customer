@@ -49,7 +49,6 @@ function RouteComponent() {
   const form = useForm({
     defaultValues: {
       username: '',
-      name: 'N/A',
       phone_number: '',
       email: '',
       emailVisibility: true,
@@ -57,6 +56,7 @@ function RouteComponent() {
         'https://static.vecteezy.com/system/resources/thumbnails/006/487/917/small_2x/man-avatar-icon-free-vector.jpg',
       password: '',
       passwordConfirm: '',
+      name: 'N/A',
       // address_id: '',
       // verified: false,
     } as SignupForm,

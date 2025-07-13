@@ -70,7 +70,11 @@ export const signupServer = createServerFn({ method: 'POST' })
   .validator((d: SignupForm) => d)
   .handler(async ({ data }) => {
     try {
-      const user = await createPb<SignupForm>('customers', data);
+      const userData = { ...data };
+      if (userData.address_id === '') {
+        delete userData.address_id;
+      }
+      const user = await createPb<SignupForm>('customers', userData);
 
       return { success: true, user };
     } catch (error) {
