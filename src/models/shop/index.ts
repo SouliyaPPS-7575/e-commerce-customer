@@ -12,17 +12,21 @@ export interface ProductsRes {
 }
 
 export interface ProductItem {
-  collectionId: string;
-  collectionName: string;
-  id: string;
-  name: string;
-  description: string;
-  details: string;
-  price: number;
-  category_id: string;
-  image_url: string[];
-  created: string;
-  updated: string;
+  collectionId: string
+  collectionName: string
+  id: string
+  name: string
+  description: string
+  price: number
+  category_id: string
+  image_url: string
+  name_la: string
+  description_la: string
+  details: string
+  is_delete: boolean
+  details_la: string
+  created: string
+  updated: string
 }
 
 export interface OrderProductItem {

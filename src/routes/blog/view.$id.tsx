@@ -154,7 +154,7 @@ function RouteComponent() {
                       lineHeight: 1.7,
                     }}
                     dangerouslySetInnerHTML={{
-                      __html: cleanedBlogDescription(blog?.description),
+                      __html: cleanedBlogDescription(blog?.description, 0),
                     }}
                   />
                 </Typography>

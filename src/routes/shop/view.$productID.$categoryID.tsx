@@ -21,6 +21,7 @@ import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { motion } from 'framer-motion';
 import { ShoppingCart } from 'lucide-react';
 import { useState } from 'react';
+import i18next from '~/utils/i18n';
 import { useTranslation } from 'react-i18next';
 import { useCurrencyContext } from '~/components/CurrencySelector/CurrencyProvider';
 import Footer from '~/containers/footer';
@@ -77,16 +78,16 @@ function ProductDetailComponent() {
   const { product, isLoading, relateProducts } = useViewDetails();
   const { productsByCategoryData } = useProductsByCategory();
 
-  const cleanedDescription = product.description
+  const cleanedDescription = (i18next.language === 'la' ? product.description_la : product.description)
     .replace(/\r\n/g, '<div style="height: 7px"></div>')
     .replace(/<h1>/g, '<h1 style="font-weight: bold;">')
-    .replace(/<\/h1>/g, '</h1>')
+    .replace(/<\/h1>/g, '<\/h1>')
     .replace(/<h2>/g, '<h1 style="font-weight: bold;">');
 
   const cleanedDetails = `
     <div style="width: 100%; max-width: 100%; margin: auto;">
       <div style="@media(min-width: 768px){ max-width: 50%; margin: auto; }">
-        ${product.details
+        ${(i18next.language === 'la' ? product.details_la : product.details)
           .replace(/\r\n/g, '<div style="height: 7px"></div>')
           .replace(/<h1>/g, '<h1 style="font-weight: bold;">')
           .replace(/<\/h1>/g, '</h1>')
@@ -254,7 +255,7 @@ function ProductDetailComponent() {
                     gutterBottom
                     fontWeight="bold"
                   >
-                    {product.name}
+                    {i18next.language === 'la' ? product.name_la : product.name}
                   </Typography>
                   <Typography
                     variant="subtitle1"
@@ -543,7 +544,7 @@ function ProductDetailComponent() {
                               color: '#333333',
                             }}
                           >
-                            {product.name}
+                            {i18next.language === 'la' ? product.name_la : product.name}
                           </Typography>
                           <Typography
                             variant="body2"

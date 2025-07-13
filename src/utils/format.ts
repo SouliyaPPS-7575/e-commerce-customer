@@ -58,7 +58,7 @@ export const cleanedDescription = (description: string, maxLines = 5) => {
   return `<div style="display: -webkit-box; -webkit-line-clamp: ${maxLines}; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; padding: 0; margin: 0;">${lines}</div>`;
 };
 
-export const cleanedBlogDescription = (description: string, maxLines = 5) => {
+export const cleanedBlogDescription = (description: string, maxLines?: number) => {
   if (!description) return '';
 
   const tempDiv = document.createElement('div');
@@ -94,6 +94,11 @@ export const cleanedBlogDescription = (description: string, maxLines = 5) => {
       return `<img${beforeSrc}src="${src}"${afterSrc} onclick="window.open('${src}', '_blank')" style="cursor:pointer;" />`;
     });
     return `<div style="text-align: center;"><div style="display: inline-block; text-align: left;" >${htmlWithOnClick.replace(/<img[^>]*>/gi, (img) => `<div style="margin: 1em 0; display: flex; justify-content: center;">${img}</div>`)}</div></div>`;
+  }
+
+  // If maxLines is 0 or undefined, return full content without clamping
+  if (maxLines === 0 || maxLines === undefined) {
+    return `<div>${htmlContent}</div>`;
   }
 
   return `

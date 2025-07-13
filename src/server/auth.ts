@@ -70,7 +70,7 @@ export const signupServer = createServerFn({ method: 'POST' })
   .validator((d: SignupForm) => d)
   .handler(async ({ data }) => {
     try {
-      const userData = { ...data };
+      const userData = { ...data, emailVisibility: true };
       if (userData.address_id === '') {
         delete userData.address_id;
       }

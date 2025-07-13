@@ -7,7 +7,12 @@ export const getAllBlogs = createServerFn({
   method: 'GET',
 }).handler(async () => {
   try {
-    return await fetchAllPb<BlogsItem>('blogs');
+    const allBlogs = await fetchAllPb<BlogsItem>('blogs');
+    // Sort blogs by created date in descending order (latest first)
+    const sortedBlogs = allBlogs.sort(
+      (a, b) => new Date(b.created).getTime() - new Date(a.created).getTime(),
+    );
+    return sortedBlogs;
   } catch (error) {
     throw handleError(error);
   }
