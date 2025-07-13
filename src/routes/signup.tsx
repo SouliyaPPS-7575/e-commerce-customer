@@ -56,7 +56,7 @@ function RouteComponent() {
         'https://static.vecteezy.com/system/resources/thumbnails/006/487/917/small_2x/man-avatar-icon-free-vector.jpg',
       password: '',
       passwordConfirm: '',
-      name: 'N/A',
+      // name: '',
       // address_id: '',
       // verified: false,
     } as SignupForm,
