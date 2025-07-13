@@ -9,12 +9,11 @@ export interface SignupForm {
   phone_number: string;
   email: string;
   emailVisibility?: boolean;
-  province: string;
-  district: string;
-  village: string;
+  avatar?: string;
   password: string;
   passwordConfirm: string;
-  otp?: string;
+  address_id?: string;
+  verified?: boolean;
 }
 
 export interface VerifyEmail {

@@ -49,16 +49,16 @@ function RouteComponent() {
   const form = useForm({
     defaultValues: {
       username: '',
+      name: 'N/A',
       phone_number: '',
       email: '',
       emailVisibility: true,
-      province: '',
-      district: '',
-      village: '',
+      avatar:
+        'https://static.vecteezy.com/system/resources/thumbnails/006/487/917/small_2x/man-avatar-icon-free-vector.jpg',
       password: '',
       passwordConfirm: '',
-      name: '',
-      // otp: '',
+      // address_id: '',
+      // verified: false,
     } as SignupForm,
     onSubmit: async ({ value }) => {
       // Handle form submission
