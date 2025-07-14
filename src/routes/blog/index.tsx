@@ -16,8 +16,9 @@ import Footer from '~/containers/footer';
 import { blogsQueryOption, useBlogs } from '~/hooks/blogs/useBlogs';
 import { BlogExcerpt } from '~/styles/blogs';
 import theme from '~/styles/theme';
-import { cleanedDescription, formattedDate } from '~/utils/format';
+import { cleanedDescriptionShort, formattedDate } from '~/utils/format';
 import { useEditCountBlog } from '~/hooks/blogs/useEditCountBlog';
+import i18next from '~/utils/i18n';
 
 export const Route = createFileRoute('/blog/')({
   loader: async ({ context }) => {
@@ -152,7 +153,12 @@ function BlogComponent() {
                                 lineHeight: 1.7,
                               }}
                               dangerouslySetInnerHTML={{
-                                __html: cleanedDescription(post?.description),
+                                __html: cleanedDescriptionShort(
+                                  i18next.language === 'la'
+                                    ? post?.description_la
+                                    : post?.description,
+                                  5, // Changed from 0 to 5 to limit to 5 lines
+                                ),
                               }}
                             />
                           </AccordionDetails>

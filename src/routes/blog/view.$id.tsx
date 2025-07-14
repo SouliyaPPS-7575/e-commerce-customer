@@ -25,8 +25,8 @@ import { getViewBlogQueryOption, useViewBlog } from '~/hooks/blogs/useViewBlog';
 import { BlogDate, BlogExcerpt } from '~/styles/blogs';
 import theme from '~/styles/theme';
 import {
-  cleanedBlogDescription,
-  cleanedDescription,
+  cleanedBlogDescriptionDetails,
+  cleanedDescriptionShort,
   formattedDate,
 } from '~/utils/format';
 
@@ -155,7 +155,7 @@ function RouteComponent() {
                       lineHeight: 1.7,
                     }}
                     dangerouslySetInnerHTML={{
-                      __html: cleanedBlogDescription(
+                      __html: cleanedBlogDescriptionDetails(
                         i18next.language === 'la'
                           ? blog?.description_la
                           : blog?.description,
@@ -283,8 +283,11 @@ function RouteComponent() {
                                           lineHeight: 1.7,
                                         }}
                                         dangerouslySetInnerHTML={{
-                                          __html: cleanedDescription(
-                                            story?.description,
+                                          __html: cleanedDescriptionShort(
+                                            i18next.language === 'la'
+                                              ? story?.description_la
+                                              : story?.description,
+                                            5, // Changed from 0 to 5 to limit to 5 lines
                                           ),
                                         }}
                                       />
@@ -428,8 +431,11 @@ function RouteComponent() {
                                           color: theme.palette.text.secondary,
                                         }}
                                         dangerouslySetInnerHTML={{
-                                          __html: cleanedDescription(
-                                            story?.description,
+                                          __html: cleanedDescriptionShort(
+                                            i18next.language === 'la'
+                                              ? story?.description_la
+                                              : story?.description,
+                                            5, // Changed from 0 to 5 to limit to 5 lines
                                           ),
                                         }}
                                       />

@@ -26,11 +26,8 @@ import {
   JournalTitle,
 } from '~/styles/blogs';
 import theme from '~/styles/theme';
-import {
-  cleanedBlogDescription,
-  cleanedDescription,
-  formattedDate,
-} from '~/utils/format';
+import { cleanedDescriptionShort, formattedDate } from '~/utils/format';
+import i18next from '~/utils/i18n';
 
 export default function BlogSection() {
   const { t } = useTranslation();
@@ -155,9 +152,19 @@ export default function BlogSection() {
                             fontSize: '0.95rem',
                             color: theme.palette.text.secondary,
                             lineHeight: 1.7,
+                            display: '-webkit-box',
+                            WebkitLineClamp: 5,
+                            WebkitBoxOrient: 'vertical',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
                           }}
                           dangerouslySetInnerHTML={{
-                            __html: cleanedBlogDescription(post?.description),
+                            __html: cleanedDescriptionShort(
+                              i18next.language === 'la'
+                                ? post?.description_la
+                                : post?.description,
+                              5, // Changed from 0 to 5 to limit to 5 lines
+                            ),
                           }}
                         />
                       </CardContent>
@@ -260,8 +267,11 @@ export default function BlogSection() {
                                   lineHeight: 1.7,
                                 }}
                                 dangerouslySetInnerHTML={{
-                                  __html: cleanedDescription(
-                                    story?.description,
+                                  __html: cleanedDescriptionShort(
+                                    i18next.language === 'la'
+                                      ? story?.description_la
+                                      : story?.description,
+                                    5,
                                   ),
                                 }}
                               />
@@ -315,7 +325,7 @@ export default function BlogSection() {
           </>
         ) : (
           // Desktop: Horizontal scroll list
-          (<>
+          <>
             <Box
               sx={{
                 display: 'flex',
@@ -391,10 +401,19 @@ export default function BlogSection() {
                                 sx={{
                                   fontSize: '0.95rem',
                                   color: theme.palette.text.secondary,
+                                  lineHeight: 1.7,
+                                  display: '-webkit-box',
+                                  WebkitLineClamp: 5,
+                                  WebkitBoxOrient: 'vertical',
+                                  overflow: 'hidden',
+                                  textOverflow: 'ellipsis',
                                 }}
                                 dangerouslySetInnerHTML={{
-                                  __html: cleanedDescription(
-                                    story?.description,
+                                  __html: cleanedDescriptionShort(
+                                    i18next.language === 'la'
+                                      ? story?.description_la
+                                      : story?.description,
+                                    5, // Changed from 0 to 5 to limit to 5 lines
                                   ),
                                 }}
                               />
@@ -421,7 +440,7 @@ export default function BlogSection() {
                 </motion.div>
               ))}
             </Box>
-          </>)
+          </>
         )}
 
         <Box

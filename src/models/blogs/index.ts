@@ -5,6 +5,7 @@ export interface BlogsItem {
   image_url: string;
   title: string;
   description: string;
+  description_la: string;
   video_url: string;
   count: number;
   created: string;
