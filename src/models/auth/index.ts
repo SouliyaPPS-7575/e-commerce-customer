@@ -14,6 +14,7 @@ export interface SignupForm {
   passwordConfirm: string;
   address_id?: string;
   verified?: boolean;
+  status?: boolean;
 }
 
 export interface VerifyEmail {
