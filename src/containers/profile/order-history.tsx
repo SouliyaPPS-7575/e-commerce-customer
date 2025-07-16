@@ -725,9 +725,31 @@ export function OrderHistory({
                                           </TableCell>
                                           <TableCell align="right">
                                             <Typography variant="body2">
-                                              {formatCurrency(
-                                                convert(product?.price),
-                                              )}{' '}
+                                              {currency === 'USD'
+                                                ? formatCurrency(
+                                                    orderItems?.orderItems?.find(
+                                                      (item) =>
+                                                        item.product_id ===
+                                                        product.id,
+                                                    )?.price_usd || 0,
+                                                  )
+                                                : currency === 'THB'
+                                                  ? formatCurrency(
+                                                      orderItems?.orderItems?.find(
+                                                        (item) =>
+                                                          item.product_id ===
+                                                          product.id,
+                                                      )?.price_thb || 0,
+                                                    )
+                                                  : formatCurrency(
+                                                      convert(
+                                                        orderItems?.orderItems?.find(
+                                                          (item) =>
+                                                            item.product_id ===
+                                                            product.id,
+                                                        )?.price_lak || 0,
+                                                      ),
+                                                    )}{' '}
                                               {displayCurrency}
                                             </Typography>
                                           </TableCell>
@@ -738,11 +760,30 @@ export function OrderHistory({
                                               fontWeight="bold"
                                             >
                                               {formatCurrency(
-                                                convert(
-                                                  product?.price *
-                                                    product?.quantity,
-                                                ),
-                                              )}{' '}
+                                                (currency === 'USD'
+                                                  ? (orderItems?.orderItems?.find(
+                                                      (item) =>
+                                                        item.product_id ===
+                                                        product.id,
+                                                    )?.price_usd || 0) *
+                                                    (product?.quantity || 0)
+                                                  : currency === 'THB'
+                                                    ? (orderItems?.orderItems?.find(
+                                                        (item) =>
+                                                          item.product_id ===
+                                                          product.id,
+                                                      )?.price_thb || 0) *
+                                                      (product?.quantity || 0)
+                                                    : convert(
+                                                        (orderItems?.orderItems?.find(
+                                                          (item) =>
+                                                            item.product_id ===
+                                                            product.id,
+                                                        )?.price_lak || 0) *
+                                                          (product?.quantity ||
+                                                            0),
+                                                      )) || 0,
+                                              )}
                                               {displayCurrency}
                                             </Typography>
                                           </TableCell>
