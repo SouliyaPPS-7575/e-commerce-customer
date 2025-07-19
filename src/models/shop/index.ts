@@ -21,10 +21,12 @@ export interface ProductItem {
   category_id: string
   image_url: string
   name_la: string
-  description_la: string
   details: string
   is_delete: boolean
   details_la: string
+  description_la: string
+  total_count: number
+  sell_count: number
   created: string
   updated: string
 }

@@ -115,10 +115,13 @@ function ProductDetailComponent() {
   const { enrichedCartItems, editMutation } = useCartPage();
 
   const [quantity, setQuantity] = useState(1);
+  const [availableStock, setAvailableStock] = useState(product.total_count);
 
   const handleQuantityChange = (newQuantity: number) => {
     if (newQuantity < 1) return;
+    if (newQuantity > product.total_count) return;
     setQuantity(Math.max(newQuantity, 1));
+    setAvailableStock(product.total_count - Math.max(newQuantity, 1));
   };
 
   const customerId = localStorageData('customer_id').getLocalStrage();
@@ -148,6 +151,7 @@ function ProductDetailComponent() {
               },
             },
           });
+          setAvailableStock(product.total_count - (existingItem.quantity + quantity));
           navigate({ to: '/shop/add-cart' });
           return;
         }
@@ -164,6 +168,7 @@ function ProductDetailComponent() {
           {
             onSuccess: () => {
               queryClient.invalidateQueries(getCartItemsQueryOption());
+              setAvailableStock(prevStock => prevStock - quantity);
             },
           },
         );
@@ -187,6 +192,7 @@ function ProductDetailComponent() {
         {
           onSuccess: ({ cart_id }) => {
             if (!cart_id) return;
+            setAvailableStock(prevStock => prevStock - quantity);
             navigate({
               to: '/shop/buy-checkout/$cart_id/$product_id',
               params: {
@@ -329,7 +335,7 @@ function ProductDetailComponent() {
                   fontWeight="bold"
                   sx={{ color: '#7A8A56' }}
                 >
-                  &nbsp;{'In Stock'}
+                  &nbsp;{availableStock} {'In Stock'}
                 </Typography>
                 <br />
 

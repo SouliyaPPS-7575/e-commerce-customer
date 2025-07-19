@@ -89,6 +89,15 @@ function RouteComponent() {
 
     setIsSubmitting(true);
 
+    // Check stock for each item in the order
+    for (const item of orderItems) {
+      if (item.quantity > item.total_count) {
+        toast.error(t('quantity_exceeds_stock', { product_name: item.name }));
+        setIsSubmitting(false);
+        return;
+      }
+    }
+
     try {
       const { state: addressFormState } = formAddress;
 

@@ -81,6 +81,7 @@ export interface OrderItems {
   status: string;
   created: string;
   updated: string;
+  total_count: number;
 }
 [];
 

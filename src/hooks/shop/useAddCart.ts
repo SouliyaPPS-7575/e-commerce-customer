@@ -90,6 +90,9 @@ export function useCartPage() {
             category_id:
               productsData?.find((p) => p.id === item.product_id)
                 ?.category_id ?? '',
+            total_count:
+              productsData?.find((p) => p.id === item.product_id)
+                ?.total_count ?? 0,
           },
         ]),
       ).values(),

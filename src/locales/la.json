@@ -129,6 +129,7 @@
   "district": "ເມືອງ",
   "qty": "ຈຳນວນ",
   "file_too_large": "ຮູບນີ້ຂະໜາດໃຫຍ່ເກີນໄປຂະໜາດບໍ່ໃຫ້ເກີນ 1MB",
+  "quantity_exceeds_stock": "ຈຳນວນສິນຄ້າສຳລັບ {{product_name}} ເກີນຈຳນວນທີ່ມີໃນສະຕັອກ.",
   "____________comment_Blogs_page____________": "Blogs Page",
   "recent_stories": "ເລື່ອງທີ່ໜ້າສົນໃຈ",
   "latest_stories": "ເລື່ອງລ້າສຸດ",

@@ -80,6 +80,7 @@ function RouteComponent() {
       status: cartItem?.status,
       created: cartItem?.created,
       updated: cartItem?.updated,
+      total_count: product?.total_count,
     },
   ];
 
@@ -127,6 +128,12 @@ function RouteComponent() {
 
   const handlePlaceOrder = async () => {
     if (isSubmitting) return;
+
+    // Check stock before proceeding
+    if (cartItem && product && cartItem.quantity > product.total_count) {
+      toast.error(t('quantity_exceeds_stock', { product_name: product.name }));
+      return;
+    }
 
     setIsSubmitting(true);
 

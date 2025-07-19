@@ -142,6 +142,7 @@
   "postal_code": "Postal Code",
   "qty": "Qty",
   "file_too_large": "File too large",
+  "quantity_exceeds_stock": "The quantity for {{product_name}} exceeds available stock.",
   "____________comment_Blogs_page____________": "Blogs Page",
   "recent_stories": "Recent Stories",
   "latest_stories": "Latest Stories",
