@@ -123,6 +123,8 @@
   "reference_id": "Reference ID",
   "pending": "Pending",
   "purchased": "Purchased",
+  "delivering": "Delivering",
+  "completed": "Completed",
   "no_address_found": "No address found.",
   "quantity": "Quantity",
   "image": "Image",

@@ -87,8 +87,8 @@ export function OrderHistory({
     switch (status) {
       case 'purchased':
         return {
-          color: theme.palette.success.main,
-          backgroundColor: theme.palette.success.light + '20', // Adding transparency
+          color: theme.palette.info.main,
+          backgroundColor: theme.palette.info.light + '20', // Adding transparency
         };
       case 'pending':
         return {
@@ -99,6 +99,16 @@ export function OrderHistory({
         return {
           color: theme.palette.error.main,
           backgroundColor: theme.palette.error.light + '20',
+        };
+      case 'delivering':
+        return {
+          color: '#800080',
+          backgroundColor: '#80008020',
+        };
+      case 'completed':
+        return {
+          color: theme.palette.success.main,
+          backgroundColor: theme.palette.success.light + '20',
         };
       default:
         return {
@@ -161,7 +171,7 @@ export function OrderHistory({
               <Typography>{t('all')}</Typography>
             </MenuItem>
             <MenuItem value="purchased">
-              <Typography sx={{ color: 'success.main', fontWeight: 'bold' }}>
+              <Typography sx={{ color: 'info.main', fontWeight: 'bold' }}>
                 {t('purchased')}
               </Typography>
             </MenuItem>
@@ -173,6 +183,26 @@ export function OrderHistory({
             <MenuItem value="cancel">
               <Typography sx={{ color: 'error.main', fontWeight: 'bold' }}>
                 {t('cancel')}
+              </Typography>
+            </MenuItem>
+            <MenuItem value="delivering">
+              <Typography sx={{ color: '#800080', fontWeight: 'bold' }}>
+                {t('delivering')}
+              </Typography>
+            </MenuItem>
+            <MenuItem value="completed">
+              <Typography sx={{ color: 'success.main', fontWeight: 'bold' }}>
+                {t('completed')}
+              </Typography>
+            </MenuItem>
+            <MenuItem value="delivering">
+              <Typography sx={{ color: 'info.main', fontWeight: 'bold' }}>
+                {t('delivering')}
+              </Typography>
+            </MenuItem>
+            <MenuItem value="completed">
+              <Typography sx={{ color: 'success.main', fontWeight: 'bold' }}>
+                {t('completed')}
               </Typography>
             </MenuItem>
           </Select>
@@ -470,12 +500,16 @@ export function OrderHistory({
                             fontWeight: 'bold',
                             color:
                               order?.status === 'purchased'
-                                ? 'success.main'
+                                ? 'info.main'
                                 : order?.status === 'pending'
                                   ? 'warning.main'
                                   : order?.status === 'cancel'
                                     ? 'error.main'
-                                    : 'text.primary',
+                                    : order?.status === 'delivering'
+                                      ? '#800080'
+                                      : order?.status === 'completed'
+                                        ? 'success.main'
+                                        : 'text.primary',
                             textTransform: 'capitalize',
                             textAlign: 'left',
                             whiteSpace: 'nowrap',

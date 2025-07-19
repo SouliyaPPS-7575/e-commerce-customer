@@ -116,6 +116,8 @@
   "reference_id": "ລະຫັດອ້າງອີງ",
   "pending": "ກຳລັງລໍຖ້າ",
   "purchased": "ຊື້ແລ້ວ",
+  "delivering": "ກໍາລັງຈັດສົ່ງ",
+  "completed": "ສໍາເລັດ",
   "no_address_found": "ບໍ່ພົບທີ່ຢູ່.",
   "quantity": "ຈຳນວນ",
   "image": "ຮູບ",
