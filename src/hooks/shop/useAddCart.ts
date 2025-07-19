@@ -144,14 +144,36 @@ export function useCartPage() {
 
   useEffect(() => {
     setLocalCartState((prev) => {
-      const updated = enrichedCartItems.map((item) => {
+      const newLocalCartState = enrichedCartItems.map((item) => {
         const existing = prev.find((i) => i.id === item.id);
         const ensuredQuantity = Math.max(item.quantity, 1);
         return existing?.quantity === ensuredQuantity
           ? existing
           : { ...item, quantity: ensuredQuantity };
       });
-      return updated;
+
+      // Deep compare the new state with the previous state
+      const areContentsEqual =
+        prev.length === newLocalCartState.length &&
+        prev.every((item, index) => {
+          const newItem = newLocalCartState[index];
+          // Compare relevant properties for equality
+          return (
+            item.id === newItem.id &&
+            item.quantity === newItem.quantity &&
+            item.price === newItem.price &&
+            item.name === newItem.name &&
+            item.image_url === newItem.image_url &&
+            item.category_id === newItem.category_id &&
+            item.total_count === newItem.total_count
+          );
+        });
+
+      if (areContentsEqual) {
+        return prev; // No change in content, return previous state to prevent re-render
+      }
+
+      return newLocalCartState;
     });
   }, [enrichedCartItems]);
 

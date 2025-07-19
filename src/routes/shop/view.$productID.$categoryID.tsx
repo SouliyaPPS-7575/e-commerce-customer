@@ -1,3 +1,4 @@
+import '@/styles/products.css';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import {
@@ -20,8 +21,7 @@ import {
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { motion } from 'framer-motion';
 import { ShoppingCart } from 'lucide-react';
-import { useState } from 'react';
-import i18next from '~/utils/i18n';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCurrencyContext } from '~/components/CurrencySelector/CurrencyProvider';
 import Footer from '~/containers/footer';
@@ -45,7 +45,7 @@ import { localStorageData } from '~/server/cache';
 import { queryClient } from '~/services/queryClient';
 import { QuantityControl } from '~/styles/add-cart';
 import { formatCurrency } from '~/utils/format';
-import '@/styles/products.css';
+import i18next from '~/utils/i18n';
 
 export const Route = createFileRoute('/shop/view/$productID/$categoryID')({
   loader: async ({ context, params }) => {
@@ -78,7 +78,9 @@ function ProductDetailComponent() {
   const { product, isLoading, relateProducts } = useViewDetails();
   const { productsByCategoryData } = useProductsByCategory();
 
-  const cleanedDescription = (i18next.language === 'la' ? product.description_la : product.description)
+  const cleanedDescription = (
+    i18next.language === 'la' ? product.description_la : product.description
+  )
     .replace(/\r\n/g, '<div style="height: 7px"></div>')
     .replace(/<h1>/g, '<h1 style="font-weight: bold;">')
     .replace(/<\/h1>/g, '<\/h1>')
@@ -117,6 +119,10 @@ function ProductDetailComponent() {
   const [quantity, setQuantity] = useState(1);
   const [availableStock, setAvailableStock] = useState(product.total_count);
 
+  useEffect(() => {
+    setAvailableStock(product.total_count);
+  }, [product.total_count]);
+
   const handleQuantityChange = (newQuantity: number) => {
     if (newQuantity < 1) return;
     if (newQuantity > product.total_count) return;
@@ -151,7 +157,12 @@ function ProductDetailComponent() {
               },
             },
           });
-          setAvailableStock(product.total_count - (existingItem.quantity + quantity));
+          setAvailableStock(
+            product.total_count - (existingItem.quantity + quantity),
+          );
+          setAvailableStock(
+            product.total_count - (existingItem.quantity + quantity),
+          );
           navigate({ to: '/shop/add-cart' });
           return;
         }
@@ -168,7 +179,7 @@ function ProductDetailComponent() {
           {
             onSuccess: () => {
               queryClient.invalidateQueries(getCartItemsQueryOption());
-              setAvailableStock(prevStock => prevStock - quantity);
+              setAvailableStock((prevStock) => prevStock - quantity);
             },
           },
         );
@@ -192,7 +203,7 @@ function ProductDetailComponent() {
         {
           onSuccess: ({ cart_id }) => {
             if (!cart_id) return;
-            setAvailableStock(prevStock => prevStock - quantity);
+            setAvailableStock((prevStock) => prevStock - quantity);
             navigate({
               to: '/shop/buy-checkout/$cart_id/$product_id',
               params: {
@@ -550,7 +561,9 @@ function ProductDetailComponent() {
                               color: '#333333',
                             }}
                           >
-                            {i18next.language === 'la' ? product.name_la : product.name}
+                            {i18next.language === 'la'
+                              ? product.name_la
+                              : product.name}
                           </Typography>
                           <Typography
                             variant="body2"
